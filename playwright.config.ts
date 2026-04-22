@@ -1,12 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
+import { defineBddConfig } from 'playwright-bdd';
+import dotenv from 'dotenv';
+import path from 'path';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+
+const STORAGE_STATE = path.join(__dirname, '.auth/user.json');
+
+// BDD: features/*.feature + steps/*.ts → .features-gen 디렉토리로 자동 컴파일
+const bddTestDir = defineBddConfig({
+  features: 'features/**/*.feature',
+  steps: 'steps/**/*.ts',
+});
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -25,27 +30,51 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
  use: {
-    /* 실패 시에만 증거 남김 (성공 케이스는 용량 절약) */
+    baseURL: process.env.TAPAS_BASE_URL || 'https://tapas.io',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    /* Chrome의 "로컬 네트워크 액세스" 팝업 비활성화 */
+    launchOptions: {
+      args: ['--disable-features=LocalNetworkAccessChecks,PrivateNetworkAccessRespectPreflightResults'],
+    },
   },
 
   /* Configure projects for major browsers */
-  projects: [
+projects: [
+    /* ① 로그인 전용 — 다른 프로젝트보다 먼저 1회 실행됨 */
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
+
+    /* ② 실제 테스트 — setup 끝난 뒤 저장된 로그인 상태 사용 */
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      testDir: bddTestDir,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: STORAGE_STATE,
+      },
+      dependencies: ['setup'],
     },
-
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      testDir: bddTestDir,
+      use: {
+        ...devices['Desktop Firefox'],
+        storageState: STORAGE_STATE,
+      },
+      dependencies: ['setup'],
     },
-
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      testDir: bddTestDir,
+      use: {
+        ...devices['Desktop Safari'],
+        storageState: STORAGE_STATE,
+      },
+      dependencies: ['setup'],
     },
 
     /* Test against mobile viewports. */
