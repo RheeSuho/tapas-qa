@@ -18,3 +18,9 @@ Thumbs.db
 # 에디터
 .vscode/
 .idea/
+
+# 환경변수 (민감 정보)
+.env
+
+# Playwright 로그인 상태 저장 파일
+.auth/
