@@ -1,0 +1,20 @@
+# 의존성
+node_modules/
+
+# 테스트 결과물 (매번 새로 생성됨)
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# 환경 변수 파일 (나중에 계정/API키 넣을 때)
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 에디터
+.vscode/
+.idea/
