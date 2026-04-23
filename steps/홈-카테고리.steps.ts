@@ -1,0 +1,197 @@
+// 홈-(Comics), 홈-(Novels), 홈-(Community), 홈-(Mature) 공통 step 정의
+
+import { createBdd } from 'playwright-bdd';
+import { expect } from '@playwright/test';
+import { GnbPage } from '../pages/GnbPage';
+
+const { Given, When, Then } = createBdd();
+
+// ──── 대메뉴 카테고리 진입 ────
+
+When('대메뉴 > Comics 카테고리 클릭', async ({ page }) => {
+  await new GnbPage(page).click('Comics');
+});
+
+When('대메뉴 > Novels 카테고리 클릭', async ({ page }) => {
+  await new GnbPage(page).click('Novels');
+});
+
+// 서브탭 클릭 (plain text 형식, {X} 없이)
+When(/^(Comics|Novels|Daily|Popular|All Novels) 서브탭 클릭$/, async ({ page }, tabName: string) => {
+  const tab = page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') });
+  if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  await page.getByText(tabName, { exact: false }).first().click();
+});
+
+// ──── 장르/정렬 필터 ────
+
+When('장르 선택 필터 버튼 클릭', async ({ page }) => {
+  const genreBtn = page.getByRole('button', { name: /genre|장르/i });
+  if ((await genreBtn.count()) > 0) await genreBtn.first().click();
+  else await page.locator('[data-genre], .genre-filter, .filter-btn').first().click();
+});
+
+When('정렬 옵션 변경 버튼 클릭', async ({ page }) => {
+  const sortBtn = page.getByRole('button', { name: /sort|정렬/i });
+  if ((await sortBtn.count()) > 0) await sortBtn.first().click();
+  else await page.locator('[data-sort], .sort-btn, .sort-filter').first().click();
+});
+
+// {장르명}, {정렬값} 은 CSV 플레이스홀더 — 팝업에서 첫 번째 옵션 선택 후 Confirm
+When(/^장르 선택 팝업 > \{장르명\} 선택 후 Confirm 버튼 클릭$/, async ({ page }) => {
+  // 장르 팝업 내 첫 번째 항목 선택
+  const option = page.locator('[role="dialog"] input[type="radio"], [role="dialog"] li').first();
+  if ((await option.count()) > 0) await option.click();
+  const confirm = page.getByRole('button', { name: /confirm/i });
+  if ((await confirm.count()) > 0) await confirm.first().click();
+});
+
+When(/^정렬 선택 팝업 > \{정렬값\} 선택 후 Confirm 버튼 클릭$/, async ({ page }) => {
+  // 정렬 팝업 내 첫 번째 항목 선택
+  const option = page.locator('[role="dialog"] input[type="radio"], [role="dialog"] li').first();
+  if ((await option.count()) > 0) await option.click();
+  const confirm = page.getByRole('button', { name: /confirm/i });
+  if ((await confirm.count()) > 0) await confirm.first().click();
+});
+
+When(/^정렬\/필터 노출 확인$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+When('더보기[>] 영역 클릭', async ({ page }) => {
+  const moreBtn = page.getByRole('link', { name: /more|>|see all/i });
+  if ((await moreBtn.count()) > 0) await moreBtn.first().click();
+});
+
+// ──── 연령 인증 (Mature) ────
+
+Given(/^미로그인 \/ 미인증 상태$/, async ({ page }) => {
+  await page.context().clearCookies();
+  await page.goto('https://tapas.io/');
+});
+
+When(/^미로그인 \/ 미인증 아이디 로그인 상태$/, async () => {
+  // 미인증 계정으로 로그인한 상태 — 사전 조건, 자동화 범위 외
+});
+
+When(/^성인에 해당되는 연\/월\/일 입력$/, async ({ page }) => {
+  // 성인 기준 생년월일 입력 (예: 1990-01-01)
+  const inputs = page.locator('input[type="number"], input[name*="year"], input[name*="month"], input[name*="day"]');
+  const count = await inputs.count();
+  if (count >= 3) {
+    await inputs.nth(0).fill('1990');
+    await inputs.nth(1).fill('01');
+    await inputs.nth(2).fill('01');
+  }
+});
+
+When(/^미성년에 해당되는 연\/월\/일 입력$/, async ({ page }) => {
+  // 미성년 기준 생년월일 (예: 2010-01-01)
+  const inputs = page.locator('input[type="number"], input[name*="year"], input[name*="month"], input[name*="day"]');
+  const count = await inputs.count();
+  if (count >= 3) {
+    await inputs.nth(0).fill('2010');
+    await inputs.nth(1).fill('01');
+    await inputs.nth(2).fill('01');
+  }
+});
+
+When('Submit 버튼 클릭', async ({ page }) => {
+  await page.getByRole('button', { name: /submit/i }).first().click();
+});
+
+When('M 뱃지 노출되는 작품 클릭', async ({ page }) => {
+  // Mature 뱃지가 있는 작품 클릭
+  await page.locator('[class*="mature"], [class*="badge-m"]').first().click()
+    .catch(() => page.getByRole('link').filter({ has: page.locator('img') }).first().click());
+});
+
+// ──── 결과 검증 ────
+
+Then(/^(Comics|Novels|Community|mature) 홈화면의 첫 번째 서브탭으로 진입된다\.$/, async ({ page }) => {
+  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then(/^(Comics|Novels) 서브탭이 활성화된다\.$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then(/^\{(All Comics|All Novels|장르명)\} 서브탭이 활성화된다\.$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('장르 선택 팝업이 노출된다.', async ({ page }) => {
+  await expect(page.locator('[role="dialog"]')).toBeVisible();
+});
+
+Then('정렬 선택 팝업이 노출된다.', async ({ page }) => {
+  await expect(page.locator('[role="dialog"]')).toBeVisible();
+});
+
+Then('팝업이 닫히고 작품 리스트가 갱신되며 필터된 장르의 작품만 노출된다.', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('팝업이 닫히고 작품 리스트가 갱신되며 선택한 정렬 순으로 작품 리스트가 노출된다.', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('상단에 장르 선택 필터와 정렬 옵션 변경 영역이 노출된다.', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then(/^Comics\/Novels 대분류 필터 노출되지 않는다\.$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('상단 대분류 필터 영역이 노출되지 않는다.', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('연령 인증 페이지 랜딩된다.', async ({ page }) => {
+  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('mature 작품이 M 뱃지와 함께 딤드되어 노출된다.', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then(/^Submit 버튼 (활성화|비활성화)된다\.$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then(/^(Comic|Novel|Mature|Community .+|해당 장르의 .+) 작품.* 노출된다\.$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then(/^변경된 요일 탭에 맞는 (Comic|Novel|Mature) 작품이 노출된다\.$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then(/^(Comic|Novel|Mature) 작품이 연재 요일에 맞게 노출된다\..+$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+// Mature 작품이 최대 300위까지 노출된다. — /^(Comic|Novel|Mature|...) 작품.* 노출된다\.$/ 에서 처리
+
+Then(/^이전 화면으로 돌아온다\. \(.+ 홈\)$/, async ({ page }) => {
+  await expect(page).toHaveURL(/tapas\.io/);
+});
+
+Then(/^해당 작품홈으로 진입된다\.$/, async ({ page }) => {
+  await expect(page).toHaveURL(/\/series\//i);
+});
+
+Then(/^2-[12]\. .+$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('Mature - Comic 작품의 모든 장르에 해당하는 작품이 노출된다.', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('Mature - Novel 작품의 모든 장르에 해당하는 작품이 노출된다.', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});

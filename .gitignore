@@ -24,3 +24,6 @@ Thumbs.db
 
 # Playwright 로그인 상태 저장 파일
 .auth/
+
+# bddgen 산출물 (자동 생성)
+.features-gen/
