@@ -3,6 +3,7 @@
 
 import { createBdd } from 'playwright-bdd';
 import { expect } from '@playwright/test';
+import { TEST_DATA } from '../data/testData';
 
 const { Given, When, Then } = createBdd();
 
@@ -11,6 +12,7 @@ const { Given, When, Then } = createBdd();
 Given(/^(광고가|이벤트 배너가|작가의 말|구독 상태|PCW only|첫 번째 작가).+$/, async () => {
   // 뷰어 특수 상태 — 자동화 범위 외
 });
+
 
 // ──── 뷰어 진입 ────
 
@@ -49,92 +51,90 @@ When('하단 영역 확인', async ({ page }) => {
 });
 
 When('뷰어 하단 툴바 > [이전회차] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /prev|이전/i }).first().click()
-    .catch(() => page.locator('[class*="prev-episode"], [class*="prev-ep"]').first().click());
+  await page.locator('a.js-prev-ep-btn').first().click();
 });
 
 When('뷰어 하단 툴바 > [다음회차] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /next|다음/i }).first().click()
-    .catch(() => page.locator('[class*="next-episode"], [class*="next-ep"]').first().click());
+  await page.locator('a.js-next-ep-btn').first().click();
 });
 
 When('다음회차 이동 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /next|다음/i }).first().click();
+  await page.locator('a.js-next-ep-btn').first().click();
 });
 
 When('다음 회차 이동 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /next|다음/i }).first().click();
+  await page.locator('a.js-next-ep-btn').first().click();
 });
 
 When('이전회차 이동 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /prev|이전/i }).first().click();
+  await page.locator('a.js-prev-ep-btn').first().click();
 });
 
 When('이전 회차 이동 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /prev|이전/i }).first().click();
+  await page.locator('a.js-prev-ep-btn').first().click();
 });
 
 // ──── 툴바 버튼 ────
 
 When('[더보기] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /more|더보기/i }).first().click();
+  await page.locator('a.toolbar-btn.js-toolbar-btn[data-type="more"]').first().click();
 });
 
 When('하단 [더보기] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /more|더보기/i }).last().click();
+  await page.locator('a.toolbar-btn.js-toolbar-btn[data-type="more"]').last().click();
 });
 
 When('[더보기] 버튼 재클릭 > [Subscribe] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /more|더보기/i }).first().click();
+  await page.locator('a.toolbar-btn.js-toolbar-btn[data-type="more"]').first().click();
   await page.getByRole('button', { name: /subscribe/i }).first().click();
 });
 
 When('[Unsubscribe] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /unsubscribe/i }).first().click();
+  await page.getByRole('link', { name: /unsubscribe/i }).first().click();
 });
 
 When('[Like] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /like/i }).first().click();
+  await page.locator('a.js-episode-like-btn').first().click();
 });
 
 When('[Like] 버튼 재클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /like/i }).first().click();
+  await page.locator('a.js-episode-like-btn').first().click();
 });
 
 When('[좋아요] 버튼 선택', async ({ page }) => {
-  await page.getByRole('button', { name: /like|좋아요/i }).first().click();
+  await page.locator('a.js-episode-like-btn').first().click();
 });
 
 When('[좋아요] 버튼 재선택', async ({ page }) => {
-  await page.getByRole('button', { name: /like|좋아요/i }).first().click();
+  await page.locator('a.js-episode-like-btn').first().click();
 });
 
 When('[Likes] 버튼 재클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /likes/i }).first().click();
+  await page.locator('a.js-episode-like-btn').first().click();
 });
 
 When('[리스트] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /list|리스트/i }).first().click();
+  await page.locator('a.toolbar-btn.js-list-btn').first().click();
 });
 
 When('[리스트] 버튼 재클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /list|리스트/i }).first().click();
+  await page.locator('a.toolbar-btn.js-list-btn').first().click();
 });
 
 When('[Comment] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /comment/i }).first().click();
+  await page.locator('a.js-comment-btn').first().click();
 });
 
 When('[Comment] 버튼 재클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /comment/i }).first().click();
+  await page.locator('a.js-comment-btn').first().click();
 });
 
 When('[전체화면] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /fullscreen|전체화면/i }).first().click();
+  await page.locator('a.toolbar-btn.js-full-btn').first().click();
 });
 
 When('[전체화면] 버튼 재클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /fullscreen|전체화면/i }).first().click();
+  await page.locator('a.toolbar-btn.js-full-btn').first().click();
 });
 
 When('[Support] 버튼 클릭', async ({ page }) => {
@@ -549,8 +549,9 @@ Then('작가 이미지, 작가의 말이 노출된다.', async ({ page }) => {
 
 // ──── 회차 이동 / 잠금 해제 시나리오 ────
 
-Given(/^(이전회차|다음회차) : (기다무 회차|유료회차)$/, async () => {
-  // 회차 유형 사전 조건 — 자동화 범위 외 (데이터 준비 필요)
+// Episode 2 기준: prev=EP1, next=EP3 → 이전/다음 이동 테스트 모두 가능
+Given(/^(이전회차|다음회차) : (기다무 회차|유료회차)$/, async ({ page }) => {
+  await page.goto(TEST_DATA.episode.comicEp2);
 });
 
 // 첫 번째 작가 서포트 활성화 — /^(광고가|이벤트 배너가|작가의 말|구독 상태|PCW only|첫 번째 작가).+$/ 에서 처리

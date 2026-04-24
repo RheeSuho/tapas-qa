@@ -3,8 +3,14 @@
 
 import { createBdd } from 'playwright-bdd';
 import { expect } from '@playwright/test';
+import { TEST_DATA } from '../data/testData';
 
 const { Given, When, Then } = createBdd();
+
+// 작품홈 진입 Given — 시리즈 페이지로 이동
+Given(/^(작품홈|시리즈) 진입$/, async ({ page }) => {
+  await page.goto(TEST_DATA.series.comic);
+});
 
 // ──── 사전 조건 ────
 

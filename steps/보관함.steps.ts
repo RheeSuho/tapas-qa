@@ -17,51 +17,45 @@ Given(/^(Updated|Recent|Subscribed|Free Episodes|Wait Until Free|PCWeb only) 작
 // GNB > 라이브러리 메뉴 클릭 / GNB > 라이브러리 클릭 — common.steps.ts의 /^GNB > ([^>]+) 클릭$/ 에서 처리
 
 When('GNB >보관함 클릭 > Suscribed클릭', async ({ page }) => {
-  await page.getByRole('link', { name: /library/i }).first().click();
-  await page.getByRole('link', { name: /subscribed/i }).first().click();
+  await page.goto('https://tapas.io/reading-list?category=SUBSCRIBED');
 });
 
 When('GNB 보관함 아이콘 클릭 > Recent 클릭', async ({ page }) => {
-  await page.getByRole('link', { name: /library/i }).first().click();
-  await page.getByRole('link', { name: /recent/i }).first().click();
+  await page.goto('https://tapas.io/reading-list?category=RECENT');
 });
 
 When('Recent 클릭', async ({ page }) => {
-  await page.getByRole('link', { name: /recent/i }).first().click()
-    .catch(() => page.getByRole('button', { name: /recent/i }).first().click());
+  await page.locator('a.item-title[href*="category=RECENT"]').first().click();
 });
 
 When('Subscribed 클릭', async ({ page }) => {
-  await page.getByRole('link', { name: /subscribed/i }).first().click()
-    .catch(() => page.getByRole('button', { name: /subscribed/i }).first().click());
+  await page.locator('a.item-title[href*="category=SUBSCRIBED"]').first().click();
 });
 
 When('Free episodes 메뉴 클릭', async ({ page }) => {
-  await page.getByRole('link', { name: /free episode/i }).first().click()
-    .catch(() => page.getByRole('button', { name: /free/i }).first().click());
+  await page.locator('a.item-title[href*="category=FREE_EPISODES"]').first().click();
 });
 
 When('Wait until Free 메뉴 클릭', async ({ page }) => {
-  await page.getByRole('link', { name: /wait.*free|wuf/i }).first().click()
-    .catch(() => page.getByRole('button', { name: /wait/i }).first().click());
+  await page.locator('a.item-title[href*="category=WAIT_UNTIL_FREE"]').first().click();
 });
 
 // Comics 필터 클릭 — 인박스-댓글.steps.ts의 /^(All|Comics|Novels) 필터 클릭$/ 에서 처리
 
 When('우상단 필터 > [Comics] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /comics/i }).first().click();
+  await page.locator('a.item-title[href*="type=COMICS"]').first().click();
 });
 
 When('필터 > [All] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /^all$/i }).first().click();
+  await page.locator('a.item-title[href*="type="]').first().click();
 });
 
 When('필터 > [Novels] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /^novels$/i }).first().click();
+  await page.locator('a.item-title[href*="type=BOOKS"]').first().click();
 });
 
 When('탭 하단 [Comics] 버튼 클릭', async ({ page }) => {
-  await page.getByRole('button', { name: /comics/i }).first().click();
+  await page.locator('a.item-title[href*="type=COMICS"]').first().click();
 });
 
 // ──── Gift Passes ────
