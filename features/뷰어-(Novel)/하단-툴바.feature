@@ -17,7 +17,7 @@ Feature: 하단 툴바
     And 우측 회차 리스트 접히며 뷰어 전체 화면으로 노출된다.
 
   @TC-0135
-  Scenario: PCW only
+  Scenario: PCW only - 리스트
     Given PCW only
     When [리스트] 버튼 클릭
     And [리스트] 버튼 재클릭
@@ -25,7 +25,7 @@ Feature: 하단 툴바
     And 뷰어 우측 작품홈 영역이 노출된다.
 
   @TC-0136
-  Scenario: PCW only
+  Scenario: PCW only - 전체화면
     Given PCW only
     When [전체화면] 버튼 클릭
     And [전체화면] 버튼 재클릭
@@ -33,7 +33,7 @@ Feature: 하단 툴바
     And 전체화면 모드가 종료된다.
 
   @TC-0137
-  Scenario: 소설 뷰어 옵션(AA)
+  Scenario: 소설 뷰어 옵션(AA) - 폰트 크기
     When [AA] 버튼 클릭
     And 폰트 크기 [+] 버튼 클릭
     And 폰트 크기 [-] 버튼 클릭
@@ -41,7 +41,7 @@ Feature: 하단 툴바
     And 팝업은 유지되며 소설 원고 폰트 크기가 작아진다.
 
   @TC-0138
-  Scenario: 소설 뷰어 옵션(AA)
+  Scenario: 소설 뷰어 옵션(AA) - 행 간격
     When [AA] 버튼 클릭
     And 행 간격 [+] 버튼 클릭
     And 행 간격 [-] 버튼 클릭
@@ -49,7 +49,7 @@ Feature: 하단 툴바
     And 팝업은 유지되며 소설 원고 행 간격이 좁아진다.
 
   @TC-0139
-  Scenario: 소설 뷰어 옵션(AA)
+  Scenario: 소설 뷰어 옵션(AA) - 화면 모드
     When [AA] 버튼 클릭
     And 뷰어 화면 모드 클릭
     And 팝업 이외 영역 클릭

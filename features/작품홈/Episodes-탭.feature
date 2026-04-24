@@ -34,7 +34,7 @@ Feature: Episodes 탭
     And ㄴ 이어보기 버튼의 회차가 업데이트된다.
 
   @TC-0104
-  Scenario: 회차 열람 (기다무)
+  Scenario: 회차 열람 (기다무) - 티켓 보유
     Given 기다무 티켓 보유 상태
     When 회차 영역 스크롤 > 기다무 회차 클릭
     And 기다무 사용 확인 팝업 > [Yes] 버튼 클릭
@@ -46,7 +46,7 @@ Feature: Episodes 탭
     And ㄴ 이어보기 버튼의 회차가 업데이트된다.
 
   @TC-0105
-  Scenario: 회차 열람 (기다무)
+  Scenario: 회차 열람 (기다무) - 티켓 소진
     Given 기다무 티켓 소진 상태
     When 다음 회차 (기다무) 클릭
     And 회차 구매 팝업 > [X] 버튼 클릭

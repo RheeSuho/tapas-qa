@@ -15,7 +15,7 @@ Feature: 하단 툴바
     And 팝업이 닫힌다.
 
   @TC-0118
-  Scenario: 더보기
+  Scenario: 더보기 - 구독/구독취소
     Given 구독 상태
     When [더보기] 버튼 클릭
     And [Unsubscribe] 버튼 클릭
@@ -27,14 +27,14 @@ Feature: 하단 툴바
     And ㄴ 토스트: Subscribed
 
   @TC-0119
-  Scenario: 더보기
+  Scenario: 더보기 - 공유
     When [더보기] 버튼 클릭
     And [Share to Facebook] or [Share to Twiiter] 버튼 클릭
     Then 뷰어 더보기 팝업이 노출된다.
     And 새탭으로 SNS 페이지로 진입된다.
 
   @TC-0120
-  Scenario: 더보기
+  Scenario: 더보기 - 신고
     When [더보기] 버튼 클릭
     And [Report] 버튼 클릭
     And [Cancel] 클릭
@@ -52,7 +52,7 @@ Feature: 하단 툴바
     And ㄴ 토스트: Unliked
 
   @TC-0122
-  Scenario: PCW only
+  Scenario: PCW only - 리스트
     Given PCW only
     When [리스트] 버튼 클릭
     And [리스트] 버튼 재클릭
@@ -74,7 +74,7 @@ Feature: 하단 툴바
     And 이전회차로 즉시 진입된다.
 
   @TC-0125
-  Scenario: PCW only
+  Scenario: PCW only - 전체화면
     Given PCW only
     When [전체화면] 버튼 클릭
     And [전체화면] 버튼 재클릭

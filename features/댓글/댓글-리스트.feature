@@ -3,7 +3,7 @@
 Feature: 댓글 리스트
 
   @TC-0146
-  Scenario: 내 댓글
+  Scenario: 내 댓글 - 작성
     When 댓글 입력창 선택
     And 텍스트 입력
     And [Comment] 버튼 클릭
@@ -14,20 +14,20 @@ Feature: 댓글 리스트
     And 작성한 댓글이 추가로 상단 목록에 노출된다.
 
   @TC-0147
-  Scenario: 내 댓글
+  Scenario: 내 댓글 - 더보기
     When 등록한 내 댓글 더보기 버튼 클릭
     Then 댓글 설정 팝업이 노출된다.
     And ㄴ Edit/Delete
 
   @TC-0148
-  Scenario: 내 댓글
+  Scenario: 내 댓글 - 수정
     When 등록한 내 댓글 더보기 > [Edit] 버튼 클릭
     And 텍스트 수정 후 [Save] 버튼 클릭
     Then 팝업이 닫히고 텍스트 입력 가능 상태로 노출된다.
     And 수정한 텍스트가 댓글에 반영되어 노출된다.
 
   @TC-0149
-  Scenario: 내 댓글
+  Scenario: 내 댓글 - 삭제
     When 등록한 내 댓글 더보기 > [Delete] 버튼 클릭
     Then 팝업이 닫히고 댓글 목록에서 삭제된다.
 

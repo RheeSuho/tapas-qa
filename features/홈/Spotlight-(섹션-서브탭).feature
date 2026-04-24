@@ -12,13 +12,13 @@ Feature: Spotlight (섹션 서브탭)
     And 설정된 랜딩타겟으로 이동된다.
 
   @TC-0015
-  Scenario: Top 섹션 - 빅배너
+  Scenario: Top 섹션 - 빅배너 - 노출 확인
     When Top 섹션 > 빅배너 노출 영역 확인
     Then 빅배너 설정에 맞게 정상 노출된다.
     And ㄴ 이미지,타이틀, BM/신작/연령/이벤트 뱃지
 
   @TC-0016
-  Scenario: Top 섹션 - 빅배너
+  Scenario: Top 섹션 - 빅배너 - 스와이프
     When 빅배너 영역에서 8초 이상 대기
     And 빅배너 좌로 스와이프
     And 빅배너 우로 스와이프
@@ -27,7 +27,7 @@ Feature: Spotlight (섹션 서브탭)
     And 다음 빅배너로 스와이프되며 상단 인디케이터도 순서에 맞게 노출된다.
 
   @TC-0017
-  Scenario: Top 섹션 - 빅배너
+  Scenario: Top 섹션 - 빅배너 - 클릭
     When 빅배너 클릭
     And 상단네비바 [<] 또는 단말 백버튼 클릭
     Then 빅배너 랜딩타겟으로 이동된다.

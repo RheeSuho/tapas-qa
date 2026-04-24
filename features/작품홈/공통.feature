@@ -29,7 +29,7 @@ Feature: 공통
     And 작품홈으로 이동되며 버튼이 [Comtinue Ep.3] 으로 변경되어 노출된다.
 
   @TC-0092
-  Scenario: 띠배너
+  Scenario: 띠배너 - 노출 확인
     When 배너 영역 확인
     Then 기다무 작품, 공지 사항 띠배너가 노출된다.
 
@@ -44,7 +44,7 @@ Feature: 공통
     And 팝업이 닫히며 작품홈 화면 유지된다.
 
   @TC-0094
-  Scenario: 띠배너
+  Scenario: 띠배너 - 공지사항
     Given 공지사항 있는 경우
     When 배너 영역 확인
     And 공지사항 띠배너 클릭

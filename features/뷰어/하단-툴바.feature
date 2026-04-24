@@ -3,7 +3,7 @@
 Feature: 하단 툴바
 
   @TC-0203
-  Scenario: 이전 회차 이동
+  Scenario: 이전 회차 이동 - 기다무 이용권
     Given 이전회차 : 기다무 회차
     And 기다무 이용권 있음
     When 뷰어 하단 툴바 > [이전회차] 버튼 클릭
@@ -15,7 +15,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked for 72 hours
 
   @TC-0204
-  Scenario: 이전 회차 이동
+  Scenario: 이전 회차 이동 - 대여 이용권
     Given 이전회차 : 유료회차
     And 대여 이용권 있음
     When 뷰어 하단 툴바 > [이전회차] 버튼 클릭
@@ -25,7 +25,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked for 72 hours
 
   @TC-0205
-  Scenario: 이전 회차 이동
+  Scenario: 이전 회차 이동 - 선물 이용권
     Given 이전회차 : 유료회차
     And 선물 이용권 있음
     When 뷰어 하단 툴바 > [이전회차] 버튼 클릭
@@ -35,7 +35,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked
 
   @TC-0206
-  Scenario: 이전 회차 이동
+  Scenario: 이전 회차 이동 - 잉크 구매
     Given 이전회차 : 유료회차
     And 보유 이용권 없음
     And 보유 잉크 >= 회차 금액
@@ -48,7 +48,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked
 
   @TC-0207
-  Scenario: 이전 회차 이동
+  Scenario: 이전 회차 이동 - 잉크 부족
     Given 이전회차 : 유료회차
     And 보유 이용권 없음
     And 보유 잉크 < 회차 금액
@@ -62,7 +62,7 @@ Feature: 하단 툴바
     And 잉크샵 팝업이 종료되며 뷰어에 머무른다.
 
   @TC-0208
-  Scenario: 다음 회차 이동
+  Scenario: 다음 회차 이동 - 기다무 이용권
     Given 다음회차 : 기다무 회차
     And 기다무 이용권 있음
     When 뷰어 하단 툴바 > [다음회차] 버튼 클릭
@@ -74,7 +74,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked for 72 hours
 
   @TC-0209
-  Scenario: 다음 회차 이동
+  Scenario: 다음 회차 이동 - 대여 이용권
     Given 다음회차 : 유료회차
     And 대여 이용권 있음
     When 뷰어 하단 툴바 > [다음회차] 버튼 클릭
@@ -84,7 +84,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked for 72 hours
 
   @TC-0210
-  Scenario: 다음 회차 이동
+  Scenario: 다음 회차 이동 - 선물 이용권
     Given 다음회차 : 유료회차
     And 선물 이용권 있음
     When 뷰어 하단 툴바 > [다음회차] 버튼 클릭
@@ -94,7 +94,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked
 
   @TC-0211
-  Scenario: 다음 회차 이동
+  Scenario: 다음 회차 이동 - 잉크 구매
     Given 다음회차 : 유료회차
     And 보유 이용권 없음
     And 보유 잉크 >= 회차 금액
@@ -107,7 +107,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked
 
   @TC-0212
-  Scenario: 다음 회차 이동
+  Scenario: 다음 회차 이동 - 잉크 부족
     Given 다음회차 : 유료회차
     And 보유 이용권 없음
     And 보유 잉크 < 회차 금액

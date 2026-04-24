@@ -20,14 +20,14 @@ Feature: 답글
     And 작성한 답글이 등록되어 노출된다.
 
   @TC-0154
-  Scenario: 내 답글
+  Scenario: 내 답글 - 수정
     When 등록한 내 답글 더보기 > [Edit] 버튼 클릭
     And 텍스트 수정 후 [Edit] 버튼 클릭
     Then 팝업이 닫히고 텍스트 입력 가능 상태로 노출된다.
     And 수정한 텍스트가 댓글에 반영되어 노출된다.
 
   @TC-0155
-  Scenario: 내 답글
+  Scenario: 내 답글 - 삭제
     When 등록한 내 답글 더보기 > [Delete] 버튼 클릭
     Then 팝업이 닫히고 댓글 목록에서 삭제된다.
 
