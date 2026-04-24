@@ -3,7 +3,7 @@
 Feature: All Comics (장르전체 랜딩 서브탭)
 
   @TC-0082
-  Scenario: QA환경 : Comics 탭
+  Scenario: [TPS-163] QA환경 : Comics 탭
     # Test DATA: QA환경 : Comics 탭
     When {All Comics} 서브탭 클릭
     And 정렬/필터 노출 확인
@@ -14,14 +14,14 @@ Feature: All Comics (장르전체 랜딩 서브탭)
     And Mature - Comic 작품의 모든 장르에 해당하는 작품이 노출된다.
 
   @TC-0083
-  Scenario: 케이스-83
+  Scenario: [TPS-164] 케이스-83
     When 장르 선택 필터 버튼 클릭
     And 장르 선택 팝업 > {장르명} 선택 후 Confirm 버튼 클릭
     Then 장르 선택 팝업이 노출된다.
     And 팝업이 닫히고 작품 리스트가 갱신되며 필터된 장르의 작품만 노출된다.
 
   @TC-0084
-  Scenario: 케이스-84
+  Scenario: [TPS-165] 케이스-84
     When 정렬 옵션 변경 버튼 클릭
     And 정렬 선택 팝업 > {정렬값} 선택 후 Confirm 버튼 클릭
     Then 정렬 선택 팝업이 노출된다.

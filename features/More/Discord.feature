@@ -3,7 +3,7 @@
 Feature: Discord
 
   @TC-0184
-  Scenario: 케이스-184
+  Scenario: [TPS-002] 케이스-184
     When GNB > More 클릭
     And Discord 클릭
     Then 하위 메뉴 노출된다.

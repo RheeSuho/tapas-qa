@@ -3,7 +3,7 @@
 Feature: Contact
 
   @TC-0187
-  Scenario: 케이스-187
+  Scenario: [TPS-001] 케이스-187
     When GNB > More 클릭
     And Contact 클릭
     Then 하위 메뉴 노출된다.

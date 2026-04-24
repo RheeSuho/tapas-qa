@@ -3,7 +3,7 @@
 Feature: 서비스 접속
 
   @TC-0001
-  Scenario: 케이스-1
+  Scenario: [TPS-024] 케이스-1
     When qa.tapas.io 도메인 진입
     Then 타파스 웹 정상 진입된다.
     And - 하기 구성 노출 확인

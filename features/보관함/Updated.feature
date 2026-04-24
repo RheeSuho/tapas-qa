@@ -3,7 +3,7 @@
 Feature: Updated
 
   @TC-0158
-  Scenario: 케이스-158
+  Scenario: [TPS-052] 케이스-158
     When 작품 클릭
     And [<-] 백버튼 클릭
     And Comics 필터 클릭
@@ -27,7 +27,7 @@ Feature: Updated
     And ㄴNovel 필터 선택되어 노출된다.
 
   @TC-0159
-  Scenario: 케이스-159
+  Scenario: [TPS-053] 케이스-159
     When [PCW]
     And 탭 하단 [Comics] 버튼 클릭
     And [Novels] 버튼 클릭
@@ -41,7 +41,7 @@ Feature: Updated
     And 모든 작품 리스트가 노출된다.
 
   @TC-0160
-  Scenario: Updated 작품 목록 없는 경우
+  Scenario: [TPS-054] Updated 작품 목록 없는 경우
     Given Updated 작품 목록 없는 경우
     When [PCW]
     And 탭 하단 [Comics] 버튼 클릭

@@ -3,7 +3,7 @@
 Feature: Recent
 
   @TC-0161
-  Scenario: 케이스-161
+  Scenario: [TPS-045] 케이스-161
     When Recent 클릭
     And Comic 작품 열람
     And ㄴ GNB > 보관함 아이콘 > Recent > 임의의 작품 클릭
@@ -19,7 +19,7 @@ Feature: Recent
     And ㄴRecent 화면 노출되고 열람한 작품이 상단에 추가되어 노출된다.
 
   @TC-0162
-  Scenario: Recent 작품 목록 없는 경우
+  Scenario: [TPS-046] Recent 작품 목록 없는 경우
     Given Recent 작품 목록 없는 경우
     When Recent 클릭
     Then 안내문구가 노출된다.

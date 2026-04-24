@@ -3,6 +3,6 @@
 Feature: 진입
 
   @TC-0056
-  Scenario: 케이스-56
+  Scenario: [TPS-162] 케이스-56
     When GNB > Community 클릭
     Then Community 홈화면의 첫 번째 서브탭으로 진입된다.

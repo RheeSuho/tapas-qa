@@ -3,7 +3,7 @@
 Feature: 로그아웃
 
   @TC-0199
-  Scenario: 케이스-199
+  Scenario: [TPS-016] 케이스-199
     When GNB > Profile 클릭
     And Log out 클릭
     Then 하위 메뉴 노출된다.

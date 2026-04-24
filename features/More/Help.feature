@@ -3,7 +3,7 @@
 Feature: Help
 
   @TC-0183
-  Scenario: 케이스-183
+  Scenario: [TPS-004] 케이스-183
     When GNB > More 클릭
     And Help 클릭
     Then 하위 메뉴 노출된다.

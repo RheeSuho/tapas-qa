@@ -3,7 +3,7 @@
 Feature: All Comics (장르전체 랜딩 서브탭)
 
   @TC-0039
-  Scenario: 케이스-39
+  Scenario: [TPS-136] 케이스-39
     When {All Comics} 서브탭 클릭
     And 정렬/필터 노출 확인
     And 작품 리스트 확인
@@ -13,14 +13,14 @@ Feature: All Comics (장르전체 랜딩 서브탭)
     And Comic 작품의 모든 장르에 해당하는 작품이 노출된다.
 
   @TC-0040
-  Scenario: 케이스-40
+  Scenario: [TPS-137] 케이스-40
     When 장르 선택 필터 버튼 클릭
     And 장르 선택 팝업 > {장르명} 선택 후 Confirm 버튼 클릭
     Then 장르 선택 팝업이 노출된다.
     And 팝업이 닫히고 작품 리스트가 갱신되며 필터된 장르의 작품만 노출된다.
 
   @TC-0041
-  Scenario: 케이스-41
+  Scenario: [TPS-138] 케이스-41
     When 정렬 옵션 변경 버튼 클릭
     And 정렬 선택 팝업 > {정렬값} 선택 후 Confirm 버튼 클릭
     Then 정렬 선택 팝업이 노출된다.

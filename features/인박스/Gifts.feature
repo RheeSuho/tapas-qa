@@ -3,7 +3,7 @@
 Feature: Gifts
 
   @TC-0176
-  Scenario: 케이스-176
+  Scenario: [TPS-109] 케이스-176
     When Get Gift Passes 영역 확인
     And 작품 정보 영역 확인
     And 작품 클릭

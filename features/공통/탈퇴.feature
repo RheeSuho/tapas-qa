@@ -3,7 +3,7 @@
 Feature: 탈퇴
 
   @TC-0010
-  Scenario: 케이스-10
+  Scenario: [TPS-025] 케이스-10
     When GNB > Profile 클릭
     And [Settings] 클릭
     And 하단 Delete account 클릭

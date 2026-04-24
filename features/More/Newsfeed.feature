@@ -3,7 +3,7 @@
 Feature: Newsfeed
 
   @TC-0186
-  Scenario: 케이스-186
+  Scenario: [TPS-006] 케이스-186
     When GNB > More 클릭
     And Newsfeed 클릭
     And 뉴스 리스트 클릭

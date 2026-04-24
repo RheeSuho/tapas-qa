@@ -3,7 +3,7 @@
 Feature: Daily (요일연재 랜딩 서브탭)
 
   @TC-0080
-  Scenario: 케이스-80
+  Scenario: [TPS-169] 케이스-80
     When Daily 서브탭 클릭
     And 상단 대분류 카테고리 필터 노출 확인
     And 작품 리스트 확인

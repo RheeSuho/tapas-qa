@@ -3,7 +3,7 @@
 Feature: Wait until Free
 
   @TC-0172
-  Scenario: 케이스-172
+  Scenario: [TPS-055] 케이스-172
     When Wait until Free 메뉴 클릭
     And 작품 리스트 노출 확인
     And 작품 클릭
@@ -15,7 +15,7 @@ Feature: Wait until Free
     And Wait until Free 화면으로 복귀된다.
 
   @TC-0173
-  Scenario: 케이스-173
+  Scenario: [TPS-056] 케이스-173
     When [PCW]
     And 탭 하단 [Comics] 버튼 클릭
     And [Novels] 버튼 클릭
@@ -29,7 +29,7 @@ Feature: Wait until Free
     And 모든 작품 리스트가 노출된다.
 
   @TC-0174
-  Scenario: Wait Until Free 작품 목록 없는 경우
+  Scenario: [TPS-057] Wait Until Free 작품 목록 없는 경우
     Given Wait Until Free 작품 목록 없는 경우
     When Comics 필터 클릭
     And Novels 필터 클릭

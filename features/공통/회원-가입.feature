@@ -3,7 +3,7 @@
 Feature: 회원 가입
 
   @TC-0002
-  Scenario: 이메일
+  Scenario: [TPS-026] 이메일
     When GNB > Login 클릭
     And [Sign up] 버튼 클릭
     And 신규 Email 계정 입력 > [Sign up] 클릭
@@ -16,7 +16,7 @@ Feature: 회원 가입
     And 회원가입 완료되며 유저홈 화면으로 이동된다.
 
   @TC-0003
-  Scenario: Facebook
+  Scenario: [TPS-027] Facebook
     When GNB > Login 클릭
     And [Or log in with Facebook or Google] 클릭
     And {Continue with Facebook} 버튼 클릭
@@ -31,7 +31,7 @@ Feature: 회원 가입
     And 회원가입 완료되며 Edit profile 화면으로 이동된다.
 
   @TC-0004
-  Scenario: Google
+  Scenario: [TPS-028] Google
     When GNB > Login 클릭
     And [Or log in with Facebook or Google] 클릭
     And {Continue with Google} 버튼 클릭

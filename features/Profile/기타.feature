@@ -3,7 +3,7 @@
 Feature: 
 
   @TC-0189
-  Scenario: 로그인 상태
+  Scenario: [TPS-015] 로그인 상태
     Given 로그인 상태
     When GNB > Profile 클릭
     And Profile 영역 확인

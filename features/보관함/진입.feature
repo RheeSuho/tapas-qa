@@ -3,7 +3,7 @@
 Feature: 진입
 
   @TC-0157
-  Scenario: 케이스-157
+  Scenario: [TPS-058] 케이스-157
     When GNB > 라이브러리 메뉴 클릭
     Then 보관함으로 진입되며 아래 메뉴들이 노출된다.
     And ㄴ Updated 작품 영역

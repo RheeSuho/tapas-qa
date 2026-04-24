@@ -3,7 +3,7 @@
 Feature: 
 
   @TC-0182
-  Scenario: 케이스-182
+  Scenario: [TPS-007] 케이스-182
     When GNB > More 클릭
     And More 영역 확인
     Then 하위 메뉴 노출된다.

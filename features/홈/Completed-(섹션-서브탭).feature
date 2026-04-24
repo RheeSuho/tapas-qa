@@ -3,7 +3,7 @@
 Feature: Completed (섹션 서브탭)
 
   @TC-0029
-  Scenario: 케이스-29
+  Scenario: [TPS-194] 케이스-29
     When Home > Completed 서브탭 클릭
     Then Completed 서브탭에 설정된 빅배너가 노출된다.
     And Completed 서브탭에 설정된 카드배너가 노출된다.

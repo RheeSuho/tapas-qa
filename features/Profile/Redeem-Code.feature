@@ -3,7 +3,7 @@
 Feature: Redeem Code
 
   @TC-0195
-  Scenario: 리딤코드 정상 입력
+  Scenario: [TPS-011] 리딤코드 정상 입력
     Given 리딤코드 정상 입력
     When GNB > Profile 클릭
     And Redeem Code 클릭
@@ -19,7 +19,7 @@ Feature: Redeem Code
     And 홈 화면으로 이동된다.
 
   @TC-0196
-  Scenario: 리딤코드 오입력
+  Scenario: [TPS-012] 리딤코드 오입력
     Given 리딤코드 오입력
     When GNB > Profile 클릭
     And Redeem Code 클릭
@@ -35,7 +35,7 @@ Feature: Redeem Code
     And 홈 화면으로 이동된다.
 
   @TC-0197
-  Scenario: Contact CS
+  Scenario: [TPS-013] Contact CS
     When GNB > Profile 클릭
     And Redeem Code 클릭
     And [Contact CS] 텍스트 버튼 클릭

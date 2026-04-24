@@ -3,7 +3,7 @@
 Feature: WUF (섹션 서브탭)
 
   @TC-0028
-  Scenario: 케이스-28
+  Scenario: [TPS-212] 케이스-28
     When Home > WUF 서브탭 클릭
     Then WUF 서브탭에 설정된 빅배너가 노출된다.
     And WUF 서브탭에 설정된 카드배너가 노출된다.

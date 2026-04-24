@@ -3,7 +3,7 @@
 Feature: Free episodes
 
   @TC-0168
-  Scenario: 케이스-168
+  Scenario: [TPS-041] 케이스-168
     When Free episodes 메뉴 클릭
     And Gift 수령
     And ㄴ GNB > Inbox 클릭 > 제일 상단 작품 [Get] 버튼 클릭
@@ -14,14 +14,14 @@ Feature: Free episodes
     And Free episodes 화면 유지되어 노출되고 이용권 받은 작품이 노출된다.
 
   @TC-0169
-  Scenario: 케이스-169
+  Scenario: [TPS-042] 케이스-169
     When 작품 클릭
     And 상단 [<] 버튼 클릭
     Then 회차 뷰어로 진입된다.
     And Free episodes 화면으로 복귀된다.
 
   @TC-0170
-  Scenario: 케이스-170
+  Scenario: [TPS-043] 케이스-170
     When [PCW]
     And 탭 하단 [Comics] 버튼 클릭
     And [Novels] 버튼 클릭
@@ -35,7 +35,7 @@ Feature: Free episodes
     And 모든 작품 리스트가 노출된다.
 
   @TC-0171
-  Scenario: Free Episodes 작품 목록 없는 경우
+  Scenario: [TPS-044] Free Episodes 작품 목록 없는 경우
     Given Free Episodes 작품 목록 없는 경우
     When Comics 필터 클릭
     And Novels 필터 클릭

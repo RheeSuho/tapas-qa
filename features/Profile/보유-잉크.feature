@@ -3,7 +3,7 @@
 Feature: 보유 잉크
 
   @TC-0191
-  Scenario: 케이스-191
+  Scenario: [TPS-017] 케이스-191
     When GNB > Profile 클릭
     And 보유 잉크 영역 클릭
     And Ink 영역 확인

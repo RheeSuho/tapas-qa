@@ -3,7 +3,7 @@
 Feature: Subscribed
 
   @TC-0163
-  Scenario: 케이스-163
+  Scenario: [TPS-047] 케이스-163
     When Subscribed 클릭
     And Comic 작품 구독
     And ㄴ GNB > Home > Comics > 임의의 작품 클릭 > 구독 버튼 클릭 > 앱설치 유도 팝업 [Close] 클릭
@@ -18,14 +18,14 @@ Feature: Subscribed
     And Subscribed 화면에 구독한 작품이 상단에 추가되어 노출된다.
 
   @TC-0164
-  Scenario: 케이스-164
+  Scenario: [TPS-048] 케이스-164
     When 작품 클릭
     And 상단 [<] 버튼 클릭
     Then 작품뷰어회차로 진입된다.
     And Subscribed 화면으로 복귀된다.
 
   @TC-0165
-  Scenario: Subscribed 작품 목록 없는 경우
+  Scenario: [TPS-049] Subscribed 작품 목록 없는 경우
     Given Subscribed 작품 목록 없는 경우
     When Comics 필터 클릭
     And Novels 필터 클릭
@@ -38,7 +38,7 @@ Feature: Subscribed
     And - 서브 타이틀: Subscribe to your favorite series to get new episodes when they’re released.
 
   @TC-0166
-  Scenario: 케이스-166
+  Scenario: [TPS-050] 케이스-166
     When [PCW]
     And 탭 하단 [Comics] 버튼 클릭
     And [Novels] 버튼 클릭
@@ -52,7 +52,7 @@ Feature: Subscribed
     And 모든 작품 리스트가 노출된다.
 
   @TC-0167
-  Scenario: PCWeb only
+  Scenario: [TPS-051] PCWeb only
     Given PCWeb only
     When Subscribed 클릭
     And [Mark All As Read] 버튼 클릭

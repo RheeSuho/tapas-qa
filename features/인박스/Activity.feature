@@ -3,7 +3,7 @@
 Feature: Activity
 
   @TC-0180
-  Scenario: 수신된 내역 있는 경우
+  Scenario: [TPS-107] 수신된 내역 있는 경우
     Given 수신된 내역 있는 경우
     When Inbox > Activity 탭 클릭
     And Activity 타입별 클릭
@@ -22,7 +22,7 @@ Feature: Activity
     And Activity 화면으로 복귀된다.
 
   @TC-0181
-  Scenario: 수신된 내역 없는 경우
+  Scenario: [TPS-108] 수신된 내역 없는 경우
     Given 수신된 내역 없는 경우
     When Inbox > Activity 탭 클릭
     And Commets 필터 클릭

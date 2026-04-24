@@ -3,7 +3,7 @@
 Feature: Ink shop
 
   @TC-0193
-  Scenario: 진입
+  Scenario: [TPS-008] 진입
     When GNB > Profile 클릭
     And Ink shop 클릭
     Then 하위 메뉴 노출된다.
@@ -11,7 +11,7 @@ Feature: Ink shop
     And - 보유 잉크량 / Buy 탭 / 잉크 티어별 노출 된다.
 
   @TC-0194
-  Scenario: Buy
+  Scenario: [TPS-009] Buy
     # Test DATA: QA 환경 테스트 결제 카드 번호
     When 임의의 잉크 티어 클릭
     And 잉크 구매 동작
