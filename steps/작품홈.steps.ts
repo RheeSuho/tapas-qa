@@ -7,6 +7,13 @@ import { TEST_DATA } from '../data/testData';
 
 const { Given, When, Then } = createBdd();
 
+// 시리즈 페이지가 아니면 comic 시리즈로 이동 (Given 없는 시나리오 대응)
+async function ensureOnSeries(page: any) {
+  if (!page.url().includes('/series/')) {
+    await page.goto(TEST_DATA.series.comic);
+  }
+}
+
 // 작품홈 진입 Given — 시리즈 페이지로 이동
 Given(/^(작품홈|시리즈) 진입$/, async ({ page }) => {
   await page.goto(TEST_DATA.series.comic);
@@ -40,6 +47,7 @@ When('작품 이미지 선택', async ({ page }) => {
 // ──── 탭 / 영역 ────
 
 When('Episodes 탭 클릭', async ({ page }) => {
+  await ensureOnSeries(page);
   const tab = page.getByRole('tab', { name: /episodes/i });
   if ((await tab.count()) > 0) { await tab.first().click(); return; }
   await page.getByRole('link', { name: /episodes/i }).first().click();
@@ -80,12 +88,14 @@ When('추천 작품 영역 확인', async ({ page }) => {
 // ──── 회차 클릭 ────
 
 When('무료 회차 클릭', async ({ page }) => {
+  await ensureOnSeries(page);
   // 무료(Free) 회차 = 첫 번째 에피소드 링크
   await page.getByRole('link').filter({ hasText: /episode|ep\.? ?1|free/i }).first().click()
     .catch(() => page.getByRole('link').filter({ has: page.locator('img') }).first().click());
 });
 
 When('유료 회차 클릭', async ({ page }) => {
+  await ensureOnSeries(page);
   // 유료 회차 클릭 — 잠금 아이콘 또는 가격 표시된 에피소드
   await page.locator('[class*="lock"], [class*="paid"], [class*="ink"]').first().click()
     .catch(() => page.getByRole('link').nth(2).click());

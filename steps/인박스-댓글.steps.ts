@@ -3,8 +3,16 @@
 
 import { createBdd } from 'playwright-bdd';
 import { expect } from '@playwright/test';
+import { TEST_DATA } from '../data/testData';
 
 const { Given, When, Then } = createBdd();
+
+// 에피소드 페이지가 아니면 comicEp2로 이동 (댓글 시나리오 대응)
+async function ensureOnEpisode(page: any) {
+  if (!page.url().includes('/episode/')) {
+    await page.goto(TEST_DATA.episode.comicEp2);
+  }
+}
 
 // ──── 인박스 사전 조건 ────
 
@@ -128,12 +136,14 @@ When('답글 [Likes] 버튼 재클릭', async ({ page }) => {
 });
 
 When('댓글 [Reply] 버튼 클릭 > 답글 작성', async ({ page }) => {
+  await ensureOnEpisode(page);
   await page.getByRole('button', { name: /reply/i }).first().click();
   const input = page.getByRole('textbox').first();
   await input.fill('Test reply');
 });
 
 When('댓글 [View n reply] 버튼 클릭', async ({ page }) => {
+  await ensureOnEpisode(page);
   await page.getByRole('button', { name: /view.+reply|replies/i }).first().click()
     .catch(() => page.getByText(/reply|replies/i).first().click());
 });
@@ -148,6 +158,7 @@ When('[Hide n reply] 버튼 클릭', async ({ page }) => {
 });
 
 When('우상단 정렬 필터 > Newest 값 클릭', async ({ page }) => {
+  await ensureOnEpisode(page);
   const sortBtn = page.getByRole('button', { name: /sort|newest|latest/i });
   if ((await sortBtn.count()) > 0) await sortBtn.first().click();
   await page.getByText('Newest', { exact: false }).first().click()

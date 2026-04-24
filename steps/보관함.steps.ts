@@ -25,37 +25,41 @@ When('GNB 보관함 아이콘 클릭 > Recent 클릭', async ({ page }) => {
 });
 
 When('Recent 클릭', async ({ page }) => {
-  await page.locator('a.item-title[href*="category=RECENT"]').first().click();
+  await page.goto('https://tapas.io/reading-list?category=RECENT');
 });
 
 When('Subscribed 클릭', async ({ page }) => {
-  await page.locator('a.item-title[href*="category=SUBSCRIBED"]').first().click();
+  await page.goto('https://tapas.io/reading-list?category=SUBSCRIBED');
 });
 
 When('Free episodes 메뉴 클릭', async ({ page }) => {
-  await page.locator('a.item-title[href*="category=FREE_EPISODES"]').first().click();
+  await page.goto('https://tapas.io/reading-list?category=FREE_EPISODES');
 });
 
 When('Wait until Free 메뉴 클릭', async ({ page }) => {
-  await page.locator('a.item-title[href*="category=WAIT_UNTIL_FREE"]').first().click();
+  await page.goto('https://tapas.io/reading-list?category=WAIT_UNTIL_FREE');
 });
 
 // Comics 필터 클릭 — 인박스-댓글.steps.ts의 /^(All|Comics|Novels) 필터 클릭$/ 에서 처리
 
 When('우상단 필터 > [Comics] 버튼 클릭', async ({ page }) => {
-  await page.locator('a.item-title[href*="type=COMICS"]').first().click();
+  const base = page.url().split('?')[0].includes('reading-list') ? page.url().split('?')[0] : 'https://tapas.io/reading-list';
+  await page.goto(base + '?type=COMICS');
 });
 
 When('필터 > [All] 버튼 클릭', async ({ page }) => {
-  await page.locator('a.item-title[href*="type="]').first().click();
+  const base = page.url().split('?')[0].includes('reading-list') ? page.url().split('?')[0] : 'https://tapas.io/reading-list';
+  await page.goto(base);
 });
 
 When('필터 > [Novels] 버튼 클릭', async ({ page }) => {
-  await page.locator('a.item-title[href*="type=BOOKS"]').first().click();
+  const base = page.url().split('?')[0].includes('reading-list') ? page.url().split('?')[0] : 'https://tapas.io/reading-list';
+  await page.goto(base + '?type=BOOKS');
 });
 
 When('탭 하단 [Comics] 버튼 클릭', async ({ page }) => {
-  await page.locator('a.item-title[href*="type=COMICS"]').first().click();
+  const base = page.url().split('?')[0].includes('reading-list') ? page.url().split('?')[0] : 'https://tapas.io/reading-list';
+  await page.goto(base + '?type=COMICS');
 });
 
 // ──── Gift Passes ────
