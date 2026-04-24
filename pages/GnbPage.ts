@@ -8,6 +8,10 @@ export class GnbPage {
       case 'Login':
         await this.page.getByRole('button', { name: /^log ?in$/i }).last().click();
         return;
+      case 'Profile':
+      case '프로필':
+        await this.page.locator('button:has(img[alt="profile image"])').first().click();
+        return;
       case '라이브러리 메뉴':
       case '라이브러리':
         await this.page.getByRole('link', { name: /library/i }).first().click();
