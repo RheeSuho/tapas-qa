@@ -4,8 +4,8 @@ export const TEST_DATA = {
     workTitle: 'The Edge of Olympus',
   },
   series: {
-    comic: 'https://tapas.io/series/villainesses-have-more-fun/info',
-    novel: 'https://tapas.io/series/my-blasted-reincarnated-life-novel',
+    comic: 'https://tapas.io/series/the-beginning-after-the-end/episodes',
+    novel: 'https://tapas.io/series/the-unbeatable-game-novel',
   },
   episode: {
     // Episode 1 (no prev), next = 2386509
