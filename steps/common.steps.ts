@@ -152,11 +152,6 @@ When(/^검색어 입력란 > \{(.+)\} 입력$/, async ({ page }, _keyword: strin
   await input.press('Enter');
 });
 
-// 임시 강제 실패 스텝 — Jira 버튼 테스트용, 테스트 후 삭제할 것
-Then('TEMP_FORCE_FAIL', async () => {
-  throw new Error('임시 강제 실패 — Jira 버튼 동작 확인용');
-});
-
 // ──── 설명성 bullet 스텝 (원본 CSV의 체크리스트 항목) ────
 // 실제 assertion 없이 시나리오 흐름 유지용
 
