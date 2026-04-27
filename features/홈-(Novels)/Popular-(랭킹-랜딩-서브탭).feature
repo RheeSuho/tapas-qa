@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Novels)
 Feature: Popular (랭킹 랜딩 서브탭)
 
+  Background:
+    When 대메뉴 > Novels 카테고리 클릭
+
   @TC-0052
   Scenario: [TPS-185] 케이스-52
     When {Popular} 서브탭 클릭

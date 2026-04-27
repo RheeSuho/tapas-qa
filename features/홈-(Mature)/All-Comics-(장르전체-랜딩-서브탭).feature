@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Mature)
 Feature: All Comics (장르전체 랜딩 서브탭)
 
+  Background:
+    When GNB > mature 클릭
+
   @TC-0082
   Scenario: [TPS-163] QA환경 : Comics 탭
     # Test DATA: QA환경 : Comics 탭

@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Comics)
 Feature: Daily (요일연재 랜딩 서브탭)
 
+  Background:
+    When 대메뉴 > Comics 카테고리 클릭
+
   @TC-0038
   Scenario: [TPS-139] 케이스-38
     When {Daily} 서브탭 클릭

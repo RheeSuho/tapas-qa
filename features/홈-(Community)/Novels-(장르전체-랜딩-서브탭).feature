@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Community)
 Feature: Novels (장르전체 랜딩 서브탭)
 
+  Background:
+    When GNB > Community 클릭
+
   @TC-0067
   Scenario: [TPS-152] 케이스-67
     When Novels 서브탭 클릭

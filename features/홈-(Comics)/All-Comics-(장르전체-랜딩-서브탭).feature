@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Comics)
 Feature: All Comics (장르전체 랜딩 서브탭)
 
+  Background:
+    When 대메뉴 > Comics 카테고리 클릭
+
   @TC-0039
   Scenario: [TPS-136] 케이스-39
     When {All Comics} 서브탭 클릭

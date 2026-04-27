@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Novels)
 Feature: Spotlight (섹션 서브탭)
 
+  Background:
+    When 대메뉴 > Novels 카테고리 클릭
+
   @TC-0044
   Scenario: [TPS-186] 프로모션 배너
     When 프로모션 배너 섹션 노출 확인

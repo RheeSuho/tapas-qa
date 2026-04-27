@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Mature)
 Feature: Spotlight (섹션 서브탭)
 
+  Background:
+    When GNB > mature 클릭
+
   @TC-0071
   Scenario: [TPS-171] 미로그인 / 미인증 - 딤드 노출
     # Test DATA: QA환경 : 4번째 서브탭(All Geners)

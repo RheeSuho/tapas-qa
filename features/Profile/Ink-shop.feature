@@ -2,6 +2,10 @@
 # 1 Depth: Profile
 Feature: Ink shop
 
+  Background:
+    When GNB > Profile 클릭
+    And Ink shop 클릭
+
   @TC-0193
   Scenario: [TPS-008] 진입
     When GNB > Profile 클릭

@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Novels)
 Feature: All Novels (장르전체 랜딩 서브탭)
 
+  Background:
+    When 대메뉴 > Novels 카테고리 클릭
+
   @TC-0053
   Scenario: [TPS-181] 케이스-53
     When All Novels 서브탭 클릭

@@ -2,6 +2,9 @@
 # 1 Depth: 작품홈
 Feature: 회차 리스트
 
+  Background:
+    Given 작품홈 진입
+
   @TC-0200
   Scenario: [TPS-133] 회차 열람 (기다무) - 기다무 사용 팝업
     Given 기다무 회차인 경우

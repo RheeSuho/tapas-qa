@@ -2,6 +2,9 @@
 # 1 Depth: 인박스
 Feature: Messages
 
+  Background:
+    When Inbox > Messages 탭 클릭
+
   @TC-0177
   Scenario: [TPS-110] 케이스-177
     When Inbox > Messages 탭 클릭

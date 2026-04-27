@@ -2,6 +2,9 @@
 # 1 Depth: 인박스
 Feature: Gifts
 
+  Background:
+    When 대메뉴 > 하단 Inbox 클릭
+
   @TC-0176
   Scenario: [TPS-109] 케이스-176
     When Get Gift Passes 영역 확인

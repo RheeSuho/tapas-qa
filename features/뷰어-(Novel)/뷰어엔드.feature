@@ -2,6 +2,9 @@
 # 1 Depth: 뷰어 (Novel)
 Feature: 뷰어엔드
 
+  Background:
+    When 소설 뷰어 진입
+
   @TC-0128
   Scenario: [TPS-078] 작가의 말
     # Test DATA: soft touch

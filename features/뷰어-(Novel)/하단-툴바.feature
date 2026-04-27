@@ -2,6 +2,9 @@
 # 1 Depth: 뷰어 (Novel)
 Feature: 하단 툴바
 
+  Background:
+    When 소설 뷰어 진입
+
   @TC-0133
   Scenario: [TPS-085] 케이스-133
     When 소설 작품 진입

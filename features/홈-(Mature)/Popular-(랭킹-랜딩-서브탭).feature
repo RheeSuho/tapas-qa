@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Mature)
 Feature: Popular (랭킹 랜딩 서브탭)
 
+  Background:
+    When GNB > mature 클릭
+
   @TC-0081
   Scenario: [TPS-170] 케이스-81
     When {Popular} 서브탭 클릭

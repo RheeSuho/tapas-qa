@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Community)
 Feature: Spotlight (섹션 서브탭)
 
+  Background:
+    When GNB > Community 클릭
+
   @TC-0057
   Scenario: [TPS-155] 프로모션 배너
     When 프로모션 배너 섹션 노출 확인

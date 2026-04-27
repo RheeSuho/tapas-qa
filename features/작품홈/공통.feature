@@ -2,6 +2,9 @@
 # 1 Depth: 작품홈
 Feature: 공통
 
+  Background:
+    Given 작품홈 진입
+
   @TC-0089
   Scenario: [TPS-125] 작품 정보
     When 작품 정보 확인

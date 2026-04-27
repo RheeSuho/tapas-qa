@@ -2,6 +2,9 @@
 # 1 Depth: 작품홈
 Feature: details 탭
 
+  Background:
+    Given 작품홈 진입
+
   @TC-0096
   Scenario: [TPS-121] 케이스-96
     When Details 영역 확인

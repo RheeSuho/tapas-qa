@@ -27,3 +27,7 @@ Thumbs.db
 
 # bddgen 산출물 (자동 생성)
 .features-gen/
+
+# Allure 리포트
+allure-results/
+allure-report/

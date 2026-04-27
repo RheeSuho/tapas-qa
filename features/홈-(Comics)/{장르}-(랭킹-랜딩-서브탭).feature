@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Comics)
 Feature: {장르} (랭킹 랜딩 서브탭)
 
+  Background:
+    When 대메뉴 > Comics 카테고리 클릭
+
   @TC-0042
   Scenario: [TPS-147] 케이스-42
     When {장르명} 서브탭 클릭

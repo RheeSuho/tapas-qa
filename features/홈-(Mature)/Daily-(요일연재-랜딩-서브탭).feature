@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Mature)
 Feature: Daily (요일연재 랜딩 서브탭)
 
+  Background:
+    When GNB > mature 클릭
+
   @TC-0080
   Scenario: [TPS-169] 케이스-80
     When Daily 서브탭 클릭

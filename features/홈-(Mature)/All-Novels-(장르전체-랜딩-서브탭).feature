@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Mature)
 Feature: All Novels (장르전체 랜딩 서브탭)
 
+  Background:
+    When GNB > mature 클릭
+
   @TC-0085
   Scenario: [TPS-166] QA환경 : Novels 탭
     # Test DATA: QA환경 : Novels 탭

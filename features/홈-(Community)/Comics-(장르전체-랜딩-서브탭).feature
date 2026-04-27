@@ -2,6 +2,9 @@
 # 1 Depth: 홈 (Community)
 Feature: Comics (장르전체 랜딩 서브탭)
 
+  Background:
+    When GNB > Community 클릭
+
   @TC-0064
   Scenario: [TPS-149] 케이스-64
     When Comics 서브탭 클릭
