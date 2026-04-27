@@ -10,6 +10,9 @@
     "test:bdd:headed": "bddgen && playwright test --project=chromium --headed",
     "test:smoke": "bddgen && playwright test --project=chromium --grep @smoke",
     "test:smoke:headed": "bddgen && playwright test --project=chromium --grep @smoke --headed",
+    "test:smoke:slack": "bddgen && playwright test --project=chromium --grep @smoke; node scripts/notify-slack.js Smoke",
+    "test:bdd:slack": "bddgen && playwright test --project=chromium; node scripts/notify-slack.js Regression",
+    "notify:slack": "node scripts/notify-slack.js",
     "test:setup": "playwright test --project=setup --headed",
     "report": "playwright show-report",
     "health": "bddgen && playwright test --project=chromium; npm run report"
