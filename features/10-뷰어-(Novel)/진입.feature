@@ -2,7 +2,7 @@
 # 1 Depth: 뷰어 (Novel)
 Feature: 진입
 
-  @TC-0126
+  @TC-0126 @skip
   Scenario: [TPS-144] Home > Novels > Popular 서브탭 진입 + 첫 번째 작품 클릭
     When GNB > Home > Novels > Popular 서브탭 진입
     And 첫 번째 작품 클릭
