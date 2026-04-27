@@ -11,10 +11,23 @@ const JIRA_DOMAIN  = 'kakaoent.atlassian.net';
 const JIRA_PID     = '11189';   // 프로젝트 TP의 숫자 ID
 const JIRA_TYPE_ID = '1';   // Bug
 
-function makeJiraUrl(testTitle, runUrl) {
-  const summary = encodeURIComponent(`[자동화 실패] ${testTitle}`);
+function extractBddSteps(steps) {
+  const result = [];
+  const bddPattern = /^(Given|When|Then|And|But)\b/i;
+  for (const step of steps || []) {
+    if (bddPattern.test(step.title)) result.push(step.title);
+    if (step.steps?.length) result.push(...extractBddSteps(step.steps));
+  }
+  return result;
+}
+
+function makeJiraUrl(test, runUrl) {
+  const summary = encodeURIComponent(test.title);
+  const stepsText = test.steps.length
+    ? '\n\n[수행 절차]\n' + test.steps.join('\n')
+    : '';
   const desc = encodeURIComponent(
-    `*테스트:* ${testTitle}\n*환경:* https://tapas.io\n*CI Run:* ${runUrl || 'N/A'}`
+    `테스트: ${test.title}\n환경: https://tapas.io\nCI Run: ${runUrl || 'N/A'}${stepsText}`
   );
   return `https://${JIRA_DOMAIN}/secure/CreateIssueDetails!init.jspa` +
     `?pid=${JIRA_PID}&issuetype=${JIRA_TYPE_ID}&summary=${summary}&description=${desc}`;
@@ -43,16 +56,18 @@ const skipped = results.stats?.skipped    ?? 0;
 const total   = passed + failed + skipped;
 const durationSec = ((results.stats?.duration ?? 0) / 1000).toFixed(1);
 
-// 실패 테스트 이름 수집
+// 실패 테스트 이름 + BDD steps 수집
 const failedTests = [];
 function walk(suites) {
   for (const suite of suites || []) {
     for (const spec of suite.specs || []) {
       for (const test of spec.tests || []) {
-        const status = test.results?.[0]?.status;
-        if (status === 'failed' || status === 'timedOut') {
+        const result = test.results?.[0];
+        if (result?.status === 'failed' || result?.status === 'timedOut') {
           const match = spec.title.match(/\[TPS-\d+\]/);
-          failedTests.push(match ? `${match[0]} ${spec.title.replace(match[0], '').trim()}` : spec.title);
+          const title = match ? `${match[0]} ${spec.title.replace(match[0], '').trim()}` : spec.title;
+          const steps = extractBddSteps(result.steps || []);
+          failedTests.push({ title, steps });
         }
       }
     }
@@ -82,7 +97,7 @@ const blocks = [
 ];
 
 if (failedTests.length > 0) {
-  const failList = failedTests.slice(0, 10).map(t => `• ${t}`).join('\n');
+  const failList = failedTests.slice(0, 10).map(t => `• ${t.title}`).join('\n');
   const more = failedTests.length > 10 ? `\n외 ${failedTests.length - 10}개 더...` : '';
   blocks.push({
     type: 'section',
@@ -92,7 +107,7 @@ if (failedTests.length > 0) {
   // 실패 항목별 Jira 등록 버튼 (최대 5개)
   const jiraButtons = failedTests.slice(0, 5).map(t => ({
     type: 'button',
-    text: { type: 'plain_text', text: `🐛 ${t.match(/\[TPS-\d+\]/)?.[0] ?? t.slice(0, 12)}` },
+    text: { type: 'plain_text', text: `🐛 ${t.title.match(/\[TPS-\d+\]/)?.[0] ?? t.title.slice(0, 12)}` },
     url: makeJiraUrl(t, REPORT_URL),
     style: 'danger',
   }));
