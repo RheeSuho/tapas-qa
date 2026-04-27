@@ -10,3 +10,4 @@ Feature: 서비스 접속
     And - 대메뉴 : Tapas 로고 + Home, Comics, Novels, Community, Mature, More
     And - 미로그인 : 검색 / 프로필 버튼
     And - 로그인 검색 / 인박스 / 라이브러리 /프로필 버튼
+    And TEMP_FORCE_FAIL
