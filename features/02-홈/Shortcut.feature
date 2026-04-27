@@ -2,7 +2,7 @@
 # 1 Depth: 홈
 Feature: Shortcut
 
-  @TC-0011
+  @TC-0011 @smoke
   Scenario: [TPS-016] 로그인 상태 > 타파스 홈 진입 + 숏컷 영역 노출 확인
     Given 로그인 상태
     When 타파스 홈 진입
@@ -21,7 +21,7 @@ Feature: Shortcut
     And [PCW] 검색 필드, 로그인, Publish 버튼이 노출된다.
     And [MW] 검색, 프로필 버튼이 노출된다.
 
-  @TC-0013
+  @TC-0013 @smoke
   Scenario: [TPS-018] 검색 필드 클릭 + 작품 클릭
     When 검색 필드 클릭
     And 검색어 입력란 > {키워드} 입력

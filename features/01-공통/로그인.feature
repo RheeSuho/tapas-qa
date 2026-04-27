@@ -26,7 +26,7 @@ Feature: 로그인
     And 구글 로그인 팝업창이 열린다.
     And 로그인 완료되며 홈 화면으로 이동된다.
 
-  @TC-0007
+  @TC-0007 @smoke
   Scenario: [TPS-003] Login 클릭
     When GNB > Login 클릭
     Then 로그인 유도 창으로 이동된다.
@@ -38,7 +38,7 @@ Feature: 로그인
     Then 로그인 유도 창으로 이동된다.
     And 로그인되지 않으며 오류 메세지 노출되고 화면 유지된다.
 
-  @TC-0009
+  @TC-0009 @smoke
   Scenario: [TPS-005] Login 클릭 + Email 계정 입력 > Login 클릭
     When GNB > Login 클릭
     And Email 계정 입력 > Login 클릭

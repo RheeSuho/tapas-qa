@@ -2,7 +2,7 @@
 # 1 Depth: Profile
 Feature: 로그아웃
 
-  @TC-0199
+  @TC-0199 @smoke
   Scenario: [TPS-210] Profile 클릭 + Log out 클릭
     When GNB > Profile 클릭
     And Log out 클릭

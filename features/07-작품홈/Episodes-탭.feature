@@ -2,7 +2,7 @@
 # 1 Depth: 작품홈
 Feature: Episodes 탭
 
-  @TC-0100
+  @TC-0100 @smoke
   Scenario: [TPS-088] Episodes 탭 클릭
     When Episodes 탭 클릭
     Then 회차 리스트 영역이 노출된다
@@ -25,7 +25,7 @@ Feature: Episodes 탭
     Then 첫화부터 마지막화까지 모두 정상 노출된다.
     And 회차 섬네일, 회차 순번, 회차 명, 발행 날짜, 뷰카운트이 노출된다.
 
-  @TC-0103
+  @TC-0103 @smoke
   Scenario: [TPS-091] 무료 회차 클릭
     When 무료 회차 클릭
     And 뒤로가기 [<] 버튼 클릭

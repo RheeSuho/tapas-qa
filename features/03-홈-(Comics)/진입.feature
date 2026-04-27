@@ -2,7 +2,7 @@
 # 1 Depth: 홈 (Comics)
 Feature: 진입
 
-  @TC-0030
+  @TC-0030 @smoke
   Scenario: [TPS-042] 대메뉴 > Comics 카테고리 클릭
     # Test DATA: QA : spotlight Prod : Daily
     When 대메뉴 > Comics 카테고리 클릭

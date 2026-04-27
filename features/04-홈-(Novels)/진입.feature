@@ -2,7 +2,7 @@
 # 1 Depth: 홈 (Novels)
 Feature: 진입
 
-  @TC-0043
+  @TC-0043 @smoke
   Scenario: [TPS-055] 대메뉴 > Novels 카테고리 클릭
     # Test DATA: QA : spotlight Prod : Daily
     When 대메뉴 > Novels 카테고리 클릭

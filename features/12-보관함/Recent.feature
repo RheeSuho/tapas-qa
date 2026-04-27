@@ -2,7 +2,7 @@
 # 1 Depth: 보관함
 Feature: Recent
 
-  @TC-0161
+  @TC-0161 @smoke
   Scenario: [TPS-174] Recent 클릭 + GNB 보관함 아이콘 클릭 > Recent 클릭
     When Recent 클릭
     And Comic 작품 열람

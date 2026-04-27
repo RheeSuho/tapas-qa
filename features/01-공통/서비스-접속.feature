@@ -2,7 +2,7 @@
 # 1 Depth: 공통
 Feature: 서비스 접속
 
-  @TC-0001
+  @TC-0001 @smoke
   Scenario: [TPS-006] qa.tapas.io 도메인 진입
     When qa.tapas.io 도메인 진입
     Then 타파스 웹 정상 진입된다.
