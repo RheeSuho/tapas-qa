@@ -6,7 +6,7 @@ Feature: Daily (요일연재 랜딩 서브탭)
     When GNB > mature 클릭
 
   @TC-0080
-  Scenario: [TPS-062] 케이스-80
+  Scenario: [TPS-062] Daily 서브탭 클릭 + 요일별 클릭
     When Daily 서브탭 클릭
     And 상단 대분류 카테고리 필터 노출 확인
     And 작품 리스트 확인

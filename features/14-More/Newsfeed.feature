@@ -3,7 +3,7 @@
 Feature: Newsfeed
 
   @TC-0186
-  Scenario: [TPS-200] 케이스-186
+  Scenario: [TPS-200] More 클릭 + 뉴스 리스트 클릭
     When GNB > More 클릭
     And Newsfeed 클릭
     And 뉴스 리스트 클릭

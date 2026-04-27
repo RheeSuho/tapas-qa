@@ -3,7 +3,7 @@
 Feature: Recent
 
   @TC-0161
-  Scenario: [TPS-174] 케이스-161
+  Scenario: [TPS-174] Recent 클릭 + GNB 보관함 아이콘 클릭 > Recent 클릭
     When Recent 클릭
     And Comic 작품 열람
     And ㄴ GNB > 보관함 아이콘 > Recent > 임의의 작품 클릭

@@ -3,7 +3,7 @@
 Feature: Merch shop
 
   @TC-0188
-  Scenario: [TPS-199] 케이스-188
+  Scenario: [TPS-199] More 클릭 + Merch Shop 클릭
     When GNB > More 클릭
     And Merch Shop 클릭
     Then 하위 메뉴 노출된다.

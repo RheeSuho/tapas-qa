@@ -3,7 +3,7 @@
 Feature: Settings
 
   @TC-0198
-  Scenario: [TPS-208] 케이스-198
+  Scenario: [TPS-208] Profile 클릭 + 하위 영역 확인.
     When GNB > Profile 클릭
     And Settings 클릭
     And 하위 영역 확인.

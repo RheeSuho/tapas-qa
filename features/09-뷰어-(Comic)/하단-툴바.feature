@@ -3,12 +3,12 @@
 Feature: 하단 툴바
 
   @TC-0116
-  Scenario: [TPS-129] 케이스-116
+  Scenario: [TPS-129] Bottom 영역 노출 확인
     When Bottom 영역 노출 확인
     Then 회차 썸네일, 회차명, 뷰카운트, 좋아요 수, 댓글 수, [더보기], [좋아요], [리스트], [댓글],[이전회차],[다음회차],[전체화면] 버튼이 노출된다.
 
   @TC-0117
-  Scenario: [TPS-130] 케이스-117
+  Scenario: [TPS-130] 하단 더보기 버튼 클릭 + More 팝업 > 팝업 외 영역 클릭
     When 하단 [더보기] 버튼 클릭
     And More 팝업 > 팝업 외 영역 클릭
     Then 뷰어 화면 위로 More 팝업이 노출된다.
@@ -43,7 +43,7 @@ Feature: 하단 툴바
     And 팝업이 닫힌다.
 
   @TC-0121
-  Scenario: [TPS-134] 케이스-121
+  Scenario: [TPS-134] Like 버튼 클릭 + Like 버튼 재클릭
     When [Like] 버튼 클릭
     And [Like] 버튼 재클릭
     Then 토스트가 노출되며 좋아요 버튼이 활성화되어 노출된다.
@@ -60,14 +60,14 @@ Feature: 하단 툴바
     And 뷰어 우측 작품홈 영역이 노출된다.
 
   @TC-0123
-  Scenario: [TPS-136] 케이스-123
+  Scenario: [TPS-136] Comment 버튼 클릭 + Comment 버튼 재클릭
     When [Comment] 버튼 클릭
     And [Comment] 버튼 재클릭
     Then 뷰어 우측에 Comments 리스트가 노출된다.
     And 뷰어 우측에 Comments 리스트가 미노출된다.
 
   @TC-0124
-  Scenario: [TPS-137] 케이스-124
+  Scenario: [TPS-137] 다음회차 이동 버튼 클릭 + 이전회차 이동 버튼 클릭
     When 다음회차 이동 버튼 클릭
     And 이전회차 이동 버튼 클릭
     Then 다음회차 뷰어로 즉시 진입된다.

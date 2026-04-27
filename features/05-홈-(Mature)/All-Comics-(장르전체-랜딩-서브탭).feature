@@ -17,14 +17,14 @@ Feature: All Comics (장르전체 랜딩 서브탭)
     And Mature - Comic 작품의 모든 장르에 해당하는 작품이 노출된다.
 
   @TC-0083
-  Scenario: [TPS-057] 케이스-83
+  Scenario: [TPS-057] 장르 선택 필터 버튼 클릭 + 장르 선택 팝업 > 장르명 선택 후 Confirm 버튼 클릭
     When 장르 선택 필터 버튼 클릭
     And 장르 선택 팝업 > {장르명} 선택 후 Confirm 버튼 클릭
     Then 장르 선택 팝업이 노출된다.
     And 팝업이 닫히고 작품 리스트가 갱신되며 필터된 장르의 작품만 노출된다.
 
   @TC-0084
-  Scenario: [TPS-058] 케이스-84
+  Scenario: [TPS-058] 정렬 옵션 변경 버튼 클릭 + 정렬 선택 팝업 > 정렬값 선택 후 Confirm 버튼 클릭
     When 정렬 옵션 변경 버튼 클릭
     And 정렬 선택 팝업 > {정렬값} 선택 후 Confirm 버튼 클릭
     Then 정렬 선택 팝업이 노출된다.

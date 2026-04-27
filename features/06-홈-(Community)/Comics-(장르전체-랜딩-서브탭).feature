@@ -6,7 +6,7 @@ Feature: Comics (장르전체 랜딩 서브탭)
     When GNB > Community 클릭
 
   @TC-0064
-  Scenario: [TPS-074] 케이스-64
+  Scenario: [TPS-074] Comics 서브탭 클릭 + 정렬/필터 노출 확인
     When Comics 서브탭 클릭
     And 정렬/필터 노출 확인
     And 작품 리스트 확인
@@ -16,14 +16,14 @@ Feature: Comics (장르전체 랜딩 서브탭)
     And Community Comic 작품의 모든 장르에 해당하는 작품이 노출된다.
 
   @TC-0065
-  Scenario: [TPS-075] 케이스-65
+  Scenario: [TPS-075] 장르 선택 필터 버튼 클릭 + 장르 선택 팝업 > 장르명 선택 후 Confirm 버튼 클릭
     When 장르 선택 필터 버튼 클릭
     And 장르 선택 팝업 > {장르명} 선택 후 Confirm 버튼 클릭
     Then 장르 선택 팝업이 노출된다.
     And 팝업이 닫히고 작품 리스트가 갱신되며 필터된 장르의 작품만 노출된다.
 
   @TC-0066
-  Scenario: [TPS-076] 케이스-66
+  Scenario: [TPS-076] 정렬 옵션 변경 버튼 클릭 + 정렬 선택 팝업 > 정렬값 선택 후 Confirm 버튼 클릭
     When 정렬 옵션 변경 버튼 클릭
     And 정렬 선택 팝업 > {정렬값} 선택 후 Confirm 버튼 클릭
     Then 정렬 선택 팝업이 노출된다.

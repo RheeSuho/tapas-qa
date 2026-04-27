@@ -3,7 +3,7 @@
 Feature: 탈퇴
 
   @TC-0010
-  Scenario: [TPS-007] 케이스-10
+  Scenario: [TPS-007] 비밀번호 검증 팝업 > 비밀번호 정상 입력 후 Delete account 클릭
     When GNB > Profile 클릭
     And [Settings] 클릭
     And 하단 Delete account 클릭

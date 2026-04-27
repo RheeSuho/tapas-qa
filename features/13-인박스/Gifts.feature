@@ -6,7 +6,7 @@ Feature: Gifts
     When 대메뉴 > 하단 Inbox 클릭
 
   @TC-0176
-  Scenario: [TPS-190] 케이스-176
+  Scenario: [TPS-190] Get Gift Passes 영역 확인 + Gifts 탭 새로고침 동작
     When Get Gift Passes 영역 확인
     And 작품 정보 영역 확인
     And 작품 클릭

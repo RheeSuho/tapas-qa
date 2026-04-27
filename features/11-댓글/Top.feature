@@ -3,7 +3,7 @@
 Feature: Top
 
   @TC-0145
-  Scenario: [TPS-158] 케이스-145
+  Scenario: [TPS-158] 우상단 정렬 필터 > Newest 값 클릭 + 우상단 정렬 필터 > Oldest 값 클릭
     When 우상단 정렬 필터 > Newest 값 클릭
     And 우상단 정렬 필터 > Oldest 값 클릭
     Then 댓글 리스트가 최신순으로 갱신된다.

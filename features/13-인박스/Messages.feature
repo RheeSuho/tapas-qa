@@ -6,13 +6,13 @@ Feature: Messages
     When Inbox > Messages 탭 클릭
 
   @TC-0177
-  Scenario: [TPS-191] 케이스-177
+  Scenario: [TPS-191] Inbox > Messages 탭 클릭
     When Inbox > Messages 탭 클릭
     Then Inbox 화면의 두 번째 탭으로 진입된다. (Messagess)
     And 신규 메세지가 있다면 메세지 썸네일 우측에 New 표시가 노출된다.
 
   @TC-0178
-  Scenario: [TPS-192] 케이스-178
+  Scenario: [TPS-192] Messages 영역 노출 확인 + Messages 타입별 클릭
     When Messages 영역 노출 확인
     And Messages 타입별 클릭
     Then 수신된 Messages가 노출된다.

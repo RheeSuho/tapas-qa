@@ -32,14 +32,14 @@ Feature: 댓글 리스트
     Then 팝업이 닫히고 댓글 목록에서 삭제된다.
 
   @TC-0150
-  Scenario: [TPS-168] 케이스-150
+  Scenario: [TPS-168] 다른 유저 댓글 > 프로필 이미지 클릭 + 뒤로가기
     When 다른 유저 댓글 > 프로필 이미지 클릭
     And 뒤로가기
     Then 유저 홈으로 이동된다.
     And 뷰어로 이동된다.
 
   @TC-0151
-  Scenario: [TPS-169] 케이스-151
+  Scenario: [TPS-169] 댓글 Likes 버튼 클릭 + 댓글 Likes 버튼 재클릭
     When 댓글 [Likes] 버튼 클릭
     And 댓글 [Likes] 버튼 재클릭
     Then 좋아요 버튼이 활성화되어 노출된다.

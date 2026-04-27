@@ -6,7 +6,7 @@ Feature: Popular (랭킹 랜딩 서브탭)
     When GNB > mature 클릭
 
   @TC-0081
-  Scenario: [TPS-063] 케이스-81
+  Scenario: [TPS-063] Popular 서브탭 클릭 + 상단 대분류 카테고리 필터 노출 확인
     When {Popular} 서브탭 클릭
     And exc) 서브탭 영역 가려진 경우 노출될 때까지 스크롤 후 클릭
     And 상단 대분류 카테고리 필터 노출 확인

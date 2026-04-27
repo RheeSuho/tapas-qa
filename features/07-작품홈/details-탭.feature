@@ -6,7 +6,7 @@ Feature: details 탭
     Given 작품홈 진입
 
   @TC-0096
-  Scenario: [TPS-095] 케이스-96
+  Scenario: [TPS-095] Details 영역 확인
     When Details 영역 확인
     Then Creaotrs, Details, 업데이트 일자, 발행처, 추천 작품이 노출된다.
 

@@ -36,28 +36,28 @@ Feature: 뷰어엔드
     And 뷰어로 이동된다.
 
   @TC-0112
-  Scenario: [TPS-123] 케이스-112
+  Scenario: [TPS-123] Comments 영역 노출 확인 + See all 버튼 클릭
     When Comments 영역 노출 확인
     And [See all] 버튼 클릭
     Then Comments 영역 타이틀과 [See all] 버튼이 노출되며 좋아요 높은 순의 댓글 1개가 노출된다.
     And 뷰어 우측에 Comments 리스트가 노출된다.
 
   @TC-0113
-  Scenario: [TPS-124] 케이스-113
+  Scenario: [TPS-124] Comments 영역 > 댓글 Likes 버튼 클릭 + Likes 버튼 재클릭
     When Comments 영역 > 댓글 [Likes] 버튼 클릭
     And [Likes] 버튼 재클릭
     Then 좋아요 수가 +1 되며 좋아요 버튼이 활성화 상태로 노출된다.
     And 좋아요 수가 -1 되며 좋아요 버튼이 비활성화 상태로 노출된다.
 
   @TC-0114
-  Scenario: [TPS-125] 케이스-114
+  Scenario: [TPS-125] Comments 영역 하단 버튼 노출 확인 + 버튼 클릭
     When Comments 영역 하단 버튼 노출 확인
     And 버튼 클릭
     Then [Add a comment] 버튼이 노출된다.
     And 뷰어 우측에 Comments 리스트가 노출된다.
 
   @TC-0115
-  Scenario: [TPS-126] 케이스-115
+  Scenario: [TPS-126] Recommendation for you 영역 확인 + 디바이스/브라우저 뒤로가기 버튼 클릭
     When Recommendation for you 영역 확인
     And 가로 스크롤 동작
     And 리스트의 첫번째 작품 클릭

@@ -3,7 +3,7 @@
 Feature: Episodes 탭
 
   @TC-0100
-  Scenario: [TPS-088] 케이스-100
+  Scenario: [TPS-088] Episodes 탭 클릭
     When Episodes 탭 클릭
     Then 회차 리스트 영역이 노출된다
     And ㄴ 총 에피소드 수, 회차 정렬 버튼
@@ -19,7 +19,7 @@ Feature: Episodes 탭
     And 첫화보기 순으로 노출된다. (제일 상단 에피소드 번호가 1 인지 확인)
 
   @TC-0102
-  Scenario: [TPS-090] 케이스-102
+  Scenario: [TPS-090] 스크롤하여 회차 리스트 노출 확인 + episode 1 회차 노출 영역 확인
     When 스크롤하여 회차 리스트 노출 확인
     And episode 1 회차 노출 영역 확인
     Then 첫화부터 마지막화까지 모두 정상 노출된다.

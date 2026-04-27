@@ -6,7 +6,7 @@ Feature: Daily (요일연재 랜딩 서브탭)
     When 대메뉴 > Comics 카테고리 클릭
 
   @TC-0038
-  Scenario: [TPS-033] 케이스-38
+  Scenario: [TPS-033] Daily 서브탭 클릭 + 요일별 클릭
     When {Daily} 서브탭 클릭
     And 상단 대분류 카테고리 필터 노출 확인
     And 작품 리스트 확인

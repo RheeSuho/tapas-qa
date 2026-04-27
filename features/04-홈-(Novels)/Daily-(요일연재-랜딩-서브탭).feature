@@ -6,7 +6,7 @@ Feature: Daily (요일연재 랜딩 서브탭)
     When 대메뉴 > Novels 카테고리 클릭
 
   @TC-0051
-  Scenario: [TPS-046] 케이스-51
+  Scenario: [TPS-046] Daily 서브탭 클릭 + 요일별 클릭
     When Daily 서브탭 클릭
     And 상단 대분류 카테고리 필터 노출 확인
     And 작품 리스트 확인

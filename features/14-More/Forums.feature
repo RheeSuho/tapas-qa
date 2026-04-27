@@ -3,7 +3,7 @@
 Feature: Forums
 
   @TC-0185
-  Scenario: [TPS-197] 케이스-185
+  Scenario: [TPS-197] More 클릭 + Forums 클릭
     When GNB > More 클릭
     And Forums 클릭
     Then 하위 메뉴 노출된다.

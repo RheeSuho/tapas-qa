@@ -3,7 +3,7 @@
 Feature: 프로필 이미지
 
   @TC-0190
-  Scenario: [TPS-212] 케이스-190
+  Scenario: [TPS-212] Profile 클릭 + 프로필 이미지 클릭
     When GNB > Profile 클릭
     And 프로필 이미지 클릭
     Then 하위 메뉴 노출된다.
