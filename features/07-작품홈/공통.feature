@@ -6,7 +6,7 @@ Feature: 공통
     Given 작품홈 진입
 
   @TC-0089
-  Scenario: [TPS-099] 작품 정보
+  Scenario: [TPS-099] 작품 정보 확인
     When 작품 정보 확인
     Then 아래 정보들이 노출된다.
     And ㄴ 썸네일, 뱃지 (기다무정보)
@@ -15,7 +15,7 @@ Feature: 공통
     And ㄴ 카테고리, 뷰카운트, 좋아요, 구독 수
 
   @TC-0090
-  Scenario: [TPS-100] 구독 버튼
+  Scenario: [TPS-100] 구독 버튼 노출 확인 + Subscribe 버튼 재클릭
     When 구독 버튼 노출 확인
     And 구독 버튼 클릭
     And . [Close] 클릭
@@ -23,7 +23,7 @@ Feature: 공통
     Then 작품정보 하단에 미구독 상태로 버튼이 노출된다.
 
   @TC-0091
-  Scenario: [TPS-101] 하단 버튼
+  Scenario: [TPS-101] 구독 버튼 좌측 버튼 노출 확인 + Continue Ep.2 버튼 클릭
     When 구독 버튼 좌측 버튼 노출 확인
     And [Continue Ep.2] 버튼 클릭
     And 뒤로가기 [<] 버튼 클릭
@@ -32,12 +32,12 @@ Feature: 공통
     And 작품홈으로 이동되며 버튼이 [Comtinue Ep.3] 으로 변경되어 노출된다.
 
   @TC-0092
-  Scenario: [TPS-102] 띠배너 - 노출 확인
+  Scenario: [TPS-102] 배너 영역 확인
     When 배너 영역 확인
     Then 기다무 작품, 공지 사항 띠배너가 노출된다.
 
   @TC-0093
-  Scenario: [TPS-103] 띠배너 - 기다무 띠배너
+  Scenario: [TPS-103] 기다무 작품인 경우 > 배너 영역 확인 + 3, OK 버튼 클릭
     Given 기다무 작품인 경우
     When 배너 영역 확인
     And 기다무 띠배너 > ? 버튼 클릭
@@ -47,7 +47,7 @@ Feature: 공통
     And 팝업이 닫히며 작품홈 화면 유지된다.
 
   @TC-0094
-  Scenario: [TPS-104] 띠배너 - 공지사항
+  Scenario: [TPS-104] 공지사항 있는 경우 > 배너 영역 확인 + 공지사항 띠배너 클릭
     Given 공지사항 있는 경우
     When 배너 영역 확인
     And 공지사항 띠배너 클릭
@@ -55,6 +55,6 @@ Feature: 공통
     And 공지사항 내용이 노출된다.
 
   @TC-0095
-  Scenario: [TPS-105] 탭
+  Scenario: [TPS-105] 영역 노출 확인
     When 영역 노출 확인
     Then Episodes 우측으로 Details 영역이 노출된다.

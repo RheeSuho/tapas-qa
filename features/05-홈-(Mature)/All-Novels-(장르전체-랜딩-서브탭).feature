@@ -6,7 +6,7 @@ Feature: All Novels (장르전체 랜딩 서브탭)
     When GNB > mature 클릭
 
   @TC-0085
-  Scenario: [TPS-059] QA환경 : Novels 탭
+  Scenario: [TPS-059] All Novels 서브탭 클릭 + 정렬/필터 노출 확인
     # Test DATA: QA환경 : Novels 탭
     When All Novels 서브탭 클릭
     And 정렬/필터 노출 확인

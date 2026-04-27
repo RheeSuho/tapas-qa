@@ -3,7 +3,7 @@
 Feature: Redeem Code
 
   @TC-0195
-  Scenario: [TPS-205] 리딤코드 정상 입력
+  Scenario: [TPS-205] 리딤코드 정상 입력 > Profile 클릭 + Redeem 버튼 클릭
     Given 리딤코드 정상 입력
     When GNB > Profile 클릭
     And Redeem Code 클릭
@@ -19,7 +19,7 @@ Feature: Redeem Code
     And 홈 화면으로 이동된다.
 
   @TC-0196
-  Scenario: [TPS-206] 리딤코드 오입력
+  Scenario: [TPS-206] 리딤코드 오입력 > Profile 클릭 + Redeem 버튼 클릭
     Given 리딤코드 오입력
     When GNB > Profile 클릭
     And Redeem Code 클릭
@@ -35,7 +35,7 @@ Feature: Redeem Code
     And 홈 화면으로 이동된다.
 
   @TC-0197
-  Scenario: [TPS-207] Contact CS
+  Scenario: [TPS-207] Profile 클릭 + 닫기 버튼 클릭
     When GNB > Profile 클릭
     And Redeem Code 클릭
     And [Contact CS] 텍스트 버튼 클릭

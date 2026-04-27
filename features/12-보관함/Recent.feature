@@ -19,7 +19,7 @@ Feature: Recent
     And ㄴRecent 화면 노출되고 열람한 작품이 상단에 추가되어 노출된다.
 
   @TC-0162
-  Scenario: [TPS-175] Recent 작품 목록 없는 경우
+  Scenario: [TPS-175] Recent 작품 목록 없는 경우 > Recent 클릭
     Given Recent 작품 목록 없는 경우
     When Recent 클릭
     Then 안내문구가 노출된다.

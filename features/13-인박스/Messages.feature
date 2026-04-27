@@ -20,7 +20,7 @@ Feature: Messages
     And -에피소드 / 작품홈 / 메세지 / 컬렉션
 
   @TC-0179
-  Scenario: [TPS-193] PCWeb only
+  Scenario: [TPS-193] PCWeb only > Messages 탭 우측 상단 Mark all as read 버튼 클릭
     Given PCWeb only
     When Messages 탭 우측 상단 [Mark all as read] 버튼 클릭
     Then Message New 표시 사라진다.

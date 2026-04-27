@@ -3,7 +3,7 @@
 Feature: 진입
 
   @TC-0043
-  Scenario: [TPS-055] QA : spotlight Prod : Daily
+  Scenario: [TPS-055] 대메뉴 > Novels 카테고리 클릭
     # Test DATA: QA : spotlight Prod : Daily
     When 대메뉴 > Novels 카테고리 클릭
     Then Novels 홈화면의 첫 번째 서브탭으로 진입된다.

@@ -9,7 +9,7 @@ Feature: Episodes 탭
     And ㄴ 총 에피소드 수, 회차 정렬 버튼
 
   @TC-0101
-  Scenario: [TPS-089] 정렬
+  Scenario: [TPS-089] 첫화보기 순 > 현재 정렬 버튼 상태 확인 + 정렬 버튼 재클릭
     Given 첫화보기 순
     When 현재 정렬 버튼 상태 확인
     And 정렬 버튼 클릭
@@ -26,7 +26,7 @@ Feature: Episodes 탭
     And 회차 섬네일, 회차 순번, 회차 명, 발행 날짜, 뷰카운트이 노출된다.
 
   @TC-0103
-  Scenario: [TPS-091] 회차 열람 (무료)
+  Scenario: [TPS-091] 무료 회차 클릭
     When 무료 회차 클릭
     And 뒤로가기 [<] 버튼 클릭
     Then 즉시 뷰어로 진입된다.
@@ -34,7 +34,7 @@ Feature: Episodes 탭
     And ㄴ 이어보기 버튼의 회차가 업데이트된다.
 
   @TC-0104
-  Scenario: [TPS-092] 회차 열람 (기다무) - 티켓 보유
+  Scenario: [TPS-092] 기다무 티켓 보유 상태 > 회차 영역 스크롤 > 기다무 회차 클릭 + 기다무 사용 확인 팝업 > Yes 버튼 클릭
     Given 기다무 티켓 보유 상태
     When 회차 영역 스크롤 > 기다무 회차 클릭
     And 기다무 사용 확인 팝업 > [Yes] 버튼 클릭
@@ -46,7 +46,7 @@ Feature: Episodes 탭
     And ㄴ 이어보기 버튼의 회차가 업데이트된다.
 
   @TC-0105
-  Scenario: [TPS-093] 회차 열람 (기다무) - 티켓 소진
+  Scenario: [TPS-093] 기다무 티켓 소진 상태 > 다음 회차 (기다무) 클릭 + 회차 구매 팝업 > X 버튼 클릭
     Given 기다무 티켓 소진 상태
     When 다음 회차 (기다무) 클릭
     And 회차 구매 팝업 > [X] 버튼 클릭
@@ -54,7 +54,7 @@ Feature: Episodes 탭
     And 팝업이 닫히며 이전화면 노출된다.
 
   @TC-0106
-  Scenario: [TPS-094] 회차 열람 (유료)
+  Scenario: [TPS-094] 잉크 보유 상태 > 회차 영역 스크롤 > 유료 회차 클릭 + 회차 구매 팝업 > 단건 구매 옵션 클릭
     Given 잉크 보유 상태
     When 회차 영역 스크롤 > 유료 회차 클릭
     And 회차 구매 팝업 > 단건 구매 옵션 클릭

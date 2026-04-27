@@ -3,7 +3,7 @@
 Feature: Updated
 
   @TC-0158
-  Scenario: [TPS-181] 작품 클릭 + <- 백버튼 클릭
+  Scenario: [TPS-181] 작품 클릭 + 임의의 작품 클릭
     When 작품 클릭
     And [<-] 백버튼 클릭
     And Comics 필터 클릭
@@ -41,7 +41,7 @@ Feature: Updated
     And 모든 작품 리스트가 노출된다.
 
   @TC-0160
-  Scenario: [TPS-183] Updated 작품 목록 없는 경우
+  Scenario: [TPS-183] Updated 작품 목록 없는 경우 > PCW + 필터 > All 버튼 클릭
     Given Updated 작품 목록 없는 경우
     When [PCW]
     And 탭 하단 [Comics] 버튼 클릭

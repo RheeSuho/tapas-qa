@@ -3,7 +3,7 @@
 Feature: 진입
 
   @TC-0088
-  Scenario: [TPS-106] Section Menu
+  Scenario: [TPS-106] Home 클릭 후 Popular 서브탭 진입 + 작품 이미지 선택
     When GNB > Home 클릭 후 Popular 서브탭 진입
     And 랭킹 1위 작품 클릭
     And 우측 영역 > 작품 이미지 선택

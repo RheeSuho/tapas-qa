@@ -3,7 +3,7 @@
 Feature: Shortcut
 
   @TC-0011
-  Scenario: [TPS-016] 로그인 상태
+  Scenario: [TPS-016] 로그인 상태 > 타파스 홈 진입 + 숏컷 영역 노출 확인
     Given 로그인 상태
     When 타파스 홈 진입
     And 숏컷 영역 노출 확인
@@ -12,7 +12,7 @@ Feature: Shortcut
     And (작가인 경우 Dashboard 노출)
 
   @TC-0012
-  Scenario: [TPS-017] 미로그인 상태
+  Scenario: [TPS-017] 미로그인 상태 > 타파스 홈 진입 + 숏컷 영역 노출 확인
     Given 미로그인 상태
     When 타파스 홈 진입
     And 숏컷 영역 노출 확인
@@ -22,7 +22,7 @@ Feature: Shortcut
     And [MW] 검색, 프로필 버튼이 노출된다.
 
   @TC-0013
-  Scenario: [TPS-018] 검색 아이콘
+  Scenario: [TPS-018] 검색 필드 클릭 + 작품 클릭
     When 검색 필드 클릭
     And 검색어 입력란 > {키워드} 입력
     And 검색 결과 화면 확인

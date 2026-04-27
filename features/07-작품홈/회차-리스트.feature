@@ -6,7 +6,7 @@ Feature: 회차 리스트
     Given 작품홈 진입
 
   @TC-0200
-  Scenario: [TPS-107] 회차 열람 (기다무) - 기다무 사용 팝업
+  Scenario: [TPS-107] 기다무 회차인 경우 > 기다무 회차 클릭 + 기다무 회차 클릭
     Given 기다무 회차인 경우
     When 기다무 회차 클릭
     And Don't show again 영역 클릭
@@ -22,7 +22,7 @@ Feature: 회차 리스트
     And 기다무 사용 팝업 없이 진입된다.
 
   @TC-0201
-  Scenario: [TPS-108] 회차 구매 팝업
+  Scenario: [TPS-108] 유료 회차인 경우 / 회차 금액 > 보유 잉크 > 유료 회차 클릭 + 회차 구매 옵션 클릭
     Given 유료 회차인 경우
     And 회차 금액 > 보유 잉크
     When 유료 회차 클릭
@@ -33,7 +33,7 @@ Feature: 회차 리스트
     And 팝업이 종료되며 작품홈에 머무른다.
 
   @TC-0202
-  Scenario: [TPS-109] 이용권 사용 팝업
+  Scenario: [TPS-109] 이용권 사용하는 경우 / Gift > 이용권 작품 수령한 경우 > 이용권 사용 가능한 유료회차 클릭
     Given 이용권 사용하는 경우
     And Gift > 이용권 작품 수령한 경우
     When 이용권 사용 가능한 유료회차 클릭

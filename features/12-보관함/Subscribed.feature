@@ -25,7 +25,7 @@ Feature: Subscribed
     And Subscribed 화면으로 복귀된다.
 
   @TC-0165
-  Scenario: [TPS-178] Subscribed 작품 목록 없는 경우
+  Scenario: [TPS-178] Subscribed 작품 목록 없는 경우 > Comics 필터 클릭 + All 필터 클릭
     Given Subscribed 작품 목록 없는 경우
     When Comics 필터 클릭
     And Novels 필터 클릭
@@ -52,7 +52,7 @@ Feature: Subscribed
     And 모든 작품 리스트가 노출된다.
 
   @TC-0167
-  Scenario: [TPS-180] PCWeb only
+  Scenario: [TPS-180] PCWeb only > Subscribed 클릭 + Setting 버튼 클릭
     Given PCWeb only
     When Subscribed 클릭
     And [Mark All As Read] 버튼 클릭

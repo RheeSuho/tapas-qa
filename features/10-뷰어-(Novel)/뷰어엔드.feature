@@ -6,7 +6,7 @@ Feature: 뷰어엔드
     When 소설 뷰어 진입
 
   @TC-0128
-  Scenario: [TPS-139] 작가의 말
+  Scenario: [TPS-139] 작가의 말 있는 경우 > 뷰어 진입 + 뷰어 엔드 > 작가의 말 영역 확인
     # Test DATA: soft touch
     Given 작가의 말 있는 경우
     When 뷰어 진입

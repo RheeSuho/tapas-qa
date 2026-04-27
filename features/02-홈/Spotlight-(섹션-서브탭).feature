@@ -3,7 +3,7 @@
 Feature: Spotlight (섹션 서브탭)
 
   @TC-0014
-  Scenario: [TPS-019] 프로모션 배너
+  Scenario: [TPS-019] Spotlight 서브탭 클릭 + 프로모션 배너 클릭
     When {Spotlight} 서브탭 클릭
     And 프로모션 배너 섹션 노출 확인
     And 프로모션 배너 클릭
@@ -12,13 +12,13 @@ Feature: Spotlight (섹션 서브탭)
     And 설정된 랜딩타겟으로 이동된다.
 
   @TC-0015
-  Scenario: [TPS-020] Top 섹션 - 빅배너 - 노출 확인
+  Scenario: [TPS-020] Top 섹션 > 빅배너 노출 영역 확인
     When Top 섹션 > 빅배너 노출 영역 확인
     Then 빅배너 설정에 맞게 정상 노출된다.
     And ㄴ 이미지,타이틀, BM/신작/연령/이벤트 뱃지
 
   @TC-0016
-  Scenario: [TPS-021] Top 섹션 - 빅배너 - 스와이프
+  Scenario: [TPS-021] 빅배너 영역에서 8초 이상 대기 + 빅배너 우로 스와이프
     When 빅배너 영역에서 8초 이상 대기
     And 빅배너 좌로 스와이프
     And 빅배너 우로 스와이프
@@ -27,14 +27,14 @@ Feature: Spotlight (섹션 서브탭)
     And 다음 빅배너로 스와이프되며 상단 인디케이터도 순서에 맞게 노출된다.
 
   @TC-0017
-  Scenario: [TPS-022] Top 섹션 - 빅배너 - 클릭
+  Scenario: [TPS-022] 빅배너 클릭
     When 빅배너 클릭
     And 상단네비바 [<] 또는 단말 백버튼 클릭
     Then 빅배너 랜딩타겟으로 이동된다.
     And 이전 화면으로 돌아온다. (홈)
 
   @TC-0018
-  Scenario: [TPS-023] Top 섹션 - 카드배너
+  Scenario: [TPS-023] Top 섹션 > 카드배너 노출 확인 + 카드배너 클릭
     When Top 섹션 > 카드배너 노출 확인
     And exc) 카드배너 영역 가려진 상태라면 노출될 때까지 스크롤 후 확인
     And 카드배너 클릭
@@ -45,7 +45,7 @@ Feature: Spotlight (섹션 서브탭)
     And 이전 화면으로 돌아온다. (홈)
 
   @TC-0019
-  Scenario: [TPS-024] 라인배너 섹션
+  Scenario: [TPS-024] 라인배너 섹션 노출 확인 + 라인배너 클릭
     When 라인배너 섹션 노출 확인
     And 라인배너 클릭
     And 상단네비바 [<] 또는 단말 백버튼 클릭
@@ -54,12 +54,12 @@ Feature: Spotlight (섹션 서브탭)
     And 이전 화면으로 돌아온다. (홈)
 
   @TC-0020
-  Scenario: [TPS-025] 최근 본 작품 섹션
+  Scenario: [TPS-025] 섹션 노출 확인
     When 섹션 노출 확인
     Then 최근 본 작품 노출된다.
 
   @TC-0021
-  Scenario: [TPS-026] 배너 섹션
+  Scenario: [TPS-026] 섹션 노출 확인 + 배너 클릭
     When 섹션 노출 확인
     And 배너 클릭
     And 상단네비바 [<] 또는 단말 백버튼 클릭
@@ -69,7 +69,7 @@ Feature: Spotlight (섹션 서브탭)
     And 홈화면으로 돌아온다.
 
   @TC-0022
-  Scenario: [TPS-027] 랭킹 섹션
+  Scenario: [TPS-027] 섹션메뉴 노출 확인 + 더보기(>) 영역 클릭
     When 섹션메뉴 노출 확인
     And 더보기(>) 영역 클릭
     And 상단네비바 [<] 또는 단말 백버튼 클릭
@@ -78,7 +78,7 @@ Feature: Spotlight (섹션 서브탭)
     And 홈화면으로 돌아온다.
 
   @TC-0023
-  Scenario: [TPS-028] 테마 섹션
+  Scenario: [TPS-028] 섹션 노출 확인 + 더보기(>) 영역 클릭
     When 섹션 노출 확인
     And 더보기(>) 영역 클릭
     And 상단네비바 [<] 또는 단말 백버튼 클릭

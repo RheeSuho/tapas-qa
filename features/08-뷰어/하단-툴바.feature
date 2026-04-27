@@ -3,7 +3,7 @@
 Feature: 하단 툴바
 
   @TC-0203
-  Scenario: [TPS-110] 이전 회차 이동 - 기다무 이용권
+  Scenario: [TPS-110] 이전회차 : 기다무 회차 / 기다무 이용권 있음 > 뷰어 하단 툴바 > 이전회차 버튼 클릭 + Yes 버튼 클릭
     Given 이전회차 : 기다무 회차
     And 기다무 이용권 있음
     When 뷰어 하단 툴바 > [이전회차] 버튼 클릭
@@ -15,7 +15,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked for 72 hours
 
   @TC-0204
-  Scenario: [TPS-111] 이전 회차 이동 - 대여 이용권
+  Scenario: [TPS-111] 이전회차 : 유료회차 / 대여 이용권 있음 > 뷰어 하단 툴바 > 이전회차 버튼 클릭 + Unlock Episode 버튼 클릭
     Given 이전회차 : 유료회차
     And 대여 이용권 있음
     When 뷰어 하단 툴바 > [이전회차] 버튼 클릭
@@ -25,7 +25,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked for 72 hours
 
   @TC-0205
-  Scenario: [TPS-112] 이전 회차 이동 - 선물 이용권
+  Scenario: [TPS-112] 이전회차 : 유료회차 / 선물 이용권 있음 > 뷰어 하단 툴바 > 이전회차 버튼 클릭 + Unlock Episode 버튼 클릭
     Given 이전회차 : 유료회차
     And 선물 이용권 있음
     When 뷰어 하단 툴바 > [이전회차] 버튼 클릭
@@ -35,7 +35,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked
 
   @TC-0206
-  Scenario: [TPS-113] 이전 회차 이동 - 잉크 구매
+  Scenario: [TPS-113] 이전회차 : 유료회차 / 보유 이용권 없음 / 보유 잉크 >= 회차 금액 > 뷰어 하단 툴바 > 이전회차 버튼 클릭 + 회차 구매 옵션 클릭
     Given 이전회차 : 유료회차
     And 보유 이용권 없음
     And 보유 잉크 >= 회차 금액
@@ -48,7 +48,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked
 
   @TC-0207
-  Scenario: [TPS-114] 이전 회차 이동 - 잉크 부족
+  Scenario: [TPS-114] 이전회차 : 유료회차 / 보유 이용권 없음 / 보유 잉크 < 회차 금액 > 뷰어 하단 툴바 > 이전회차 버튼 클릭 + 회차 구매 옵션 클릭
     Given 이전회차 : 유료회차
     And 보유 이용권 없음
     And 보유 잉크 < 회차 금액
@@ -62,7 +62,7 @@ Feature: 하단 툴바
     And 잉크샵 팝업이 종료되며 뷰어에 머무른다.
 
   @TC-0208
-  Scenario: [TPS-115] 다음 회차 이동 - 기다무 이용권
+  Scenario: [TPS-115] 다음회차 : 기다무 회차 / 기다무 이용권 있음 > 뷰어 하단 툴바 > 다음회차 버튼 클릭 + Yes 버튼 클릭
     Given 다음회차 : 기다무 회차
     And 기다무 이용권 있음
     When 뷰어 하단 툴바 > [다음회차] 버튼 클릭
@@ -74,7 +74,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked for 72 hours
 
   @TC-0209
-  Scenario: [TPS-116] 다음 회차 이동 - 대여 이용권
+  Scenario: [TPS-116] 다음회차 : 유료회차 / 대여 이용권 있음 > 뷰어 하단 툴바 > 다음회차 버튼 클릭 + Unlock Episode 버튼 클릭
     Given 다음회차 : 유료회차
     And 대여 이용권 있음
     When 뷰어 하단 툴바 > [다음회차] 버튼 클릭
@@ -84,7 +84,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked for 72 hours
 
   @TC-0210
-  Scenario: [TPS-117] 다음 회차 이동 - 선물 이용권
+  Scenario: [TPS-117] 다음회차 : 유료회차 / 선물 이용권 있음 > 뷰어 하단 툴바 > 다음회차 버튼 클릭 + Unlock Episode 버튼 클릭
     Given 다음회차 : 유료회차
     And 선물 이용권 있음
     When 뷰어 하단 툴바 > [다음회차] 버튼 클릭
@@ -94,7 +94,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked
 
   @TC-0211
-  Scenario: [TPS-118] 다음 회차 이동 - 잉크 구매
+  Scenario: [TPS-118] 다음회차 : 유료회차 / 보유 이용권 없음 / 보유 잉크 >= 회차 금액 > 뷰어 하단 툴바 > 다음회차 버튼 클릭 + 회차 구매 옵션 클릭
     Given 다음회차 : 유료회차
     And 보유 이용권 없음
     And 보유 잉크 >= 회차 금액
@@ -107,7 +107,7 @@ Feature: 하단 툴바
     And ㄴ 토스트 : Episode unlocked
 
   @TC-0212
-  Scenario: [TPS-119] 다음 회차 이동 - 잉크 부족
+  Scenario: [TPS-119] 다음회차 : 유료회차 / 보유 이용권 없음 / 보유 잉크 < 회차 금액 > 뷰어 하단 툴바 > 다음회차 버튼 클릭 + 회차 구매 옵션클릭
     Given 다음회차 : 유료회차
     And 보유 이용권 없음
     And 보유 잉크 < 회차 금액

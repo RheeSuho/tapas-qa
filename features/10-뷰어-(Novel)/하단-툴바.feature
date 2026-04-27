@@ -20,7 +20,7 @@ Feature: 하단 툴바
     And 우측 회차 리스트 접히며 뷰어 전체 화면으로 노출된다.
 
   @TC-0135
-  Scenario: [TPS-148] PCW only - 리스트
+  Scenario: [TPS-148] PCW only > 리스트 버튼 클릭 + 리스트 버튼 재클릭
     Given PCW only
     When [리스트] 버튼 클릭
     And [리스트] 버튼 재클릭
@@ -28,7 +28,7 @@ Feature: 하단 툴바
     And 뷰어 우측 작품홈 영역이 노출된다.
 
   @TC-0136
-  Scenario: [TPS-149] PCW only - 전체화면
+  Scenario: [TPS-149] PCW only > 전체화면 버튼 클릭 + 전체화면 버튼 재클릭
     Given PCW only
     When [전체화면] 버튼 클릭
     And [전체화면] 버튼 재클릭
@@ -36,7 +36,7 @@ Feature: 하단 툴바
     And 전체화면 모드가 종료된다.
 
   @TC-0137
-  Scenario: [TPS-150] 소설 뷰어 옵션(AA) - 폰트 크기
+  Scenario: [TPS-150] AA 버튼 클릭 + 폰트 크기 - 버튼 클릭
     When [AA] 버튼 클릭
     And 폰트 크기 [+] 버튼 클릭
     And 폰트 크기 [-] 버튼 클릭
@@ -44,7 +44,7 @@ Feature: 하단 툴바
     And 팝업은 유지되며 소설 원고 폰트 크기가 작아진다.
 
   @TC-0138
-  Scenario: [TPS-151] 소설 뷰어 옵션(AA) - 행 간격
+  Scenario: [TPS-151] AA 버튼 클릭 + 행 간격 - 버튼 클릭
     When [AA] 버튼 클릭
     And 행 간격 [+] 버튼 클릭
     And 행 간격 [-] 버튼 클릭
@@ -52,7 +52,7 @@ Feature: 하단 툴바
     And 팝업은 유지되며 소설 원고 행 간격이 좁아진다.
 
   @TC-0139
-  Scenario: [TPS-152] 소설 뷰어 옵션(AA) - 화면 모드
+  Scenario: [TPS-152] AA 버튼 클릭 + 팝업 이외 영역 클릭
     When [AA] 버튼 클릭
     And 뷰어 화면 모드 클릭
     And 팝업 이외 영역 클릭
@@ -76,7 +76,7 @@ Feature: 하단 툴바
     And 팝업이 닫힌다.
 
   @TC-0142
-  Scenario: [TPS-155] 첫 번째 작가 서포트 활성화
+  Scenario: [TPS-155] 첫 번째 작가 서포트 활성화 > Support 버튼 클릭 + 우상단 x 버튼 클릭
     Given 첫 번째 작가 서포트 활성화
     When [Support] 버튼 클릭
     And 우상단 [x] 버튼 클릭

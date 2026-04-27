@@ -3,7 +3,7 @@
 Feature: 뷰어엔드
 
   @TC-0109
-  Scenario: [TPS-120] 작가의 말이 등록된 회차
+  Scenario: [TPS-120] 작가의 말이 등록된 회차 > 뷰어엔드 > 작가의 말 노출 확인 + 상단 < 버튼 클릭
     # Test DATA: sparks (작가 : revel)
     Given 작가의 말이 등록된 회차
     When 뷰어엔드 > 작가의 말 노출 확인
@@ -14,7 +14,7 @@ Feature: 뷰어엔드
     And 뷰어로 이동된다.
 
   @TC-0110
-  Scenario: [TPS-121] 광고가 설정된 작품
+  Scenario: [TPS-121] 광고가 설정된 작품 > 뷰어엔드 > 하단 광고 노출 확인 + 광고 선택
     # Test DATA: sparks (작가 : revel)
     Given 광고가 설정된 작품
     When 뷰어엔드 > 하단 광고 노출 확인
@@ -25,7 +25,7 @@ Feature: 뷰어엔드
     And 뷰어로 이동된다.
 
   @TC-0111
-  Scenario: [TPS-122] 이벤트 배너가 설정된 작품
+  Scenario: [TPS-122] 이벤트 배너가 설정된 작품 > 뷰어엔드 > 이벤트 배너 노출 확인 + 이벤트 배너 선택
     # Test DATA: sparks (작가 : revel)
     Given 이벤트 배너가 설정된 작품
     When 뷰어엔드 > 이벤트 배너 노출 확인
@@ -57,7 +57,7 @@ Feature: 뷰어엔드
     And 뷰어 우측에 Comments 리스트가 노출된다.
 
   @TC-0115
-  Scenario: [TPS-126] Recommendation for you 영역 확인 + 디바이스/브라우저 뒤로가기 버튼 클릭
+  Scenario: [TPS-126] Recommendation for you 영역 확인 + 리스트의 첫번째 작품 클릭
     When Recommendation for you 영역 확인
     And 가로 스크롤 동작
     And 리스트의 첫번째 작품 클릭

@@ -35,7 +35,7 @@ Feature: Free episodes
     And 모든 작품 리스트가 노출된다.
 
   @TC-0171
-  Scenario: [TPS-173] Free Episodes 작품 목록 없는 경우
+  Scenario: [TPS-173] Free Episodes 작품 목록 없는 경우 > Comics 필터 클릭 + All 필터 클릭
     Given Free Episodes 작품 목록 없는 경우
     When Comics 필터 클릭
     And Novels 필터 클릭

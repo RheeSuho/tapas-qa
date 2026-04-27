@@ -3,7 +3,7 @@
 Feature: Publish
 
   @TC-0192
-  Scenario: [TPS-204] Mweb only
+  Scenario: [TPS-204] Mweb only > Profile 클릭 + Publish 클릭
     Given Mweb only
     When GNB > Profile 클릭
     And Publish 클릭

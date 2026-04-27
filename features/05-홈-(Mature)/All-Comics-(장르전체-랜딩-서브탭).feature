@@ -6,7 +6,7 @@ Feature: All Comics (장르전체 랜딩 서브탭)
     When GNB > mature 클릭
 
   @TC-0082
-  Scenario: [TPS-056] QA환경 : Comics 탭
+  Scenario: [TPS-056] All Comics 서브탭 클릭 + 정렬/필터 노출 확인
     # Test DATA: QA환경 : Comics 탭
     When {All Comics} 서브탭 클릭
     And 정렬/필터 노출 확인

@@ -11,7 +11,7 @@ Feature: details 탭
     Then Creaotrs, Details, 업데이트 일자, 발행처, 추천 작품이 노출된다.
 
   @TC-0097
-  Scenario: [TPS-096] 작가홈
+  Scenario: [TPS-096] 작가 클릭 + 작가 홈 확인
     When 작가 클릭
     And 작가 홈 확인
     And 뒤로가기 [<] 버튼 클릭
@@ -20,7 +20,7 @@ Feature: details 탭
     And 작품홈으로 이동된다.
 
   @TC-0098
-  Scenario: [TPS-097] 장르
+  Scenario: [TPS-097] 작품 정보 영역 장르값 클릭 + 정렬값 선택 후 Comfirm 버튼 클릭
     When 작품 정보 영역 {장르값} 클릭
     And - MWeb) {장르값} 클릭
     And 장르 랜딩 리스트 확인
@@ -37,6 +37,6 @@ Feature: details 탭
     And - MWeb) 작품홈 Episodes 탭으로 이동된다.
 
   @TC-0099
-  Scenario: [TPS-098] 추천 작품
+  Scenario: [TPS-098] 추천 작품 영역 확인
     When 추천 작품 영역 확인
     Then Fans also read 문구 및 추천 작품이 노출된다.
