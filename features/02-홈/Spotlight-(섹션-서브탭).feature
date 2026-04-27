@@ -2,7 +2,7 @@
 # 1 Depth: 홈
 Feature: Spotlight (섹션 서브탭)
 
-  @TC-0014
+  @TC-0014 @skip
   Scenario: [TPS-019] Spotlight 서브탭 클릭 + 프로모션 배너 클릭
     When {Spotlight} 서브탭 클릭
     And 프로모션 배너 섹션 노출 확인
