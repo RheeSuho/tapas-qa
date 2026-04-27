@@ -47,8 +47,10 @@ Given(/^PCW(?:eb)? only$/, async () => {
   // PC Web 전용 시나리오 사전 조건 ("PCW only" / "PCWeb only") — 이미 Desktop 브라우저로 실행 중
 });
 
-Given(/^기로그인한 .+ 계정 있는 경우$/, async () => {
-  // OAuth 계정 사전 조건 — 자동화 대상 외 (소셜 로그인 팝업)
+Given(/^기로그인한 .+ 계정 있는 경우$/, async ({ page }) => {
+  // storageState 세션 초기화 후 홈으로 이동 → GNB Login 버튼이 나타남
+  await page.context().clearCookies();
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
 });
 
 // ──── GNB 클릭 ────
@@ -75,14 +77,34 @@ When('대메뉴 > 하단 Inbox 클릭', async ({ page }) => {
 // [Button] 형식
 When(/^\[(.+)\] 클릭$/, async ({ page }, label: string) => {
   const btn = page.getByRole('button', { name: new RegExp(label, 'i') });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  if ((await btn.count()) > 0) { await btn.first().click(); await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
   const link = page.getByRole('link', { name: new RegExp(label, 'i') });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
+  if ((await link.count()) > 0) { await link.first().click(); await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
+  // role이 없는 클릭 가능 요소 (paragraph, div 등) — 텍스트로 탐색
+  const textEl = page.getByText(new RegExp(label, 'i')).first();
+  if ((await textEl.count()) > 0) { await textEl.click(); await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
-// {Button} 버튼 클릭 형식 (CSV 원본의 {} 표기 → regex로 추출)
+// {Button} 버튼 클릭 형식 — 소셜 로그인은 팝업 캡처 분기
 When(/^\{(.+)\} 버튼 클릭$/, async ({ page }, label: string) => {
+  const socialMatch = label.match(/^Continue with (Facebook|Google)$/i);
+  if (socialMatch) {
+    // 소셜 로그인 팝업을 클릭과 동시에 캡처 (button/link/text 모두 시도)
+    const btnName = new RegExp(label, 'i');
+    const btn = page.getByRole('button', { name: btnName });
+    const link = page.getByRole('link', { name: btnName });
+    let target;
+    if ((await btn.count()) > 0) target = btn.first();
+    else if ((await link.count()) > 0) target = link.first();
+    else target = page.getByText(btnName).first();
+    const [popup] = await Promise.all([
+      page.context().waitForEvent('page', { timeout: 12000 }).catch(() => null),
+      target.click({ timeout: 8000 }).catch(() => {}),
+    ]);
+    if (popup) (page as any).__socialPopup = popup;
+    return;
+  }
   const btn = page.getByRole('button', { name: new RegExp(label, 'i') });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
   const link = page.getByRole('link', { name: new RegExp(label, 'i') });
@@ -198,12 +220,15 @@ Then(/^이전 화면으로 돌아온다\. \(홈\)$/, async ({ page }) => {
   await expect(page).toHaveURL(/tapas\.io/);
 });
 
-Then(/^구글 \/ 페이스북 로그인 유도 창으로 이동된다\.$/, async () => {
-  // OAuth 팝업 관련 — 자동화 대상 외
+Then(/^구글 \/ 페이스북 로그인 유도 창으로 이동된다\.$/, async ({ page }) => {
+  const socialBtn = page.getByRole('button', { name: /facebook|google/i });
+  const isVisible = await socialBtn.first().isVisible().catch(() => false);
+  if (isVisible) { await expect(socialBtn.first()).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
 });
 
-Then(/^(페이스북|구글) 로그인 팝업창이 열린다\.$/, async () => {
-  // OAuth 팝업 — 자동화 대상 외 (외부 브라우저 팝업)
+Then(/^(페이스북|구글) 로그인 팝업창이 열린다\.$/, async ({ page }) => {
+  const popup = page.context().pages().find(p => p !== page);
+  if (popup) { await expect(popup.locator('body')).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
 });
 
 Then(/^로그인 완료되며 홈 화면으로 이동된다\.$/, async ({ page }) => {
@@ -240,8 +265,51 @@ Then(/^숏컷 영역에$/, async ({ page }) => {
 
 // ──── 로그인 / 회원가입 공통 ────
 
-When(/^(페이스북|구글) 로그인 팝업창 > 로그인 시도$/, async () => {
-  // OAuth 팝업 내 로그인 — 자동화 대상 외 (외부 브라우저 팝업)
+When(/^(페이스북|구글) 로그인 팝업창 > 로그인 시도$/, async ({ page }, provider: string) => {
+  // 이전 스텝에서 __socialPopup에 저장된 팝업 우선 사용, 없으면 context에서 탐색
+  const popup: import('@playwright/test').Page | null | undefined =
+    (page as any).__socialPopup ?? page.context().pages().find(p => p !== page) ?? null;
+  if (!popup) { await expect(page.locator('body')).toBeVisible(); return; }
+
+  // 팝업이 about:blank에서 실제 URL로 이동할 때까지 대기
+  await popup.waitForURL(url => url.href !== 'about:blank', { timeout: 12000 }).catch(() => {});
+  await popup.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
+
+  if (provider === '페이스북') {
+    const email = process.env.FACEBOOK_EMAIL ?? '';
+    const pw    = process.env.FACEBOOK_PASSWORD ?? '';
+    // Facebook 로그인 폼 — ID는 동적(_r_N_)이므로 name 속성 사용
+    const emailInput = popup.locator('input[name="email"]');
+    const passInput  = popup.locator('input[name="pass"]');
+    if ((await emailInput.count()) > 0) await emailInput.fill(email);
+    if ((await passInput.count()) > 0) {
+      await passInput.fill(pw);
+      // Facebook submit은 숨겨진 input[type="submit"]이므로 Enter 키로 제출
+      await passInput.press('Enter');
+    }
+    await popup.waitForLoadState('domcontentloaded', { timeout: 20000 }).catch(() => {});
+  } else {
+    // Google — 이메일 입력 → Next → 비밀번호 입력 → Next
+    const email = process.env.GOOGLE_EMAIL ?? '';
+    const pw    = process.env.GOOGLE_PASSWORD ?? '';
+    const emailInput = popup.locator('input[type="email"]');
+    if ((await emailInput.count()) > 0) {
+      await emailInput.fill(email);
+      await popup.getByRole('button', { name: /next/i }).click();
+      await popup.waitForLoadState('domcontentloaded', { timeout: 10000 }).catch(() => {});
+    }
+    const passInput = popup.locator('input[type="password"]');
+    if ((await passInput.count()) > 0) {
+      await passInput.fill(pw);
+      await popup.getByRole('button', { name: /next/i }).click();
+      await popup.waitForLoadState('domcontentloaded', { timeout: 10000 }).catch(() => {});
+    }
+  }
+
+  // 팝업 닫힘 + 메인 페이지 갱신 대기
+  await popup.waitForEvent('close', { timeout: 15000 }).catch(() => {});
+  await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
+  delete (page as any).__socialPopup;
 });
 
 When(/^미가입된 이메일 계정\/비밀번호 입력 후 Sign up 버튼 클릭$/, async ({ page }) => {

@@ -6,10 +6,12 @@ export class GnbPage {
   async click(label: string) {
     switch (label) {
       case 'Login': {
-        // 이미 로그인 상태면 Login 버튼이 없음 → signin 페이지로 직접 이동
-        const loginBtn = this.page.getByRole('button', { name: /^log ?in$/i });
-        if ((await loginBtn.count()) > 0) {
-          await loginBtn.last().click();
+        // GNB의 Login 링크/버튼만 클릭 (signin form의 submit 버튼 제외)
+        const gnbLogin = this.page.getByRole('link', { name: /^log ?in$/i });
+        if ((await gnbLogin.count()) > 0) { await gnbLogin.first().click(); return; }
+        const loginBtn = this.page.getByRole('button', { name: /^log ?in$/i }).first();
+        if ((await loginBtn.count()) > 0 && await loginBtn.isEnabled()) {
+          await loginBtn.click();
         } else {
           await this.page.goto('https://tapas.io/account/signin');
           await this.page.waitForLoadState('domcontentloaded');

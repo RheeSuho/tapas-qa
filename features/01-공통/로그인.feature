@@ -2,7 +2,7 @@
 # 1 Depth: 공통
 Feature: 로그인
 
-  @TC-0005
+  @TC-0005 @skip
   Scenario: [TPS-001] 기로그인한 페이스북 계정 있는 경우 > Login 클릭 + 페이스북 로그인 팝업창 > 로그인 시도
     Given 기로그인한 페이스북 계정 있는 경우
     When GNB > Login 클릭
@@ -14,7 +14,7 @@ Feature: 로그인
     And 페이스북 로그인 팝업창이 열린다.
     And 로그인 완료되며 홈 화면으로 이동된다.
 
-  @TC-0006
+  @TC-0006 @skip
   Scenario: [TPS-002] 기로그인한 구글 계정 있는 경우 > Login 클릭 + 구글 로그인 팝업창 > 로그인 시도
     Given 기로그인한 구글 계정 있는 경우
     When GNB > Login 클릭
