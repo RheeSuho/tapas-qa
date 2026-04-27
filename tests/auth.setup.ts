@@ -1,59 +1,78 @@
 // tests/auth.setup.ts
 // 최초 1회 이메일 로그인을 수행하고 로그인 상태를 .auth/user.json에 저장합니다.
+// CI 환경에서는 AUTH_STATE_B64 환경변수가 있으면 로그인 없이 세션 파일을 직접 복원합니다.
 
 import { test as setup, expect } from '@playwright/test';
 import * as path from 'path';
 import * as fs from 'fs';
 
-// 세션 재사용 유효기간 (시간 단위)
 const AUTH_MAX_AGE_HOURS = 24;
-
-// 로그인 상태가 저장될 경로 (프로젝트 루트 기준 .auth/user.json)
 const authFile = path.join(__dirname, '../.auth/user.json');
 
 setup('이메일 계정으로 로그인하고 세션 저장', async ({ page }) => {
-  // 이미 저장된 세션이 있고 24시간 이내라면 재사용 (로그인 스킵)
+  const authDir = path.dirname(authFile);
+  if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
+
+  // CI 전용: GitHub Secret에서 auth state를 직접 복원 (login 흐름 스킵)
+  const authStateB64 = process.env.AUTH_STATE_B64;
+  if (authStateB64) {
+    console.log('[setup] AUTH_STATE_B64 감지 — 로그인 없이 세션 복원');
+    fs.writeFileSync(authFile, Buffer.from(authStateB64, 'base64').toString('utf-8'));
+    console.log('[setup] 세션 복원 완료');
+    return;
+  }
+
+  // 로컬: 기존 세션이 있고 24시간 이내라면 재사용
   if (fs.existsSync(authFile)) {
     const ageHours = (Date.now() - fs.statSync(authFile).mtimeMs) / (1000 * 60 * 60);
     if (ageHours < AUTH_MAX_AGE_HOURS) {
       console.log(`[setup] 기존 세션 재사용 (${ageHours.toFixed(1)}시간 전 저장)`);
-      return; // 로그인 스킵
+      return;
     }
     console.log(`[setup] 세션이 오래됨 (${ageHours.toFixed(1)}시간), 재로그인`);
   }
 
-  // .env에서 계정 정보 읽기   ← 여기부터는 기존 코드 그대로
-  const email = process.env.TAPAS_EMAIL; 
+  const email = process.env.TAPAS_EMAIL;
   const password = process.env.TAPAS_PASSWORD;
-
   if (!email || !password) {
-    throw new Error(
-      '.env 파일에 TAPAS_EMAIL과 TAPAS_PASSWORD를 설정해주세요.'
-    );
+    throw new Error('TAPAS_EMAIL / TAPAS_PASSWORD 환경변수가 없습니다.');
   }
+  console.log(`[setup] 로그인 시도 — ${email}`);
 
   // 1. 홈으로 이동
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  console.log(`[setup] 현재 URL: ${page.url()}`);
 
-  // 2. 쿠키 배너가 있으면 Accept
-  const accept = page.getByRole('button', { name: /accept/i });
-  if (await accept.isVisible().catch(() => false)) {
-    await accept.click();
+  // 2. 쿠키 배너가 있으면 Accept (최대 5초 대기)
+  try {
+    await page.getByRole('button', { name: /accept/i }).click({ timeout: 5000 });
+    console.log('[setup] 쿠키 배너 Accept 클릭');
+  } catch {
+    // 배너 없음 — 계속 진행
   }
 
-  // 3. GNB > Login 클릭
-  await page.getByRole('link', { name: /log ?in/i }).first().click();
+  // 3. GNB > Login 링크 클릭 (없으면 직접 signin 페이지로)
+  const loginLink = page.getByRole('link', { name: /log ?in/i });
+  if ((await loginLink.count()) > 0) {
+    await loginLink.first().click();
+  } else {
+    await page.goto('/account/signin', { waitUntil: 'domcontentloaded' });
+  }
+  console.log(`[setup] signin 이동 후 URL: ${page.url()}`);
 
   // 4. 이메일/비밀번호 입력
+  await page.getByPlaceholder(/email/i).waitFor({ timeout: 10000 });
   await page.getByPlaceholder(/email/i).fill(email);
   await page.getByPlaceholder(/password/i).fill(password);
 
-// Log in 버튼이 GNB에도 있고 폼에도 있음 → 마지막에 나타나는 폼 버튼 클릭
-await page.getByRole('button', { name: /^log ?in$/i }).last().click();
+  // 5. 폼 내 Login 버튼 클릭 (GNB에도 Log in이 있으므로 .last())
+  await page.getByRole('button', { name: /^log ?in$/i }).last().click();
 
- // 6. 로그인 성공 검증 (signin 페이지에서 벗어나 홈으로 복귀)
-await expect(page).not.toHaveURL(/signin/);
+  // 6. 로그인 성공 검증
+  await expect(page).not.toHaveURL(/signin/, { timeout: 20000 });
+  console.log(`[setup] 로그인 성공 — 현재 URL: ${page.url()}`);
 
-  // 7. 세션 상태를 파일로 저장
+  // 7. 세션 저장
   await page.context().storageState({ path: authFile });
+  console.log('[setup] 세션 저장 완료');
 });

@@ -35,16 +35,27 @@ jobs:
           TAPAS_EMAIL: ${{ secrets.TAPAS_EMAIL }}
           TAPAS_PASSWORD: ${{ secrets.TAPAS_PASSWORD }}
           TAPAS_BASE_URL: https://tapas.io
+          AUTH_STATE_B64: ${{ secrets.AUTH_STATE_B64 }}
         continue-on-error: true
 
       - name: Upload Playwright report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
 
+      - name: Upload test results (JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
+
       - name: Send Slack notification
+        if: always()
         run: |
           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           node scripts/notify-slack.js Smoke "$RUN_URL"

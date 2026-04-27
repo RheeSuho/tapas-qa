@@ -13,6 +13,7 @@
   },
   "include": [
     "tests/**/*.ts",
+    "steps/**/*.ts",
     "pages/**/*.ts",
     "data/**/*.ts",
     "config/**/*.ts",
