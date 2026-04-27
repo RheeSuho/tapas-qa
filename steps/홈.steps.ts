@@ -2,7 +2,7 @@
 // features/홈/**/*.feature 대응
 
 import { createBdd } from 'playwright-bdd';
-import { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 const { When, Then } = createBdd();
 
@@ -15,7 +15,7 @@ When(/^\{(.+)\} 서브탭 클릭$/, async ({ page }, tabName: string) => {
   if ((await tab.count()) > 0) { await tab.first().click(); return; }
   const btn = page.getByRole('button', { name: new RegExp(`^${tabName}$`, 'i') });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, `{${tabName}} 서브탭이 현재 페이지에 존재하지 않음`);
 });
 
 // "Home > X 서브탭 클릭" 형식

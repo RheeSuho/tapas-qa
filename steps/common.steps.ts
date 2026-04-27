@@ -2,7 +2,7 @@
 // GNB 조작, 네비게이션, 뒤로가기, 설명성 bullet 등
 
 import { createBdd } from 'playwright-bdd';
-import { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { GnbPage } from '../pages/GnbPage';
 
@@ -83,7 +83,7 @@ When(/^\[(.+)\] 클릭$/, async ({ page }, label: string) => {
   // role이 없는 클릭 가능 요소 (paragraph, div 등) — 텍스트로 탐색
   const textEl = page.getByText(new RegExp(label, 'i')).first();
   if ((await textEl.count()) > 0) { await textEl.click(); await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, `[${label}] 요소가 현재 페이지에 존재하지 않음`);
 });
 
 // {Button} 버튼 클릭 형식 — 소셜 로그인은 팝업 캡처 분기
@@ -109,7 +109,7 @@ When(/^\{(.+)\} 버튼 클릭$/, async ({ page }, label: string) => {
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
   const link = page.getByRole('link', { name: new RegExp(label, 'i') });
   if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, `{${label}} 버튼/링크가 현재 페이지에 존재하지 않음`);
 });
 
 // [Sign up] / [Submit] 버튼 클릭 — 회원가입 플로우

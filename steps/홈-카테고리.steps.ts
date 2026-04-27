@@ -1,7 +1,7 @@
 // 홈-(Comics), 홈-(Novels), 홈-(Community), 홈-(Mature) 공통 step 정의
 
 import { createBdd } from 'playwright-bdd';
-import { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { GnbPage } from '../pages/GnbPage';
 
 const { Given, When, Then } = createBdd();
@@ -23,7 +23,7 @@ When(/^(Comics|Novels|Daily|Popular|All Novels) 서브탭 클릭$/, async ({ pag
   if ((await tab.count()) > 0) { await tab.first().click(); return; }
   const btn = page.getByRole('button', { name: new RegExp(`^${tabName}$`, 'i') });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, `${tabName} 서브탭이 현재 페이지에 존재하지 않음`);
 });
 
 // ──── 장르/정렬 필터 ────
