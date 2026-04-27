@@ -5,19 +5,14 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch: # 수동 실행 버튼
+  workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
   smoke:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -40,26 +35,22 @@ jobs:
           TAPAS_EMAIL: ${{ secrets.TAPAS_EMAIL }}
           TAPAS_PASSWORD: ${{ secrets.TAPAS_PASSWORD }}
           TAPAS_BASE_URL: https://tapas.io
-        continue-on-error: true  # 실패해도 리포트/Slack 단계 계속 실행
+        continue-on-error: true
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload report to Pages
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
         with:
+          name: playwright-report
           path: playwright-report/
-
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+          retention-days: 7
 
       - name: Send Slack notification
-        run: node scripts/notify-slack.js Smoke "${{ steps.deploy.outputs.page_url }}"
+        run: |
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          node scripts/notify-slack.js Smoke "$RUN_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      # 테스트가 실패했으면 워크플로우도 실패로 표시
-      - name: Check test result
+      - name: Fail if tests failed
         if: steps.smoke.outcome == 'failure'
         run: exit 1
