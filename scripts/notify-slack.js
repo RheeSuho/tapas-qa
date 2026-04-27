@@ -12,25 +12,33 @@ const JIRA_PID     = '11189';   // 프로젝트 TP의 숫자 ID
 const JIRA_TYPE_ID = '1';   // Bug
 
 function extractBddSteps(steps) {
-  const result = [];
-  const bddPattern = /^(Given|When|Then|And|But)\b/i;
-  for (const step of steps || []) {
-    if (bddPattern.test(step.title)) result.push(step.title);
-    if (step.steps?.length) result.push(...extractBddSteps(step.steps));
+  const procedure = [];
+  const expected = [];
+  let seenThen = false;
+  function traverse(list) {
+    for (const step of list || []) {
+      const t = step.title;
+      // 키워드 제거 후 내용만 추출
+      const content = t.replace(/^(Given|When|Then|And|But)\s+/i, '').trim();
+      // 설명성 스텝 제외: "- " 또는 "ㄴ" 로 시작하는 것
+      const isDescriptive = /^[-ㄴ]/.test(content);
+      if (!isDescriptive) {
+        if (/^Then\b/i.test(t))             { seenThen = true; expected.push(content); }
+        else if (/^(Given|When|And|But)\b/i.test(t)) { (seenThen ? expected : procedure).push(content); }
+      }
+      if (step.steps?.length) traverse(step.steps);
+    }
   }
-  return result;
+  traverse(steps);
+  return { procedure, expected };
 }
 
 function makeJiraUrl(test, runUrl) {
-  const summary = encodeURIComponent(test.title);
-  const stepsText = test.steps.length
-    ? '\n\n[수행 절차]\n' + test.steps.join('\n')
-    : '';
-  const desc = encodeURIComponent(
-    `테스트: ${test.title}\n환경: https://tapas.io\nCI Run: ${runUrl || 'N/A'}${stepsText}`
-  );
+  let body = `확인 환경: https://tapas.io (PC Web)\nCI Run: ${runUrl || 'N/A'}\n\n상세내용:\n자동화 테스트 실패 — ${test.title}`;
+  if (test.steps.procedure.length) body += '\n\n발생 경로:\n' + test.steps.procedure.join('\n');
+  if (test.steps.expected.length)  body += '\n\n기대 결과:\n' + test.steps.expected.join('\n');
   return `https://${JIRA_DOMAIN}/secure/CreateIssueDetails!init.jspa` +
-    `?pid=${JIRA_PID}&issuetype=${JIRA_TYPE_ID}&summary=${summary}&description=${desc}`;
+    `?pid=${JIRA_PID}&issuetype=${JIRA_TYPE_ID}&summary=${encodeURIComponent(test.title)}&description=${encodeURIComponent(body)}`;
 }
 
 const RESULTS_FILE = path.join(__dirname, '../test-results/results.json');
