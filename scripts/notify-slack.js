@@ -2,7 +2,9 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
+// 로컬 실행 시에만 .env 로드 (CI에서는 GitHub Actions 환경변수 사용)
+const envPath = path.join(__dirname, '../.env');
+if (fs.existsSync(envPath)) require('dotenv').config({ path: envPath });
 
 const RESULTS_FILE = path.join(__dirname, '../test-results/results.json');
 const WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
