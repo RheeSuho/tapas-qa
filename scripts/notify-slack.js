@@ -6,6 +6,20 @@ const https = require('https');
 const envPath = path.join(__dirname, '../.env');
 if (fs.existsSync(envPath)) require('dotenv').config({ path: envPath });
 
+// Jira 설정
+const JIRA_DOMAIN  = 'kakaoent.atlassian.net';
+const JIRA_PID     = '11189';   // 프로젝트 TP의 숫자 ID
+const JIRA_TYPE_ID = '10004';   // Bug
+
+function makeJiraUrl(testTitle, runUrl) {
+  const summary = encodeURIComponent(`[자동화 실패] ${testTitle}`);
+  const desc = encodeURIComponent(
+    `*테스트:* ${testTitle}\n*환경:* https://tapas.io\n*CI Run:* ${runUrl || 'N/A'}`
+  );
+  return `https://${JIRA_DOMAIN}/secure/CreateIssueDetails!init.jspa` +
+    `?pid=${JIRA_PID}&issuetype=${JIRA_TYPE_ID}&summary=${summary}&description=${desc}`;
+}
+
 const RESULTS_FILE = path.join(__dirname, '../test-results/results.json');
 const WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 const SUITE_NAME  = process.argv[2] || 'BDD';
@@ -74,6 +88,15 @@ if (failedTests.length > 0) {
     type: 'section',
     text: { type: 'mrkdwn', text: `*실패 항목*\n${failList}${more}` }
   });
+
+  // 실패 항목별 Jira 등록 버튼 (최대 5개)
+  const jiraButtons = failedTests.slice(0, 5).map(t => ({
+    type: 'button',
+    text: { type: 'plain_text', text: `🐛 ${t.match(/\[TPS-\d+\]/)?.[0] ?? t.slice(0, 12)}` },
+    url: makeJiraUrl(t, REPORT_URL),
+    style: 'danger',
+  }));
+  blocks.push({ type: 'actions', elements: jiraButtons });
 }
 
 if (REPORT_URL) {
