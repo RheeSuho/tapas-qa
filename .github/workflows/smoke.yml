@@ -1,0 +1,65 @@
+name: Smoke Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # 수동 실행 버튼
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run smoke tests
+        id: smoke
+        run: npm run test:smoke
+        env:
+          TAPAS_EMAIL: ${{ secrets.TAPAS_EMAIL }}
+          TAPAS_PASSWORD: ${{ secrets.TAPAS_PASSWORD }}
+          TAPAS_BASE_URL: https://tapas.io
+        continue-on-error: true  # 실패해도 리포트/Slack 단계 계속 실행
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload report to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: playwright-report/
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Send Slack notification
+        run: node scripts/notify-slack.js Smoke "${{ steps.deploy.outputs.page_url }}"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # 테스트가 실패했으면 워크플로우도 실패로 표시
+      - name: Check test result
+        if: steps.smoke.outcome == 'failure'
+        run: exit 1

@@ -6,7 +6,8 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const RESULTS_FILE = path.join(__dirname, '../test-results/results.json');
 const WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
-const SUITE_NAME = process.argv[2] || 'BDD';
+const SUITE_NAME  = process.argv[2] || 'BDD';
+const REPORT_URL  = process.argv[3] || null;
 
 if (!WEBHOOK_URL) {
   console.error('SLACK_WEBHOOK_URL이 .env에 없습니다.');
@@ -73,10 +74,22 @@ if (failedTests.length > 0) {
   });
 }
 
-blocks.push({
-  type: 'context',
-  elements: [{ type: 'mrkdwn', text: '📋 상세 리포트: 터미널에서 `npm run report`' }]
-});
+if (REPORT_URL) {
+  blocks.push({
+    type: 'actions',
+    elements: [{
+      type: 'button',
+      text: { type: 'plain_text', text: '📋 리포트 보기' },
+      url: REPORT_URL,
+      style: allPassed ? 'primary' : 'danger',
+    }]
+  });
+} else {
+  blocks.push({
+    type: 'context',
+    elements: [{ type: 'mrkdwn', text: '📋 상세 리포트: 터미널에서 `npm run report`' }]
+  });
+}
 
 const body = JSON.stringify({ blocks });
 const url = new URL(WEBHOOK_URL);
