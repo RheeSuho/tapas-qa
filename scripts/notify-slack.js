@@ -9,7 +9,7 @@ if (fs.existsSync(envPath)) require('dotenv').config({ path: envPath });
 // Jira 설정
 const JIRA_DOMAIN  = 'kakaoent.atlassian.net';
 const JIRA_PID     = '11189';   // 프로젝트 TP의 숫자 ID
-const JIRA_TYPE_ID = '10004';   // Bug
+const JIRA_TYPE_ID = '1';   // Bug
 
 function makeJiraUrl(testTitle, runUrl) {
   const summary = encodeURIComponent(`[자동화 실패] ${testTitle}`);
