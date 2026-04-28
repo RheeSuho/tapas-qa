@@ -231,12 +231,27 @@ When('더보기 링크를 클릭한다', async ({ page }) => {
   }
 });
 
-When('빅배너 영역에서 8초 대기한다', async () => {
-  // @skip 시나리오 전용
+// 슬라이드 전환 전 번호 저장용 (TPS-021)
+let _slideBeforeNum: number = 0;
+
+When('빅배너 영역에서 8초 대기한다', async ({ page }) => {
+  // 현재 슬라이드 번호 저장 (text-s-white 클래스 = 활성 슬라이드)
+  const indicator = page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first();
+  const text = await indicator.textContent().catch(() => null);
+  _slideBeforeNum = parseInt(text?.trim() || '0');
+  await page.waitForTimeout(8500);
 });
 
 Then('다음 빅배너로 자동 전환된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const indicator = page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first();
+  if ((await indicator.count()) > 0) {
+    const text = await indicator.textContent();
+    const afterNum = parseInt(text?.trim() || '0');
+    // 슬라이드 번호가 증가했는지 확인 (C수준: 캐러셀 실제 전진 검증)
+    expect(afterNum).toBeGreaterThan(_slideBeforeNum);
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('랜딩 페이지로 이동된다', async ({ page }) => {
