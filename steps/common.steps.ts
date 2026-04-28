@@ -5,7 +5,6 @@ import { createBdd } from 'playwright-bdd';
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { GnbPage } from '../pages/GnbPage';
-import { heal } from '../utils/healLocator';
 
 const { Given, When, Then, Before } = createBdd();
 
@@ -77,17 +76,14 @@ When('대메뉴 > 하단 Inbox 클릭', async ({ page }) => {
 
 // [Button] 형식
 When(/^\[(.+)\] 클릭$/, async ({ page }, label: string) => {
-  const el = await heal(page, [
-    p => p.getByRole('button', { name: new RegExp(label, 'i') }),
-    p => p.getByRole('link', { name: new RegExp(label, 'i') }),
-    p => p.getByText(new RegExp(`^${label}$`, 'i')),
-  ], `[${label}]`);
-  if (el) {
-    await el.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    test.skip(true, `[${label}] 요소가 현재 페이지에 존재하지 않음`);
-  }
+  const btn = page.getByRole('button', { name: new RegExp(label, 'i') });
+  if ((await btn.count()) > 0) { await btn.first().click(); await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
+  const link = page.getByRole('link', { name: new RegExp(label, 'i') });
+  if ((await link.count()) > 0) { await link.first().click(); await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
+  // role이 없는 클릭 가능 요소 (paragraph, div 등) — 텍스트로 탐색
+  const textEl = page.getByText(new RegExp(label, 'i')).first();
+  if ((await textEl.count()) > 0) { await textEl.click(); await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
+  test.skip(true, `[${label}] 요소가 현재 페이지에 존재하지 않음`);
 });
 
 // {Button} 버튼 클릭 형식 — 소셜 로그인은 팝업 캡처 분기
@@ -109,12 +105,10 @@ When(/^\{(.+)\} 버튼 클릭$/, async ({ page }, label: string) => {
     if (popup) (page as any).__socialPopup = popup;
     return;
   }
-  const el = await heal(page, [
-    p => p.getByRole('button', { name: new RegExp(label, 'i') }),
-    p => p.getByRole('link', { name: new RegExp(label, 'i') }),
-    p => p.getByText(new RegExp(`^${label}$`, 'i')),
-  ], `{${label}}`);
-  if (el) { await el.click(); return; }
+  const btn = page.getByRole('button', { name: new RegExp(label, 'i') });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  const link = page.getByRole('link', { name: new RegExp(label, 'i') });
+  if ((await link.count()) > 0) { await link.first().click(); return; }
   test.skip(true, `{${label}} 버튼/링크가 현재 페이지에 존재하지 않음`);
 });
 

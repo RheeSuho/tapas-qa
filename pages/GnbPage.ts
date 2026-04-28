@@ -1,5 +1,4 @@
 import { Page, expect } from '@playwright/test';
-import { heal } from '../utils/healLocator';
 
 export class GnbPage {
   constructor(private page: Page) {}
@@ -7,58 +6,43 @@ export class GnbPage {
   async click(label: string) {
     switch (label) {
       case 'Login': {
-        const el = await heal(this.page, [
-          p => p.getByRole('link', { name: /^log ?in$/i }),
-          p => p.getByRole('button', { name: /^log ?in$/i }),
-          p => p.locator('a[href*="/signin"]'),
-        ], 'GNB Login');
-        if (el) { await el.click(); return; }
-        await this.page.goto('https://tapas.io/account/signin');
+        // GNB의 Login 링크/버튼만 클릭 (signin form의 submit 버튼 제외)
+        const gnbLogin = this.page.getByRole('link', { name: /^log ?in$/i });
+        if ((await gnbLogin.count()) > 0) { await gnbLogin.first().click(); return; }
+        const loginBtn = this.page.getByRole('button', { name: /^log ?in$/i }).first();
+        if ((await loginBtn.count()) > 0 && await loginBtn.isEnabled()) {
+          await loginBtn.click();
+        } else {
+          await this.page.goto('https://tapas.io/account/signin');
+          await this.page.waitForLoadState('domcontentloaded');
+        }
         return;
       }
-
       case 'Profile':
-      case '프로필': {
-        const el = await heal(this.page, [
-          p => p.locator('button:has(img[alt="profile image"])'),
-          p => p.locator('button:has(img[alt*="profile"])'),
-          p => p.locator('[class*="avatar"] button, [class*="profile"] button'),
-        ], 'GNB Profile');
-        if (el) await el.click();
+      case '프로필':
+        await this.page.locator('button:has(img[alt="profile image"])').first().click();
         return;
-      }
-
       case '라이브러리 메뉴':
       case '라이브러리': {
-        const el = await heal(this.page, [
-          p => p.getByRole('link', { name: /^library$/i }),
-          p => p.locator('a[href*="/reading-list"]'),
-          p => p.getByRole('link', { name: /library/i }),
-        ], 'GNB Library');
-        if (el) { await el.click(); return; }
-        await this.page.goto('https://tapas.io/reading-list/');
+        const libLink = this.page.getByRole('link', { name: /library/i });
+        if ((await libLink.count()) > 0) { await libLink.first().click(); } else { await this.page.goto('https://tapas.io/reading-list/'); }
         return;
       }
-
       case 'Inbox': {
-        const el = await heal(this.page, [
-          p => p.getByRole('link', { name: /^inbox$/i }),
-          p => p.locator('a[href*="/inbox"]'),
-          p => p.getByRole('link', { name: /inbox/i }),
-        ], 'GNB Inbox');
-        if (el) { await el.click(); return; }
-        await this.page.goto('https://tapas.io/inbox/activity');
+        const inboxLink = this.page.getByRole('link', { name: /inbox/i });
+        if ((await inboxLink.count()) > 0) { await inboxLink.first().click(); } else { await this.page.goto('https://tapas.io/inbox/activity'); }
         return;
       }
     }
-
-    // 일반 GNB 링크 (Home, Comics, Novels, Community, Mature, More 등)
-    const el = await heal(this.page, [
-      p => p.getByRole('link', { name: new RegExp(`^${label}$`, 'i') }),
-      p => p.getByRole('button', { name: new RegExp(`^${label}$`, 'i') }),
-      p => p.getByText(label, { exact: true }),
-    ], `GNB ${label}`);
-    if (el) await el.click();
+    // 일반 링크 (Home, Comics, Novels, Community, Mature, More, Profile 등)
+    const link = this.page.getByRole('link', { name: new RegExp(`^${label}$`, 'i') });
+    if ((await link.count()) > 0) {
+      await link.first().click();
+      return;
+    }
+    // 버튼으로 재시도
+    const fallbackBtn = this.page.getByRole('button', { name: new RegExp(label, 'i') });
+    if ((await fallbackBtn.count()) > 0) { await fallbackBtn.first().click(); }
   }
 
   async expectNavItems() {
