@@ -96,6 +96,10 @@ await page.getByRole('button', { name: /^log ?in$/i }).last().click();
 - **Tapas는 `<main>` 태그 없음:** `getByRole('main')` 쓰지 말 것, `.last()` 또는 다른 방식으로 범위 좁히기
 - **Lore Olympus는 Tapas에 없음:** Webtoon 전용. 테스트 데이터는 "Olympus" 검색 + "The Edge of Olympus" 사용
 - **Chrome 로컬 네트워크 권한 팝업:** `--disable-features=LocalNetworkAccessChecks,PrivateNetworkAccessRespectPreflightResults` 플래그로 억제
+- **Tapas SPA history.replaceState() 이슈:** 일부 페이지 이동이 history를 남기지 않음 → `page.goBack()` 시 `about:blank`로 이동. 회피: 배너 클릭 전 URL을 명확히 설정하고 goBack 후 URL을 직접 검증.
+- **홈 Spotlight subtab URL:** `https://tapas.io/menu/1/subtab/1` (홈 탭: menu/1, Comics: menu/2, Novels: menu/3)
+- **빅배너 locator:** `a[href*="/event/"], a[href*="/series/"]` + `.filter({ has: page.locator('img') })` — 앱스토어/구글플레이 링크 제외 필수
+- **캐러셀 슬라이드 인디케이터:** `span[class*="text-s-white"][class*="font-custom-10c"]` (현재 슬라이드 번호, headless에서도 자동 슬라이드 동작)
 
 ### 4.4 성공 검증 — "뭐가 아닌지"가 더 견고
 
@@ -245,23 +249,27 @@ npx playwright test <path> --headed --ui    # UI 모드
 - 첫 BDD 시나리오 포팅 (`features/검색.feature` + `steps/search.steps.ts`)
 - npm scripts 정리
 - **전체 213/213 시나리오 통과 (2026-04-27)** — graceful 패턴 완성
+- **01-공통 feature 재작성 완료 (2026-04-28)** — C수준 assertion 적용
+- **02-홈 Spotlight 섹션 재작성 완료 (2026-04-28)** — TPS-021/022/023/026 복원, TPS-019 @skip 유지
+- **retry 기반 셀프힐링 적용 (2026-04-28)** — 로컬 1회, CI 2회 자동 재시도
 
 ### 🔜 다음 작업 (우선순위 순)
 
-1. **태그 시스템**
+1. **03-홈-(Comics) ~ 15-Profile 섹션 C수준 assertion 재작성**
+   - 현재: body.toBeVisible() 수준의 weak assertion
+   - 목표: URL 패턴 + DOM element 검증 (C수준)
+   - 섹션별 작업 후 커밋
+
+2. **태그 시스템**
    - `@smoke` (5분, 모든 PR에서 실행)
    - `@regression` (15~30분, 스케줄 실행)
 
-2. **CI/CD**
+3. **CI/CD**
    - GitHub Actions로 PR마다 `@smoke` 자동 실행
    - `.env`는 GitHub Secrets로 주입
 
-3. **Page Object 확장** (선택)
+4. **Page Object 확장** (선택)
    - 현재 `GnbPage`만 실질적으로 사용. ViewerPage, ProfilePage 등 필요 시 추가.
-
-4. **팀장님 프로젝트 패턴 수렴** (선택)
-   - pnpm + fnm으로 전환
-   - CLAUDE.md + PLAN.md 문서 체계
 
 ### 💡 참고: 팀장님 qa-automation-web 패턴
 
@@ -427,6 +435,45 @@ await expect(page.locator('body')).toBeVisible();
 | `steps/인박스-댓글.steps.ts` | 인박스, 댓글/답글, Settings |
 | `steps/보관함.steps.ts` | 라이브러리, Gift, 독서 이력 |
 | `steps/프로필-more.steps.ts` | Profile 메뉴, Ink Shop, Redeem Code, More 메뉴 |
+
+---
+
+## 13. 셀프힐링 전략 (2026-04-28 결정)
+
+### 13.1 채택 방식: Playwright retries
+
+```typescript
+// playwright.config.ts
+retries: process.env.CI ? 2 : 1,
+```
+
+- 로컬: 실패 시 1회 재시도
+- CI: 실패 시 2회 재시도
+- 그래도 실패하면 → 진짜 버그로 리포팅
+
+### 13.2 거부된 방식: locator 폴백 체인
+
+```typescript
+// ❌ 채택하지 않음 — 거짓 pass 위험
+async function heal(page, strategies) {
+  for (const s of strategies) {
+    const el = page.locator(s);
+    if ((await el.count()) > 0) return el;  // 엉뚱한 요소 클릭 가능
+  }
+}
+```
+
+폴백 체인은 "요소를 못 찾으면 다른 걸 클릭"하므로, 의도치 않은 요소를 클릭해도 테스트가 통과됨. 거짓 pass 가능성 때문에 사용하지 않음.
+
+### 13.3 동적 콘텐츠 처리 원칙
+
+운영 중이 아닌 배너/프로모션 등 동적 콘텐츠는 `test.skip()`으로 처리:
+```typescript
+if ((await banner.count()) === 0) {
+  test.skip(true, '배너 미운영 상태');
+}
+```
+선례: TPS-019 프로모션 배너 @skip.
 
 ---
 
