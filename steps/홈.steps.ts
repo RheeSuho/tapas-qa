@@ -3,6 +3,7 @@
 
 import { createBdd } from 'playwright-bdd';
 import { test, expect } from '@playwright/test';
+import { heal } from '../utils/healLocator';
 
 const { Given, When, Then } = createBdd();
 
@@ -83,9 +84,13 @@ Then('작품 목록이 노출된다', async ({ page }) => {
 
 // ──── 필터 클릭 → URL 전환 확인 (C 수준) ────────────────────────────
 When('Novels 필터를 클릭한다', async ({ page }) => {
-  const novelLink = page.locator('a[href*="category=NOVEL"]').first();
-  if ((await novelLink.count()) > 0) {
-    await novelLink.click();
+  const el = await heal(page, [
+    p => p.locator('a[href*="category=NOVEL"]'),
+    p => p.getByRole('link', { name: /^novels$/i }),
+    p => p.getByRole('button', { name: /^novels$/i }),
+  ], 'Novels 필터');
+  if (el) {
+    await el.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
   } else {
     test.skip(true, 'Novels 필터 링크가 존재하지 않음');
@@ -178,11 +183,13 @@ When('프로모션 배너를 클릭한다', async () => {
 });
 
 When('빅배너를 클릭한다', async ({ page }) => {
-  // 빅배너: 내부 event/series 링크 중 img를 포함한 큰 이미지 요소 (988x400 수준)
-  const link = page.locator('a[href*="/event/"], a[href*="/series/"]')
-    .filter({ has: page.locator('img') }).first();
-  if ((await link.count()) > 0) {
-    await link.click();
+  const el = await heal(page, [
+    p => p.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: p.locator('img') }),
+    p => p.locator('article a').filter({ has: p.locator('img') }),
+    p => p.locator('a').filter({ has: p.locator('img[width="988"], img[width="976"]') }),
+  ], '빅배너');
+  if (el) {
+    await el.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
   } else {
     test.skip(true, '빅배너 요소를 찾을 수 없음');
@@ -190,11 +197,13 @@ When('빅배너를 클릭한다', async ({ page }) => {
 });
 
 When('카드배너를 클릭한다', async ({ page }) => {
-  // 카드배너: /events, /event/, /menu/ 링크 중 img를 포함한 요소
-  const link = page.locator('a[href*="/events"], a[href*="/event/"], a[href*="/menu/"]')
-    .filter({ has: page.locator('img') }).first();
-  if ((await link.count()) > 0) {
-    await link.click();
+  const el = await heal(page, [
+    p => p.locator('a[href*="/events"], a[href*="/event/"], a[href*="/menu/"]').filter({ has: p.locator('img') }),
+    p => p.locator('a[href*="/event"]').filter({ has: p.locator('img') }),
+    p => p.locator('a').filter({ has: p.locator('img') }).nth(1),
+  ], '카드배너');
+  if (el) {
+    await el.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
   } else {
     test.skip(true, '카드배너 요소를 찾을 수 없음');
@@ -235,19 +244,26 @@ When('더보기 링크를 클릭한다', async ({ page }) => {
 let _slideBeforeNum: number = 0;
 
 When('빅배너 영역에서 8초 대기한다', async ({ page }) => {
-  // 현재 슬라이드 번호 저장 (text-s-white 클래스 = 활성 슬라이드)
-  const indicator = page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first();
-  const text = await indicator.textContent().catch(() => null);
+  // 캐러셀 인디케이터: 활성 슬라이드 번호 저장
+  const indicator = await heal(page, [
+    p => p.locator('span[class*="text-s-white"][class*="font-custom-10c"]'),
+    p => p.locator('[class*="indicator"] span[class*="active"]'),
+    p => p.locator('[class*="carousel"] [class*="current"]'),
+  ], '슬라이드 인디케이터');
+  const text = await indicator?.textContent().catch(() => null);
   _slideBeforeNum = parseInt(text?.trim() || '0');
   await page.waitForTimeout(8500);
 });
 
 Then('다음 빅배너로 자동 전환된다', async ({ page }) => {
-  const indicator = page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first();
-  if ((await indicator.count()) > 0) {
+  const indicator = await heal(page, [
+    p => p.locator('span[class*="text-s-white"][class*="font-custom-10c"]'),
+    p => p.locator('[class*="indicator"] span[class*="active"]'),
+    p => p.locator('[class*="carousel"] [class*="current"]'),
+  ], '슬라이드 인디케이터');
+  if (indicator) {
     const text = await indicator.textContent();
     const afterNum = parseInt(text?.trim() || '0');
-    // 슬라이드 번호가 증가했는지 확인 (C수준: 캐러셀 실제 전진 검증)
     expect(afterNum).toBeGreaterThan(_slideBeforeNum);
   } else {
     await expect(page.locator('body')).toBeVisible();
