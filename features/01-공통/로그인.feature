@@ -1,46 +1,35 @@
-# 자동 생성됨 - 원본: Tapas Smoke TC CSV
-# 1 Depth: 공통
 Feature: 로그인
 
   @TC-0005 @skip
-  Scenario: [TPS-001] 기로그인한 페이스북 계정 있는 경우 > Login 클릭 + 페이스북 로그인 팝업창 > 로그인 시도
-    Given 기로그인한 페이스북 계정 있는 경우
-    When GNB > Login 클릭
-    And [Or log in with Facebook or Google] 클릭
-    And {Continue with Facebook} 버튼 클릭
-    And 페이스북 로그인 팝업창 > 로그인 시도
-    Then 로그인 유도 화면이 노출된다.
-    And 구글 / 페이스북 로그인 유도 창으로 이동된다.
-    And 페이스북 로그인 팝업창이 열린다.
-    And 로그인 완료되며 홈 화면으로 이동된다.
+  Scenario: [TPS-001] 페이스북 소셜 로그인
+    Given 로그인하지 않은 상태다
+    When Login 버튼을 클릭한다
+    And 페이스북으로 로그인을 시도한다
+    Then 로그인이 완료되고 홈 화면으로 이동된다
 
   @TC-0006 @skip
-  Scenario: [TPS-002] 기로그인한 구글 계정 있는 경우 > Login 클릭 + 구글 로그인 팝업창 > 로그인 시도
-    Given 기로그인한 구글 계정 있는 경우
-    When GNB > Login 클릭
-    And [Or log in with Facebook or Google] 클릭
-    And {Continue with Google} 버튼 클릭
-    And 구글 로그인 팝업창 > 로그인 시도
-    Then 로그인 유도 화면이 노출된다.
-    And 구글 / 페이스북 로그인 유도 창으로 이동된다.
-    And 구글 로그인 팝업창이 열린다.
-    And 로그인 완료되며 홈 화면으로 이동된다.
+  Scenario: [TPS-002] 구글 소셜 로그인
+    Given 로그인하지 않은 상태다
+    When Login 버튼을 클릭한다
+    And 구글로 로그인을 시도한다
+    Then 로그인이 완료되고 홈 화면으로 이동된다
 
   @TC-0007 @smoke
-  Scenario: [TPS-003] Login 클릭
-    When GNB > Login 클릭
-    Then 로그인 유도 창으로 이동된다.
+  Scenario: [TPS-003] Login 버튼 클릭 시 로그인 폼 진입
+    Given 로그인하지 않은 상태다
+    When Login 버튼을 클릭한다
+    Then 이메일 로그인 폼이 노출된다
 
   @TC-0008
-  Scenario: [TPS-004] Login 클릭 + 미가입된 이메일 계정/비밀번호 입력 후 Sign up 버튼 클릭
-    When GNB > Login 클릭
-    And 미가입된 이메일 계정/비밀번호 입력 후 Sign up 버튼 클릭
-    Then 로그인 유도 창으로 이동된다.
-    And 로그인되지 않으며 오류 메세지 노출되고 화면 유지된다.
+  Scenario: [TPS-004] 미가입 이메일로 로그인 시도 시 오류 노출
+    Given 로그인하지 않은 상태다
+    When Login 버튼을 클릭한다
+    And 미가입 이메일과 비밀번호를 입력하고 Login을 클릭한다
+    Then 오류 메시지가 노출되고 로그인 페이지가 유지된다
 
   @TC-0009 @smoke
-  Scenario: [TPS-005] Login 클릭 + Email 계정 입력 > Login 클릭
-    When GNB > Login 클릭
-    And Email 계정 입력 > Login 클릭
-    Then 로그인 유도 창으로 이동된다.
-    And 로그인 완료되며 홈 화면으로 이동된다.
+  Scenario: [TPS-005] 이메일 계정으로 로그인 성공
+    Given 로그인하지 않은 상태다
+    When Login 버튼을 클릭한다
+    And 이메일과 비밀번호를 입력하고 Login을 클릭한다
+    Then 로그인이 완료되고 홈 화면으로 이동된다

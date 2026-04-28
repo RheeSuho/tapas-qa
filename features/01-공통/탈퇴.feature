@@ -1,16 +1,7 @@
-# 자동 생성됨 - 원본: Tapas Smoke TC CSV
-# 1 Depth: 공통
 Feature: 탈퇴
 
   @TC-0010
-  Scenario: [TPS-007] Profile 클릭 + 비밀번호 검증 팝업 > 비밀번호 정상 입력 후 Delete account 클릭
-    When GNB > Profile 클릭
-    And [Settings] 클릭
-    And 하단 Delete account 클릭
-    And Delete account 화면 > Delete account 클릭
-    And 비밀번호 검증 팝업 > 비밀번호 정상 입력 후 Delete account 클릭
-    Then 하위 메뉴 노출된다.
-    And Edit Profile 화면에 진입된다.
-    And Delete account 안내 화면으로 이동된다.
-    And 비밀번호 검증 팝업이 노출된다.
-    And 정상적으로 로그아웃 및 계정 탈퇴되며 홈 화면으로 이동된다.
+  Scenario: [TPS-007] 계정 탈퇴
+    When Profile 메뉴에서 Settings로 진입한다
+    And Delete account를 클릭하고 비밀번호를 입력한다
+    Then 계정이 탈퇴되고 홈 화면으로 이동된다

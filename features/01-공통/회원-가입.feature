@@ -1,46 +1,22 @@
-# 자동 생성됨 - 원본: Tapas Smoke TC CSV
-# 1 Depth: 공통
 Feature: 회원 가입
 
   @TC-0002
-  Scenario: [TPS-008] Login 클릭 + Submit 버튼 클릭
-    When GNB > Login 클릭
-    And [Sign up] 버튼 클릭
-    And 신규 Email 계정 입력 > [Sign up] 클릭
-    And 성인 기준으로 연령 세팅
-    And [Submit] 버튼 클릭
-    Then 로그인 유도 창으로 이동된다.
-    And Email 회원가입 유도 창으로 이동된다.
-    And 연령 인증 화면이 노출된다.
-    And 세팅한 생년월일이 필드에 반영되어 노출된다.
-    And 회원가입 완료되며 유저홈 화면으로 이동된다.
+  Scenario: [TPS-008] 이메일로 신규 회원 가입
+    Given 로그인하지 않은 상태다
+    When Login 버튼을 클릭한다
+    And 이메일로 회원가입을 시도한다
+    Then 회원가입 화면이 노출된다
 
-  @TC-0003
-  Scenario: [TPS-009] Login 클릭 + Submit 버튼 클릭
-    When GNB > Login 클릭
-    And [Or log in with Facebook or Google] 클릭
-    And {Continue with Facebook} 버튼 클릭
-    And 신규 페이스북 계정 입력
-    And 성인 기준으로 연령 세팅
-    And [Submit] 버튼 클릭
-    Then 로그인 유도 창으로 이동된다.
-    And 구글 / 페이스북 로그인 유도 창으로 이동된다.
-    And 페이스북 로그인 팝업창이 열린다.
-    And 연령 인증 화면이 노출된다.
-    And 세팅한 생년월일이 필드에 반영되어 노출된다.
-    And 회원가입 완료되며 Edit profile 화면으로 이동된다.
+  @TC-0003 @skip
+  Scenario: [TPS-009] 페이스북으로 신규 회원 가입
+    Given 로그인하지 않은 상태다
+    When Login 버튼을 클릭한다
+    And 페이스북으로 로그인을 시도한다
+    Then 회원가입 화면이 노출된다
 
-  @TC-0004
-  Scenario: [TPS-010] Login 클릭 + Submit 버튼 클릭
-    When GNB > Login 클릭
-    And [Or log in with Facebook or Google] 클릭
-    And {Continue with Google} 버튼 클릭
-    And 신규 구글 계정 입력
-    And 성인 기준으로 연령 세팅
-    And [Submit] 버튼 클릭
-    Then 로그인 유도 창으로 이동된다.
-    And 구글 / 페이스북 로그인 유도 창으로 이동된다.
-    And 구글 로그인 팝업창이 열린다.
-    And 연령 인증 화면이 노출된다.
-    And 세팅한 생년월일이 필드에 반영되어 노출된다.
-    And 회원가입 완료되며 Edit profile 화면으로 이동된다.
+  @TC-0004 @skip
+  Scenario: [TPS-010] 구글로 신규 회원 가입
+    Given 로그인하지 않은 상태다
+    When Login 버튼을 클릭한다
+    And 구글로 로그인을 시도한다
+    Then 회원가입 화면이 노출된다

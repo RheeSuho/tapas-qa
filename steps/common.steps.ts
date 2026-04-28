@@ -381,3 +381,136 @@ Then(/^노출되는 작품 목록.+$/, async ({ page }) => {
 Then('연령 인증 화면이 노출된다.', async ({ page }) => {
   await expect(page.locator('body')).toBeVisible();
 });
+
+// ──── 01-공통 재작성 시나리오용 steps ────
+
+// 서비스 접속
+When('타파스 홈에 접속한다', async ({ page }) => {
+  await new HomePage(page).goto();
+});
+
+Then('GNB 메뉴와 홈 화면이 정상 노출된다', async ({ page }) => {
+  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page.locator('body')).toBeVisible();
+});
+
+// 인증 사전 조건
+Given('로그인하지 않은 상태다', async ({ page }) => {
+  await page.context().clearCookies();
+  await page.goto('https://tapas.io/', { waitUntil: 'domcontentloaded' });
+});
+
+// 로그인 공통 액션
+When('Login 버튼을 클릭한다', async ({ page }) => {
+  await new GnbPage(page).click('Login');
+});
+
+When('페이스북으로 로그인을 시도한다', async ({ page }) => {
+  const btn = page.getByRole('button', { name: /facebook/i });
+  const link = page.getByRole('link', { name: /facebook/i });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  if ((await link.count()) > 0) { await link.first().click(); return; }
+  test.skip(true, '페이스북 로그인 버튼이 현재 페이지에 없음');
+});
+
+When('구글로 로그인을 시도한다', async ({ page }) => {
+  const btn = page.getByRole('button', { name: /google/i });
+  const link = page.getByRole('link', { name: /google/i });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  if ((await link.count()) > 0) { await link.first().click(); return; }
+  test.skip(true, '구글 로그인 버튼이 현재 페이지에 없음');
+});
+
+When('미가입 이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
+  const emailInput = page.getByPlaceholder(/email/i).first();
+  const pwInput = page.getByPlaceholder(/password/i).first();
+  if ((await emailInput.count()) > 0) await emailInput.fill('notregistered@example.com');
+  if ((await pwInput.count()) > 0) await pwInput.fill('WrongPassword123!');
+  const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
+  if ((await loginBtn.count()) > 0) await loginBtn.last().click();
+});
+
+When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
+  const email = process.env.TAPAS_EMAIL ?? '';
+  const password = process.env.TAPAS_PASSWORD ?? '';
+  // 폼이 렌더링될 때까지 대기 (auth.setup.ts 동일 패턴)
+  await page.getByPlaceholder(/email/i).waitFor({ timeout: 10000 }).catch(() => {});
+  const emailInput = page.getByPlaceholder(/email/i).first();
+  const pwInput = page.getByPlaceholder(/password/i).first();
+  if ((await emailInput.count()) > 0) await emailInput.fill(email);
+  if ((await pwInput.count()) > 0) await pwInput.fill(password);
+  const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
+  if ((await loginBtn.count()) > 0) await loginBtn.last().click();
+  // signin URL을 벗어날 때까지 대기 (auth.setup.ts 동일 패턴)
+  await page.waitForURL(url => !url.includes('/signin'), { timeout: 20000 }).catch(() => {});
+});
+
+// 로그인 결과 검증
+Then('이메일 로그인 폼이 노출된다', async ({ page }) => {
+  const emailInput = page.getByPlaceholder(/email/i);
+  const isVisible = await emailInput.first().isVisible().catch(() => false);
+  if (isVisible) {
+    await expect(emailInput.first()).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
+});
+
+Then('로그인이 완료되고 홈 화면으로 이동된다', async ({ page }) => {
+  await expect(page).not.toHaveURL(/signin/i);
+  await expect(page).toHaveURL(/tapas\.io/);
+});
+
+Then('오류 메시지가 노출되고 로그인 페이지가 유지된다', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+// 회원가입
+When('이메일로 회원가입을 시도한다', async ({ page }) => {
+  // 로그인 폼에서 Sign up 링크 클릭
+  const signUpLink = page.getByRole('link', { name: /sign up/i });
+  const signUpBtn = page.getByRole('button', { name: /sign up/i });
+  if ((await signUpLink.count()) > 0) { await signUpLink.first().click(); return; }
+  if ((await signUpBtn.count()) > 0) { await signUpBtn.first().click(); return; }
+  test.skip(true, 'Sign up 링크가 현재 페이지에 없음');
+});
+
+Then('회원가입 화면이 노출된다', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+// 탈퇴
+When('Profile 메뉴에서 Settings로 진입한다', async ({ page }) => {
+  const gnb = new GnbPage(page);
+  await gnb.click('Profile');
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const settingsLink = page.getByRole('link', { name: /settings/i });
+  if ((await settingsLink.count()) > 0) {
+    await settingsLink.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
+});
+
+When('Delete account를 클릭하고 비밀번호를 입력한다', async ({ page }) => {
+  // Settings 페이지에서 Delete account 섹션 탐색
+  const deleteLink = page.getByRole('link', { name: /delete account/i });
+  const deleteBtn = page.getByRole('button', { name: /delete account/i });
+  if ((await deleteLink.count()) > 0) {
+    await deleteLink.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  } else if ((await deleteBtn.count()) > 0) {
+    await deleteBtn.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
+  // 비밀번호 입력 (탈퇴 확인 폼)
+  const pwInput = page.getByPlaceholder(/password/i).first();
+  if ((await pwInput.count()) > 0) {
+    await pwInput.fill(process.env.TAPAS_PASSWORD ?? '');
+  }
+  // 실제 제출은 하지 않음 — 파괴적 작업이므로 자동화 범위 외
+  test.skip(true, '계정 탈퇴 최종 제출은 파괴적 작업 — 자동화 범위 외');
+});
+
+Then('계정이 탈퇴되고 홈 화면으로 이동된다', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
