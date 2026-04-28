@@ -157,6 +157,11 @@ Then(/^Comics\/Novels\/People\/Tags 탭이 노출된다$/, async ({ page }) => {
   await expect(page.getByRole('link', { name: /comics/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
+// ──── Spotlight 서브탭 직접 진입 ─────────────────────────────────────
+When('Spotlight 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/1/subtab/1', { waitUntil: 'domcontentloaded' });
+});
+
 // ──── Spotlight 배너 관련 (TPS-020~028) ──────────────────────────────
 Then('섹션 컨텐츠가 노출된다', async ({ page }) => {
   const articles = page.locator('article');
@@ -173,22 +178,26 @@ When('프로모션 배너를 클릭한다', async () => {
 });
 
 When('빅배너를 클릭한다', async ({ page }) => {
-  const link = page.locator('[class*="banner"] a, article a').first();
+  // 빅배너: 내부 event/series 링크 중 img를 포함한 큰 이미지 요소 (988x400 수준)
+  const link = page.locator('a[href*="/event/"], a[href*="/series/"]')
+    .filter({ has: page.locator('img') }).first();
   if ((await link.count()) > 0) {
     await link.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
   } else {
-    await expect(page.locator('body')).toBeVisible();
+    test.skip(true, '빅배너 요소를 찾을 수 없음');
   }
 });
 
 When('카드배너를 클릭한다', async ({ page }) => {
-  const link = page.locator('[class*="card"] a, article a').first();
+  // 카드배너: /events, /event/, /menu/ 링크 중 img를 포함한 요소
+  const link = page.locator('a[href*="/events"], a[href*="/event/"], a[href*="/menu/"]')
+    .filter({ has: page.locator('img') }).first();
   if ((await link.count()) > 0) {
     await link.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
   } else {
-    await expect(page.locator('body')).toBeVisible();
+    test.skip(true, '카드배너 요소를 찾을 수 없음');
   }
 });
 
@@ -218,7 +227,7 @@ When('더보기 링크를 클릭한다', async ({ page }) => {
     await moreLink.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
   } else {
-    await expect(page.locator('body')).toBeVisible();
+    test.skip(true, '더보기 링크가 현재 페이지에 없음 — 동적 콘텐츠');
   }
 });
 

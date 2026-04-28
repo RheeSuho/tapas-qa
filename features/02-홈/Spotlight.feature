@@ -20,17 +20,17 @@ Feature: Spotlight
     And 빅배너 영역에서 8초 대기한다
     Then 다음 빅배너로 자동 전환된다
 
-  @TC-0017 @skip
+  @TC-0017
   Scenario: [TPS-022] 빅배너 클릭 + 홈으로 복귀
-    When 타파스 홈에 접속한다
+    When Spotlight 서브탭에 접속한다
     And 빅배너를 클릭한다
     Then 랜딩 페이지로 이동된다
     When 뒤로가기를 한다
     Then 홈 화면으로 돌아온다
 
-  @TC-0018 @skip
+  @TC-0018
   Scenario: [TPS-023] 카드배너 클릭 + 홈으로 복귀
-    When 타파스 홈에 접속한다
+    When Spotlight 서브탭에 접속한다
     And 카드배너를 클릭한다
     Then 랜딩 페이지로 이동된다
     When 뒤로가기를 한다
@@ -49,25 +49,25 @@ Feature: Spotlight
     When 타파스 홈에 접속한다
     Then 섹션 컨텐츠가 노출된다
 
-  @TC-0021 @skip
+  @TC-0021
   Scenario: [TPS-026] 배너 섹션 클릭 + 홈으로 복귀
-    When 타파스 홈에 접속한다
+    When Spotlight 서브탭에 접속한다
     And 배너 섹션 내 작품을 클릭한다
     Then 랜딩 페이지로 이동된다
     When 뒤로가기를 한다
     Then 홈 화면으로 돌아온다
 
-  @TC-0022 @skip
+  @TC-0022
   Scenario: [TPS-027] 섹션메뉴 더보기 클릭 + 홈으로 복귀
-    When 타파스 홈에 접속한다
+    When Spotlight 서브탭에 접속한다
     And 더보기 링크를 클릭한다
     Then 랜딩 리스트로 이동된다
     When 뒤로가기를 한다
     Then 홈 화면으로 돌아온다
 
-  @TC-0023 @skip
+  @TC-0023
   Scenario: [TPS-028] 섹션 더보기 클릭 + 홈으로 복귀
-    When 타파스 홈에 접속한다
+    When Spotlight 서브탭에 접속한다
     And 더보기 링크를 클릭한다
     Then 랜딩 리스트로 이동된다
     When 뒤로가기를 한다
