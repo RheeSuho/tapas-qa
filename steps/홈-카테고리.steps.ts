@@ -195,6 +195,29 @@ Then('Comics 카테고리 페이지가 노출된다', async ({ page }) => {
   await expect(page).toHaveURL(/\/menu\/2/, { timeout: 8000 });
 });
 
+// ──── Novels 전용 진입 / 복귀 ────
+
+When('Novels Spotlight 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/3', { waitUntil: 'networkidle', timeout: 30000 })
+    .catch(() => page.waitForLoadState('domcontentloaded').catch(() => {}));
+  const spotlight = page.getByRole('link', { name: /^spotlight$/i });
+  if ((await spotlight.count()) > 0) {
+    await spotlight.first().click();
+    await page.waitForLoadState('networkidle').catch(() => {});
+  }
+});
+
+Then('Novels 홈으로 돌아온다', async ({ page }) => {
+  if (!page.url().includes('tapas.io')) {
+    await page.goto('https://tapas.io/menu/3', { waitUntil: 'domcontentloaded' });
+  }
+  await expect(page).toHaveURL(/tapas\.io/, { timeout: 8000 });
+});
+
+Then('Novels 카테고리 페이지가 노출된다', async ({ page }) => {
+  await expect(page).toHaveURL(/\/menu\/3/, { timeout: 8000 });
+});
+
 Then('빅배너가 노출된다', async ({ page }) => {
   const banner = page.locator('a[href*="/event/"], a[href*="/series/"]')
     .filter({ has: page.locator('img') }).first();
