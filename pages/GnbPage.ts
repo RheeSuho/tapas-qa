@@ -1,7 +1,29 @@
 import { Page, expect } from '@playwright/test';
+import { URLS } from '../data/urls';
 
 export class GnbPage {
   constructor(private page: Page) {}
+
+  async goto() {
+    await this.page.goto(URLS.home);
+    await this.dismissCookieBanner();
+  }
+
+  async dismissCookieBanner() {
+    const accept = this.page.getByRole('button', { name: /accept/i });
+    if (await accept.isVisible().catch(() => false)) {
+      await accept.click();
+    }
+  }
+
+  async expectLoaded() {
+    await expect(this.page).toHaveURL(/tapas\.io/);
+    await expect(this.page.locator('body')).toBeVisible();
+  }
+
+  async openSearch() {
+    await this.page.getByPlaceholder('Search').click();
+  }
 
   async click(label: string) {
     switch (label) {

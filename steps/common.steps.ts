@@ -3,7 +3,6 @@
 
 import { createBdd } from 'playwright-bdd';
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../pages/HomePage';
 import { GnbPage } from '../pages/GnbPage';
 
 const { Given, When, Then, Before } = createBdd();
@@ -16,11 +15,11 @@ Before(async ({ page }) => {
 // ──── 서비스 접속 ────
 
 When('qa.tapas.io 도메인 진입', async ({ page }) => {
-  await new HomePage(page).goto();
+  await new GnbPage(page).goto();
 });
 
 When('타파스 홈 진입', async ({ page }) => {
-  await new HomePage(page).goto();
+  await new GnbPage(page).goto();
 });
 
 Then('타파스 웹 정상 진입된다.', async ({ page }) => {
@@ -386,7 +385,7 @@ Then('연령 인증 화면이 노출된다.', async ({ page }) => {
 
 // 서비스 접속
 When('타파스 홈에 접속한다', async ({ page }) => {
-  await new HomePage(page).goto();
+  await new GnbPage(page).goto();
 });
 
 Then('GNB 메뉴와 홈 화면이 정상 노출된다', async ({ page }) => {
