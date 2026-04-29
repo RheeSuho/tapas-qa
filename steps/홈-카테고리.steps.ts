@@ -29,10 +29,15 @@ When(/^(Comics|Novels|Daily|Popular|All Novels|All Comics) 서브탭 클릭$/, a
 // 서브탭 클릭 — 따옴표로 감싼 실제 값 ("Romance", "All Comics" 등)
 When('{string} 서브탭 클릭', async ({ page }, tabName: string) => {
   await page.waitForLoadState('domcontentloaded');
+  // 1. role=link accessible name 매칭
   const tab = page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') });
   if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  // 2. role=button accessible name 매칭
   const btn = page.getByRole('button', { name: new RegExp(`^${tabName}$`, 'i') });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  // 3. 이미지 포함 탭(genre 탭)은 accessible name에 alt 텍스트가 섞임 → text-is() 정확 텍스트 매칭
+  const byText = page.locator(`a:text-is("${tabName}"), button:text-is("${tabName}")`);
+  if ((await byText.count()) > 0) { await byText.first().click(); return; }
   test.skip(true, `"${tabName}" 서브탭이 현재 페이지에 존재하지 않음`);
 });
 
