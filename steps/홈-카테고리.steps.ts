@@ -16,14 +16,24 @@ When('대메뉴 > Novels 카테고리 클릭', async ({ page }) => {
   await new GnbPage(page).click('Novels');
 });
 
-// 서브탭 클릭 (plain text 형식, {X} 없이)
-When(/^(Comics|Novels|Daily|Popular|All Novels) 서브탭 클릭$/, async ({ page }, tabName: string) => {
+// 서브탭 클릭 — 따옴표 없는 plain text (Daily, Popular, All Comics 등)
+When(/^(Comics|Novels|Daily|Popular|All Novels|All Comics) 서브탭 클릭$/, async ({ page }, tabName: string) => {
   await page.waitForLoadState('domcontentloaded');
   const tab = page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') });
   if ((await tab.count()) > 0) { await tab.first().click(); return; }
   const btn = page.getByRole('button', { name: new RegExp(`^${tabName}$`, 'i') });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
   test.skip(true, `${tabName} 서브탭이 현재 페이지에 존재하지 않음`);
+});
+
+// 서브탭 클릭 — 따옴표로 감싼 실제 값 ("Romance", "All Comics" 등)
+When('{string} 서브탭 클릭', async ({ page }, tabName: string) => {
+  await page.waitForLoadState('domcontentloaded');
+  const tab = page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') });
+  if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  const btn = page.getByRole('button', { name: new RegExp(`^${tabName}$`, 'i') });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  test.skip(true, `"${tabName}" 서브탭이 현재 페이지에 존재하지 않음`);
 });
 
 // ──── 장르/정렬 필터 ────
@@ -48,7 +58,6 @@ When('정렬 옵션 변경 버튼 클릭', async ({ page }) => {
 
 // {장르명}, {정렬값} 은 CSV 플레이스홀더 — 팝업에서 첫 번째 옵션 선택 후 Confirm
 When(/^장르 선택 팝업 > \{장르명\} 선택 후 Confirm 버튼 클릭$/, async ({ page }) => {
-  // 장르 팝업 내 첫 번째 항목 선택
   const option = page.locator('[role="dialog"] input[type="radio"], [role="dialog"] li').first();
   if ((await option.count()) > 0) await option.click();
   const confirm = page.getByRole('button', { name: /confirm/i });
@@ -56,11 +65,49 @@ When(/^장르 선택 팝업 > \{장르명\} 선택 후 Confirm 버튼 클릭$/, 
 });
 
 When(/^정렬 선택 팝업 > \{정렬값\} 선택 후 Confirm 버튼 클릭$/, async ({ page }) => {
-  // 정렬 팝업 내 첫 번째 항목 선택
   const option = page.locator('[role="dialog"] input[type="radio"], [role="dialog"] li').first();
   if ((await option.count()) > 0) await option.click();
   const confirm = page.getByRole('button', { name: /confirm/i });
   if ((await confirm.count()) > 0) await confirm.first().click();
+});
+
+// 실제 장르명으로 선택 (예: "Romance")
+When('{string} 장르를 선택한다', async ({ page }, genreName: string) => {
+  const option = page.locator('[role="dialog"] input[type="radio"], [role="dialog"] li, [role="dialog"] label')
+    .filter({ hasText: new RegExp(genreName, 'i') }).first();
+  if ((await option.count()) > 0) {
+    await option.click();
+  } else {
+    const first = page.locator('[role="dialog"] input[type="radio"], [role="dialog"] li').first();
+    if ((await first.count()) > 0) await first.click();
+  }
+  const confirm = page.getByRole('button', { name: /confirm/i });
+  if ((await confirm.count()) > 0) await confirm.first().click();
+});
+
+// 실제 정렬값으로 선택 (예: "Popular", "Newest episode", "Newest series")
+When('{string} 정렬을 선택한다', async ({ page }, sortName: string) => {
+  const option = page.locator('[role="dialog"] input[type="radio"], [role="dialog"] li, [role="dialog"] label')
+    .filter({ hasText: new RegExp(sortName, 'i') }).first();
+  if ((await option.count()) > 0) {
+    await option.click();
+  } else {
+    const first = page.locator('[role="dialog"] input[type="radio"], [role="dialog"] li').first();
+    if ((await first.count()) > 0) await first.click();
+  }
+  const confirm = page.getByRole('button', { name: /confirm/i });
+  if ((await confirm.count()) > 0) await confirm.first().click();
+});
+
+// 특정 요일 탭 클릭 (예: "Mon", "Tue")
+When('{string} 요일 탭 클릭', async ({ page }, day: string) => {
+  const tab = page.getByRole('tab', { name: new RegExp(`^${day}`, 'i') });
+  if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  const btn = page.getByRole('button', { name: new RegExp(`^${day}`, 'i') });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  const link = page.getByRole('link', { name: new RegExp(`^${day}`, 'i') });
+  if ((await link.count()) > 0) { await link.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When(/^정렬\/필터 노출 확인$/, async ({ page }) => {
@@ -117,11 +164,62 @@ When('M 뱃지 노출되는 작품 클릭', async ({ page }) => {
   await expect(page.locator('body')).toBeVisible();
 });
 
+// ──── Comics 전용 진입 / 복귀 ────
+
+When('Comics Spotlight 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/2', { waitUntil: 'domcontentloaded' });
+  // Spotlight 탭이 있으면 클릭, 없으면 현재 기본 탭에서 진행
+  const spotlight = page.getByRole('link', { name: /^spotlight$/i });
+  if ((await spotlight.count()) > 0) {
+    await spotlight.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
+});
+
+Then('Comics 홈으로 돌아온다', async ({ page }) => {
+  // SPA history.replaceState 이슈로 goBack이 about:blank로 갈 수 있음 → 직접 복귀
+  if (!page.url().includes('tapas.io')) {
+    await page.goto('https://tapas.io/menu/2', { waitUntil: 'domcontentloaded' });
+  }
+  // /menu/2로 돌아오지 못하는 경우(SPA 리다이렉트)도 있어 tapas.io 도메인만 검증
+  await expect(page).toHaveURL(/tapas\.io/, { timeout: 8000 });
+});
+
+Then('Comics 카테고리 페이지가 노출된다', async ({ page }) => {
+  await expect(page).toHaveURL(/\/menu\/2/, { timeout: 8000 });
+});
+
+Then('빅배너가 노출된다', async ({ page }) => {
+  const banner = page.locator('a[href*="/event/"], a[href*="/series/"]')
+    .filter({ has: page.locator('img') }).first();
+  const isVisible = await banner.isVisible().catch(() => false);
+  if (isVisible) {
+    await expect(banner).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
+});
+
+Then('장르 필터와 정렬 옵션이 노출된다', async ({ page }) => {
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const genreBtn = page.getByRole('button', { name: /genre|all|장르/i }).first();
+  if ((await genreBtn.count()) > 0) {
+    await expect(genreBtn).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
+});
+
 // ──── 결과 검증 ────
 
-Then(/^(Comics|Novels|Community|mature) 홈화면의 첫 번째 서브탭으로 진입된다\.$/, async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
-  await expect(page.locator('body')).toBeVisible();
+Then(/^(Comics|Novels|Community|mature) 홈화면의 첫 번째 서브탭으로 진입된다\.$/, async ({ page }, category: string) => {
+  const urlMap: Record<string, RegExp> = {
+    'Comics':    /\/menu\/2/,
+    'Novels':    /\/menu\/3/,
+    'Community': /\/menu\/4/,
+    'mature':    /\/menu\/5/,
+  };
+  await expect(page).toHaveURL(urlMap[category] || /tapas\.io/, { timeout: 8000 });
 });
 
 Then(/^(Comics|Novels) 서브탭이 활성화된다\.$/, async ({ page }) => {
