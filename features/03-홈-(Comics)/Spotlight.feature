@@ -12,7 +12,7 @@ Feature: Spotlight (섹션 서브탭)
     When Comics Spotlight 서브탭에 접속한다
     Then 빅배너가 노출된다
 
-  @TC-0033 @skip
+  @TC-0033
   Scenario: [TPS-036] 빅배너 자동 슬라이드 (8초 대기)
     When Comics Spotlight 서브탭에 접속한다
     And 빅배너 영역에서 8초 대기한다

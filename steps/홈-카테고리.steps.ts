@@ -172,12 +172,13 @@ When('M 뱃지 노출되는 작품 클릭', async ({ page }) => {
 // ──── Comics 전용 진입 / 복귀 ────
 
 When('Comics Spotlight 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/2', { waitUntil: 'domcontentloaded' });
-  // Spotlight 탭이 있으면 클릭, 없으면 현재 기본 탭에서 진행
+  // networkidle: SPA 클라이언트 라우팅(subtab 재진입)이 완전히 끝난 뒤 진행
+  await page.goto('https://tapas.io/menu/2', { waitUntil: 'networkidle', timeout: 30000 })
+    .catch(() => page.waitForLoadState('domcontentloaded').catch(() => {}));
   const spotlight = page.getByRole('link', { name: /^spotlight$/i });
   if ((await spotlight.count()) > 0) {
     await spotlight.first().click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    await page.waitForLoadState('networkidle').catch(() => {});
   }
 });
 
