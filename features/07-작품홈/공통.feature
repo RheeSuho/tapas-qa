@@ -17,22 +17,22 @@ Feature: 공통
     When 무료 회차 클릭
     Then 뷰어로 진입된다
 
-  @TC-0092 @skip
-  Scenario: [TPS-102] 배너 영역 확인 (동적 콘텐츠 - @skip)
-    When 배너 영역 확인
-    Then 작품홈 페이지가 노출된다
+  @TC-0092
+  Scenario: [TPS-102] 배너 영역 확인
+    Given 기다무 작품인 경우
+    Then 기다무 작품, 공지 사항 띠배너가 노출된다.
 
-  @TC-0093 @skip
-  Scenario: [TPS-103] 기다무 작품 띠배너 확인 (계정 상태 의존 - @skip)
+  @TC-0093
+  Scenario: [TPS-103] 기다무 작품 띠배너 > ? 버튼 클릭
     Given 기다무 작품인 경우
     When 기다무 띠배너 > ? 버튼 클릭
-    Then 작품홈 페이지가 노출된다
+    Then 기다무 안내 팝업이 노출된다.
 
-  @TC-0094 @skip
-  Scenario: [TPS-104] 공지사항 띠배너 클릭 (계정 상태 의존 - @skip)
+  @TC-0094
+  Scenario: [TPS-104] 공지사항 띠배너 클릭
     Given 공지사항 있는 경우
     When 공지사항 띠배너 클릭
-    Then 작품홈 페이지가 노출된다
+    Then 공지사항 내용이 노출된다.
 
   @TC-0095
   Scenario: [TPS-105] Details 영역 노출 확인

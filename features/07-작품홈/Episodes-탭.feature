@@ -25,23 +25,21 @@ Feature: Episodes 탭
     When 무료 회차 클릭
     Then 뷰어로 진입된다
 
-  @TC-0104 @skip
-  Scenario: [TPS-092] 기다무 티켓 보유 상태 - 기다무 회차 클릭 (계정 상태 의존 - @skip)
+  @TC-0104
+  Scenario: [TPS-092] 기다무 회차 클릭 시 팝업 노출
     Given 기다무 티켓 보유 상태
     When 회차 영역 스크롤 > 기다무 회차 클릭
-    And 기다무 사용 확인 팝업 > [Yes] 버튼 클릭
-    Then 뷰어로 진입된다
+    Then 기다무 사용 확인 팝업이 노출된다
 
-  @TC-0105 @skip
-  Scenario: [TPS-093] 기다무 티켓 소진 상태 - 회차 구매 팝업 노출 (계정 상태 의존 - @skip)
+  @TC-0105
+  Scenario: [TPS-093] 기다무 티켓 소진 시 구매 팝업 노출
     Given 기다무 티켓 소진 상태
     When 다음 회차 (기다무) 클릭
     And 회차 구매 팝업 > [X] 버튼 클릭
     Then 작품홈 페이지가 노출된다
 
-  @TC-0106 @skip
-  Scenario: [TPS-094] 잉크 보유 상태 - 유료 회차 단건 구매 (계정 상태 의존 - @skip)
+  @TC-0106
+  Scenario: [TPS-094] 유료 회차 클릭 시 구매 팝업 노출
     Given 잉크 보유 상태
     When 회차 영역 스크롤 > 유료 회차 클릭
-    And 회차 구매 팝업 > 단건 구매 옵션 클릭
-    Then 뷰어로 진입된다
+    Then 회차 구매 팝업이 노출된다

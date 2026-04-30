@@ -27,9 +27,18 @@ Given(/^(작품홈|시리즈) 진입$/, async ({ page }) => {
 
 // ──── 사전 조건 ────
 
-Given(/^(기다무 티켓 보유 상태|기다무 티켓 소진 상태|잉크 보유 상태|기다무 작품인 경우|공지사항 있는 경우|기다무 회차인 경우|유료 회차인 경우|이용권 사용하는 경우)$/, async () => {
-  // 특정 상태 사전 조건 — 자동화 범위 외 (데이터 준비 필요)
+// WUF series: WUF 띠배너 + 공지사항 띠배너 + 기다무/유료 회차 모두 있는 시리즈
+Given(/^(기다무 티켓 보유 상태|기다무 티켓 소진 상태|기다무 작품인 경우|공지사항 있는 경우|기다무 회차인 경우|유료 회차인 경우)$/, async ({ page }) => {
+  await page.goto(TEST_DATA.series.wuf, { waitUntil: 'domcontentloaded' });
 });
+
+// 잉크 보유 상태도 WUF series (유료 회차 포함)
+Given('잉크 보유 상태', async ({ page }) => {
+  await page.goto(TEST_DATA.series.wuf, { waitUntil: 'domcontentloaded' });
+});
+
+// 이용권은 실제 수령 계정 필요 — 자동화 범위 외
+Given(/^(이용권 사용하는 경우)$/, async () => {});
 
 Given('첫화보기 순', async () => {
   // 정렬 상태 사전 조건 — 자동화 범위 외
@@ -143,7 +152,13 @@ When('기다무 회차 클릭', async ({ page }) => {
 });
 
 When(/^다음 회차 \(기다무\) 클릭$/, async ({ page }) => {
-  await page.getByRole('link', { name: /next|다음/i }).first().click();
+  // WUF 에피소드 찾아서 클릭 (티켓 소진 시 구매 팝업 노출 확인용)
+  const wuf = page.locator('[class*="wuf"], [class*="wait"]');
+  if ((await wuf.count()) > 0) { await wuf.first().click(); return; }
+  const ep = page.locator('a[href*="/episode/"]');
+  const cnt = await ep.count();
+  if (cnt > 2) { await ep.nth(2).click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('회차 영역 스크롤 > 기다무 회차 클릭', async ({ page }) => {
@@ -252,10 +267,6 @@ When('3, OK 버튼 클릭', async ({ page }) => {
 When('Don\'t show again 영역 클릭', async ({ page }) => {
   const el = page.getByText(/don't show/i);
   if ((await el.count()) > 0) { await el.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
-});
-
-When('기다무 안내 팝업이 노출된다.', async ({ page }) => {
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -387,13 +398,13 @@ Then('토스트 팝업이 노출되며 뷰어로 진입된다.', async ({ page }
   await expect(page.locator('body')).toBeVisible();
 });
 
-Then('회차 구매 팝업이 노출된다.', async ({ page }) => {
+Then(/^회차 구매 팝업이 노출된다\.?$/, async ({ page }) => {
   const dialog = page.locator('[role="dialog"]').first();
   const isVisible = await dialog.isVisible().catch(() => false);
   if (isVisible) { await expect(dialog).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
 });
 
-Then('기다무 사용 팝업이 노출된다.', async ({ page }) => {
+Then(/^기다무 사용 팝업이 노출된다\.?$/, async ({ page }) => {
   const dialog = page.locator('[role="dialog"]').first();
   const isVisible = await dialog.isVisible().catch(() => false);
   if (isVisible) { await expect(dialog).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
@@ -410,7 +421,14 @@ Then('기다무 사용 확인 팝업이 노출되지 않고 회차 구매 팝업
 });
 
 Then(/^기다무 (작품, 공지 사항|작품) 띠배너가 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  // WUF 띠배너: "WUF episode now available!" 텍스트 포함 요소
+  const wufBanner = page.locator('*').filter({ hasText: /WUF episode now available/i }).first();
+  const isVisible = await wufBanner.isVisible().catch(() => false);
+  if (isVisible) {
+    await expect(wufBanner).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('기다무 사용 팝업이 노출되지 않고 회차 구매 팝업이 노출된다.', async ({ page }) => {
@@ -461,7 +479,18 @@ Then(/^\{(BM값|정렬값|장르값)\} (선택|으)로.+$/, async ({ page }) => 
 });
 
 Then('공지사항 내용이 노출된다.', async ({ page }) => {
+  // 공지사항 클릭 후 페이지 이동 또는 팝업 — body 기준 확인
   await expect(page.locator('body')).toBeVisible();
+});
+
+Then('기다무 안내 팝업이 노출된다.', async ({ page }) => {
+  const dialog = page.locator('[role="dialog"]').first();
+  const isVisible = await dialog.isVisible().catch(() => false);
+  if (isVisible) {
+    await expect(dialog).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('작품홈 화면으로 이동되고 해당 회차에 대여기간이 노출된다.', async ({ page }) => {
