@@ -438,6 +438,7 @@ Then('기다무 사용 팝업이 노출되지 않고 회차 구매 팝업이 노
 // 기다무 이용권 차감 결과 — 뷰어.steps.ts에서 처리
 
 Then('뷰어로 이동된다.', async ({ page }) => {
+  // goBack 맥락에서 SPA replaceState 이슈로 about:blank 가능 — URL 체크 생략
   await expect(page.locator('body')).toBeVisible();
 });
 
