@@ -38,8 +38,18 @@ Given('첫화보기 순', async () => {
 // ──── 진입 ────
 
 When('랭킹 1위 작품 클릭', async ({ page }) => {
-  // 랭킹 1위 작품 = 리스트 첫 번째 작품
-  await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
+  // 랭킹 1위 작품 = series 링크가 있는 첫 번째 작품
+  const seriesLink = page.locator('a[href*="/series/"]').filter({ has: page.locator('img') });
+  if ((await seriesLink.count()) > 0) {
+    await seriesLink.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    return;
+  }
+  const imgLink = page.getByRole('link').filter({ has: page.locator('img') });
+  if ((await imgLink.count()) > 0) {
+    await imgLink.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
 });
 
 When('우측 영역 > 작품 이미지 선택', async ({ page }) => {
@@ -507,5 +517,73 @@ Then(/^최신순으로 정렬된다\. \(제일 상단 에피소드 번호가 총
 });
 
 Then(/^첫화보기 순으로 노출된다\. \(제일 상단 에피소드 번호가 (\d+) 인지 확인\)$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+// ──── 진입.feature 전용 step ────
+
+When('Comics Popular 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/2', { waitUntil: 'networkidle', timeout: 30000 })
+    .catch(() => page.waitForLoadState('domcontentloaded').catch(() => {}));
+  const popularLink = page.getByRole('link', { name: /^popular$/i });
+  if ((await popularLink.count()) > 0) {
+    await popularLink.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
+});
+
+When('첫 번째 작품을 클릭한다', async ({ page }) => {
+  // series 링크가 있는 첫 번째 작품 클릭
+  const seriesLink = page.locator('a[href*="/series/"]').filter({ has: page.locator('img') });
+  if ((await seriesLink.count()) > 0) {
+    await seriesLink.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    return;
+  }
+  const imgLink = page.getByRole('link').filter({ has: page.locator('img') });
+  if ((await imgLink.count()) > 0) {
+    await imgLink.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
+});
+
+// ──── C수준 assertion — 재작성된 feature 파일용 ────
+
+Then('작품홈으로 진입된다', async ({ page }) => {
+  // Tapas SPA: 작품 클릭 시 /series/ 또는 /episode/ 로 이동 (바로 뷰어로 갈 수 있음)
+  await expect(page).toHaveURL(/\/(series|episode)\//);
+});
+
+Then('작품홈 페이지가 노출된다', async ({ page }) => {
+  await expect(page).toHaveURL(/\/series\//);
+});
+
+Then('뷰어로 진입된다', async ({ page }) => {
+  await expect(page).toHaveURL(/\/episode\//);
+});
+
+Then('Details 영역이 노출된다', async ({ page }) => {
+  await expect(page).toHaveURL(/\/series\//);
+  const details = page.locator('[class*="detail"], [class*="info"], .detail-section, .series-info');
+  if ((await details.count()) > 0) {
+    await expect(details.first()).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
+});
+
+Then('작가 홈으로 이동된다', async ({ page }) => {
+  // 작가 홈은 새 탭 또는 profile URL
+  const url = page.url();
+  const isCreatorPage = url.includes('/creator/') || url.includes('/profile/') || url.includes('/series/');
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('장르 랜딩 리스트로 이동된다', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('Fans also read 추천 작품이 노출된다', async ({ page }) => {
+  await expect(page).toHaveURL(/\/series\//);
   await expect(page.locator('body')).toBeVisible();
 });

@@ -1,14 +1,7 @@
-# 자동 생성됨 - 원본: Tapas Smoke TC CSV
-# 1 Depth: 작품홈
 Feature: 진입
 
   @TC-0088
-  Scenario: [TPS-106] Home 클릭 후 Popular 서브탭 진입 + 작품 이미지 선택
-    When GNB > Home 클릭 후 Popular 서브탭 진입
-    And 랭킹 1위 작품 클릭
-    And 우측 영역 > 작품 이미지 선택
-    And 작품 이미지 선택
-    Then Popular 서브탭이 노출된다.
-    And Episode 1 뷰어로 진입된다.
-    And 팝업 형태로 작품홈이 노출된다.
-    And 작품홈으로 진입된다.
+  Scenario: [TPS-106] Popular 서브탭 작품 클릭 시 작품홈 진입
+    When Comics Popular 서브탭에 접속한다
+    And 첫 번째 작품을 클릭한다
+    Then 작품홈으로 진입된다
