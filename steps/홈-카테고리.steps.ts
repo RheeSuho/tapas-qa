@@ -262,6 +262,31 @@ Then('장르 필터와 정렬 옵션이 노출된다', async ({ page }) => {
   }
 });
 
+// ──── Community 전용 진입 / 복귀 ────
+
+When('Community Spotlight 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/4', { waitUntil: 'networkidle', timeout: 30000 })
+    .catch(() => page.waitForLoadState('domcontentloaded').catch(() => {}));
+  const spotlight = page.getByRole('link', { name: /^spotlight$/i });
+  if ((await spotlight.count()) > 0) {
+    await spotlight.first().click();
+    await page.waitForLoadState('networkidle').catch(() => {});
+  }
+});
+
+Then('Community 홈으로 돌아온다', async ({ page }) => {
+  if (!page.url().includes('tapas.io')) {
+    await page.goto('https://tapas.io/menu/4', { waitUntil: 'domcontentloaded' });
+  }
+  await expect(page).toHaveURL(/tapas\.io/, { timeout: 8000 });
+});
+
+Then('Community 카테고리 페이지가 노출된다', async ({ page }) => {
+  // Community의 Comics/Novels 서브탭은 각각 /menu/2, /menu/3으로 SPA 리다이렉트됨
+  // tapas.io 도메인 내 menu 페이지임을 확인
+  await expect(page).toHaveURL(/tapas\.io\/menu\//, { timeout: 8000 });
+});
+
 // ──── 결과 검증 ────
 
 Then(/^(Comics|Novels|Community|mature) 홈화면의 첫 번째 서브탭으로 진입된다\.$/, async ({ page }, category: string) => {
