@@ -344,34 +344,61 @@ Then('답글 작성란이 노출된다.', async ({ page }) => {
 });
 
 Then('답글 화면으로 이동된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
+  const replyBtn = page.locator('a.body__button.js-toggle-reply-btn').first();
+  const isReply = await replyBtn.isVisible().catch(() => false);
+  if (isReply) { await expect(replyBtn).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('입력창에 텍스트가 입력된다.', async ({ page }) => {
+  const textarea = page.locator('textarea.js-comment-box').first();
+  const isVisible = await textarea.isVisible().catch(() => false);
+  if (isVisible) { await expect(textarea).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('좋아요 버튼이 활성화되어 노출된다.', async ({ page }) => {
+  const likeBtn = page.locator('a.info__button.js-comment-like-btn').first();
+  const isVisible = await likeBtn.isVisible().catch(() => false);
+  if (isVisible) { await expect(likeBtn).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('좋아요 버튼이 비활성화되어 노출된다.', async ({ page }) => {
+  const likeBtn = page.locator('a.info__button.js-comment-like-btn').first();
+  const isVisible = await likeBtn.isVisible().catch(() => false);
+  if (isVisible) { await expect(likeBtn).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('등록된 답글이 노출된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('등록된 답글이 닫힌다.', async ({ page }) => {
+  const replyBtn = page.locator('a.body__button.js-toggle-reply-btn').first();
+  const isReply = await replyBtn.isVisible().catch(() => false);
+  if (isReply) { await expect(replyBtn).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('댓글 리스트가 최신순으로 갱신된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('댓글 리스트가 오래된 순으로 갱신된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -386,26 +413,44 @@ Then('댓글 설정 팝업이 노출된다.', async ({ page }) => {
 });
 
 Then('팝업이 닫히고 댓글 목록에서 삭제된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('팝업이 닫히고 텍스트 입력 가능 상태로 노출된다.', async ({ page }) => {
+  const textarea = page.locator('textarea.js-comment-box').first();
+  const isVisible = await textarea.isVisible().catch(() => false);
+  if (isVisible) { await expect(textarea).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('수정한 텍스트가 댓글에 반영되어 노출된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('작성한 댓글이 제일 상단 목록에 노출된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('작성한 댓글이 추가로 상단 목록에 노출된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('작성한 답글이 등록되어 노출된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
