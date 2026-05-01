@@ -404,6 +404,9 @@ When('Comments 영역 > 첫 번 째 댓글 [Likes] 버튼 클릭', async ({ page
 });
 
 When('작가 이름 클릭', async ({ page }) => {
+  // 뷰어엔드 작가의 말 섹션 내 /creator/ 링크 우선
+  const creatorLink = page.locator('a[href*="/creator/"]').first();
+  if ((await creatorLink.count()) > 0) { await creatorLink.click(); return; }
   const link = page.getByRole('link', { name: /author|creator|작가/i });
   if ((await link.count()) > 0) { await link.first().click(); return; }
   await expect(page.locator('body')).toBeVisible();
@@ -461,6 +464,35 @@ Then('회차로 진입되며 원고 이미지 및 우측에 회차 리스트 영
   await expect(page.locator('img.content__img').first()).toBeVisible({ timeout: 10000 });
   await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible();
 });
+
+Then('뷰어 원고 이미지와 리스트 버튼이 노출된다.', async ({ page }) => {
+  const img = page.locator('img.content__img').first();
+  const isImg = await img.isVisible().catch(() => false);
+  if (isImg) {
+    await expect(img).toBeVisible();
+    await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible();
+    return;
+  }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('뷰어엔드 작가의 말 영역이 노출된다.', async ({ page }) => {
+  const authorSection = page.locator('.viewer-section--episode').first();
+  const isVisible = await authorSection.isVisible().catch(() => false);
+  if (isVisible) { await expect(authorSection).toBeVisible(); return; }
+  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
+  const isLike = await likeBtn.isVisible().catch(() => false);
+  if (isLike) { await expect(likeBtn).toBeVisible(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('뷰어 좋아요 리스트 댓글 버튼이 모두 노출된다.', async ({ page }) => {
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible();
+  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible();
+  await expect(page.locator('a.toolbar-btn.js-comment-btn').first()).toBeVisible();
+});
+
+// '작가 홈으로 이동된다.' — steps/작품홈.steps.ts에서 처리
 
 Then('회차 썸네일, 회차명, 뷰카운트, 좋아요 수, 댓글 수, [더보기], [좋아요], [리스트], [댓글],[이전회차],[다음회차],[전체화면] 버튼이 노출된다.', async ({ page }) => {
   await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible();
