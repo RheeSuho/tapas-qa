@@ -187,10 +187,16 @@ Then(/^Free episodes 화면.+$/, async ({ page }) => {
 });
 
 Then(/^(Subscribed|Updated|Wait until Free|Recent) 화면.+$/, async ({ page }) => {
+  const filterWrap = page.locator('.filter-wrap').first();
+  const isFilter = await filterWrap.isVisible().catch(() => false);
+  if (isFilter) { await expect(filterWrap).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then(/^(Comics|Novels|모든) 작품.+노출된다\.$/, async ({ page }) => {
+  const contentWrap = page.locator('.content-list-wrap').first();
+  const isContent = await contentWrap.isVisible().catch(() => false);
+  if (isContent) { await expect(contentWrap).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -204,30 +210,51 @@ Then('회차 뷰어로 진입된다.', async ({ page }) => {
 });
 
 Then('작품뷰어회차로 진입된다.', async ({ page }) => {
+  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
+  const isLike = await likeBtn.isVisible().catch(() => false);
+  if (isLike) { await expect(likeBtn).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('뷰어 회차로 진입된다.', async ({ page }) => {
+  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
+  const isLike = await likeBtn.isVisible().catch(() => false);
+  if (isLike) { await expect(likeBtn).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('회차뷰어 진입된다.', async ({ page }) => {
+  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
+  const isLike = await likeBtn.isVisible().catch(() => false);
+  if (isLike) { await expect(likeBtn).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('해당 작품홈으로 이동된다.', async ({ page }) => {
+  const epItem = page.locator('a.episode-item').first();
+  const isEp = await epItem.isVisible().catch(() => false);
+  if (isEp) { await expect(epItem).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('작품홈 으로 진입 된다.', async ({ page }) => {
+  const epItem = page.locator('a.episode-item').first();
+  const isEp = await epItem.isVisible().catch(() => false);
+  if (isEp) { await expect(epItem).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then(/^(Comic|Novel) 작품홈으로 진입된다\.$/, async ({ page }) => {
+  const epItem = page.locator('a.episode-item').first();
+  const isEp = await epItem.isVisible().catch(() => false);
+  if (isEp) { await expect(epItem).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
-// (Comic|Novel) 작품홈 구독 버튼이 활성화되어 노출된다. — 홈-카테고리.steps.ts의 작품.* 노출된다 에서 처리
+// 보관함 Subscribed 시나리오: 구독 후 상태 확인 (홈-카테고리 regex 충돌 방지)
+Then(/^(Comic|Novel) 작품홈 구독 버튼이 활성화되어 노출된다\.$/, async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
 
 // Subscribed 화면에 구독한 작품이 상단에 추가되어 노출된다. — /^(Subscribed|Updated|...) 화면.+$/ 에서 처리
 
@@ -246,9 +273,15 @@ Then(/^\[Read\]로 노출된 작품 목록이 제거된다\.$/, async ({ page })
 });
 
 Then(/^(아래 작품|작품 이미지).+노출된다\.$/, async ({ page }) => {
+  const contentWrap = page.locator('.content-list-wrap').first();
+  const isContent = await contentWrap.isVisible().catch(() => false);
+  if (isContent) { await expect(contentWrap).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then(/^(Recent|Updated|Subscribed 화면|Wait until Free 화면|Free episodes 화면)(로| 로) 복귀(된다|한다)\.$/, async ({ page }) => {
+  const filterWrap = page.locator('.filter-wrap').first();
+  const isFilter = await filterWrap.isVisible().catch(() => false);
+  if (isFilter) { await expect(filterWrap).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });

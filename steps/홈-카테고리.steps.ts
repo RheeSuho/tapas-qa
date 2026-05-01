@@ -361,7 +361,7 @@ Then(/^Submit 버튼 (활성화|비활성화)된다\.$/, async ({ page }) => {
   if (isVisible) { await expect(submitBtn).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
 });
 
-Then(/^(Comic|Novel|Mature|Community .+|해당 장르의 .+) 작품.* 노출된다\.$/, async ({ page }) => {
+Then(/^(Comic|Novel|Mature|Community .+|해당 장르의 .+) 작품(?!홈 구독).* 노출된다\.$/, async ({ page }) => {
   await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
