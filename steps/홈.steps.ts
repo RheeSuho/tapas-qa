@@ -71,14 +71,7 @@ Then(/^Comics\/Novels 필터가 노출된다$/, async ({ page }) => {
 
 // ──── 작품 목록 노출 ─────────────────────────────────────────────────
 Then('작품 목록이 노출된다', async ({ page }) => {
-  await page.waitForLoadState('domcontentloaded').catch(() => {});
-  const articles = page.locator('article');
-  const count = await articles.count();
-  if (count > 0) {
-    await expect(articles.first()).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 // ──── 필터 클릭 → URL 전환 확인 (C 수준) ────────────────────────────
