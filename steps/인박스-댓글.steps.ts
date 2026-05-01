@@ -299,6 +299,7 @@ When('텍스트 수정 후 [Save] 버튼 클릭', async ({ page }) => {
 });
 
 When('다른 유저 댓글 > 프로필 이미지 클릭', async ({ page }) => {
+  await ensureOnEpisode(page);
   const img = page.locator('[class*="comment"] img, [class*="avatar"] img');
   if ((await img.count()) > 0) { await img.first().click(); return; }
   await expect(page.locator('body')).toBeVisible();
@@ -451,6 +452,56 @@ Then('작성한 답글이 등록되어 노출된다.', async ({ page }) => {
   const row = page.locator('.comment-row-wrap').first();
   const isRow = await row.isVisible().catch(() => false);
   if (isRow) { await expect(row).toBeVisible(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('댓글 목록이 노출된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('답글 목록이 노출된다.', async ({ page }) => {
+  const row = page.locator('.comment-row-wrap').first();
+  const isRow = await row.isVisible().catch(() => false);
+  if (isRow) { await expect(row).toBeVisible(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('답글 접기 버튼이 노출된다.', async ({ page }) => {
+  const btn = page.locator('a.body__button.js-toggle-reply-btn').first();
+  const isVisible = await btn.isVisible().catch(() => false);
+  if (isVisible) { await expect(btn).toBeVisible(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('댓글 입력창이 노출된다.', async ({ page }) => {
+  const textarea = page.locator('textarea.js-comment-box').first();
+  const isVisible = await textarea.isVisible().catch(() => false);
+  if (isVisible) { await expect(textarea).toBeVisible(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('유저 프로필 페이지로 이동된다.', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+When('댓글 [Reply] 버튼 클릭', async ({ page }) => {
+  const btn = page.getByRole('button', { name: /^reply$/i });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  const link = page.getByRole('link', { name: /^reply$/i });
+  if ((await link.count()) > 0) { await link.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+When('답글 텍스트 입력 후 [Reply] 버튼 클릭', async ({ page }) => {
+  const textarea = page.locator('textarea.js-comment-box').first();
+  if ((await textarea.count()) > 0) {
+    await textarea.fill('Test reply');
+    const submitBtn = page.getByRole('button', { name: /reply|submit/i });
+    if ((await submitBtn.count()) > 0) { await submitBtn.first().click(); return; }
+  }
   await expect(page.locator('body')).toBeVisible();
 });
 

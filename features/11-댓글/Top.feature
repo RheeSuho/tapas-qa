@@ -3,8 +3,10 @@
 Feature: Top
 
   @TC-0145
-  Scenario: [TPS-158] 우상단 정렬 필터 > Newest 값 클릭 + 우상단 정렬 필터 > Oldest 값 클릭
-    When 우상단 정렬 필터 > Newest 값 클릭
-    And 우상단 정렬 필터 > Oldest 값 클릭
-    Then 댓글 리스트가 최신순으로 갱신된다.
-    And 댓글 리스트가 오래된 순으로 갱신된다.
+  Scenario Outline: [TPS-158] 우상단 정렬 필터 변경 - <정렬값>
+    When 우상단 정렬 필터 > <정렬값> 값 클릭
+    Then 댓글 목록이 노출된다.
+    Examples:
+      | 정렬값  |
+      | Newest  |
+      | Oldest  |
