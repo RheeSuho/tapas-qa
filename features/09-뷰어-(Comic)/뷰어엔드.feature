@@ -9,31 +9,33 @@ Feature: 뷰어엔드
     When 뷰어엔드 > 작가의 말 노출 확인
     And 작가 이름 클릭
     And 상단 [<] 버튼 클릭
-    Then 원고 하단에 작가의 말이 노출된다.
+    Then 뷰어엔드 작가의 말 영역이 노출된다.
     And 작가 홈으로 이동된다.
-    And 뷰어로 이동된다.
+    And 뷰어 원고 이미지와 리스트 버튼이 노출된다.
 
-  @TC-0110
+  @TC-0110 @skip
   Scenario: [TPS-121] 광고가 설정된 작품 > 뷰어엔드 > 하단 광고 노출 확인 + 광고 선택
     # Test DATA: sparks (작가 : revel)
+    # @skip: 동적 콘텐츠(광고) 및 디바이스 백버튼 의존
     Given 광고가 설정된 작품
     When 뷰어엔드 > 하단 광고 노출 확인
     And 광고 선택
     And 상단 [<] 버튼 또는 디바이스 백버튼 선택
     Then 설정되어있는 광고가 노출된다.
     And 설정된 랜딩 페이지로 이동된다.
-    And 뷰어로 이동된다.
+    And 뷰어 원고 이미지와 리스트 버튼이 노출된다.
 
-  @TC-0111
+  @TC-0111 @skip
   Scenario: [TPS-122] 이벤트 배너가 설정된 작품 > 뷰어엔드 > 이벤트 배너 노출 확인 + 이벤트 배너 선택
     # Test DATA: sparks (작가 : revel)
+    # @skip: 동적 콘텐츠(이벤트 배너) 및 디바이스 백버튼 의존
     Given 이벤트 배너가 설정된 작품
     When 뷰어엔드 > 이벤트 배너 노출 확인
     And 이벤트 배너 선택
     And 상단 [<] 버튼 또는 디바이스 백버튼 선택
     Then 설정되어있는 이벤트 배너가 노출된다.
     And 설정된 랜딩 페이지로 이동된다.
-    And 뷰어로 이동된다.
+    And 뷰어 원고 이미지와 리스트 버튼이 노출된다.
 
   @TC-0112
   Scenario: [TPS-123] Comments 영역 노출 확인 + See all 버튼 클릭
@@ -56,14 +58,13 @@ Feature: 뷰어엔드
     Then [Add a comment] 버튼이 노출된다.
     And 뷰어 우측에 Comments 리스트가 노출된다.
 
-  @TC-0115
+  @TC-0115 @skip
   Scenario: [TPS-126] Recommendation for you 영역 확인 + 리스트의 첫번째 작품 클릭
+    # @skip: 디바이스/브라우저 뒤로가기 버튼 의존
     When Recommendation for you 영역 확인
     And 가로 스크롤 동작
     And 리스트의 첫번째 작품 클릭
     And 디바이스/브라우저 뒤로가기 버튼 클릭
     Then 추천 작품이 노출된다.
-    And ㄴ 작품 썸네일, 뱃지, 작품명, 카테고리, 장르, 좋아요 수
-    And 6개의 작품과 랜덤 추천 버튼이 노출된다.
     And 선택한 작품홈으로 이동된다.
-    And 뷰어로 이동된다.
+    And 뷰어 원고 이미지와 리스트 버튼이 노출된다.

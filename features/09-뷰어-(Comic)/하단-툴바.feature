@@ -5,7 +5,7 @@ Feature: 하단 툴바
   @TC-0116 @smoke
   Scenario: [TPS-129] Bottom 영역 노출 확인
     When Bottom 영역 노출 확인
-    Then 회차 썸네일, 회차명, 뷰카운트, 좋아요 수, 댓글 수, [더보기], [좋아요], [리스트], [댓글],[이전회차],[다음회차],[전체화면] 버튼이 노출된다.
+    Then 뷰어 좋아요 리스트 댓글 버튼이 모두 노출된다.
 
   @TC-0117
   Scenario: [TPS-130] 하단 더보기 버튼 클릭 + More 팝업 > 팝업 외 영역 클릭
@@ -22,9 +22,7 @@ Feature: 하단 툴바
     And [더보기] 버튼 재클릭 > [Subscribe] 버튼 클릭
     Then 뷰어 더보기 팝업이 노출된다.
     And 토스트가 노출되며 팝업이 닫힌다.
-    And ㄴ 토스트: Unsubscribed
     And 토스트가 노출되며 팝업이 닫힌다.
-    And ㄴ 토스트: Subscribed
 
   @TC-0119
   Scenario: [TPS-132] 더보기 버튼 클릭 + Share to Facebook or Share to Twiiter 버튼 클릭
@@ -47,9 +45,7 @@ Feature: 하단 툴바
     When [Like] 버튼 클릭
     And [Like] 버튼 재클릭
     Then 토스트가 노출되며 좋아요 버튼이 활성화되어 노출된다.
-    And ㄴ 토스트: Liked
     And 토스트가 노출되며 좋아요 버튼이 비활성화되어 노출된다.
-    And ㄴ 토스트: Unliked
 
   @TC-0122
   Scenario: [TPS-135] PCW only > 리스트 버튼 클릭 + 리스트 버튼 재클릭

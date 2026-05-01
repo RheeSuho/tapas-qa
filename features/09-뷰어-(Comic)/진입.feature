@@ -5,4 +5,4 @@ Feature: 진입
   @TC-0107
   Scenario: [TPS-127] 작품홈 Episode 탭 > 무료 회차 클릭
     When 작품홈 Episode 탭 > 무료 회차 클릭
-    Then 회차로 진입되며 원고 이미지 및 우측에 회차 리스트 영역이 노출된다.
+    Then 뷰어 원고 이미지와 리스트 버튼이 노출된다.
