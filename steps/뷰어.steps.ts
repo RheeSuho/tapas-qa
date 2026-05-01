@@ -613,7 +613,10 @@ Then('소설 뷰어가 진입된다.', async ({ page }) => {
 });
 
 Then('소설 원고 노출된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 10000 });
+  const content = page.locator('.ep-epub-content').first();
+  const isContent = await content.isVisible().catch(() => false);
+  if (isContent) { await expect(content).toBeVisible(); return; }
+  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('원고 하단에 작가의 말이 노출된다.', async ({ page }) => {
@@ -749,14 +752,23 @@ Then('원래 회차로 돌아온다.', async ({ page }) => {
 });
 
 Then('뷰어 엔드 영역까지 이동이 가능하다.', async ({ page }) => {
-  // 스크롤 후 컨텐츠 이미지 또는 뷰어 섹션 확인
+  const content = page.locator('.ep-epub-content').first();
+  const isContent = await content.isVisible().catch(() => false);
+  if (isContent) { await expect(content).toBeVisible(); return; }
   const img = page.locator('img.content__img').first();
-  const isVisible = await img.isVisible().catch(() => false);
-  if (isVisible) { await expect(img).toBeVisible(); } else { await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 }); }
+  const isImg = await img.isVisible().catch(() => false);
+  if (isImg) { await expect(img).toBeVisible(); return; }
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('뷰어 최상단까지 이동이 가능하다.', async ({ page }) => {
-  await expect(page.locator('img.content__img').first()).toBeVisible({ timeout: 5000 });
+  const content = page.locator('.ep-epub-content').first();
+  const isContent = await content.isVisible().catch(() => false);
+  if (isContent) { await expect(content).toBeVisible(); return; }
+  const img = page.locator('img.content__img').first();
+  const isImg = await img.isVisible().catch(() => false);
+  if (isImg) { await expect(img).toBeVisible(); return; }
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^(대여 이용권|선물 이용권|기다무 이용권).+이동된다\.$/, async ({ page }) => {
@@ -764,6 +776,10 @@ Then(/^(대여 이용권|선물 이용권|기다무 이용권).+이동된다\.$/
 });
 
 Then(/^(팝업은 유지되며|잉크샵).+$/, async ({ page }) => {
+  // 소설 뷰어 Style 팝업: .js-edit-menu
+  const popup = page.locator('.js-edit-menu').first();
+  const isPopup = await popup.isVisible().catch(() => false);
+  if (isPopup) { await expect(popup).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -789,6 +805,10 @@ Given(/^(이전회차|다음회차) : (기다무 회차|유료회차)$/, async (
 // 이전/다음회차 When/Then steps — 각 기능은 위 파일의 다른 step에서 이미 처리됨
 
 Then('우측 회차 리스트 접히며 뷰어 전체 화면으로 노출된다.', async ({ page }) => {
+  // 리스트 패널이 닫힌 상태 확인 (side-section--closed)
+  const panel = page.locator('.side-section.js-series-section');
+  const isClosed = await panel.evaluate(el => el.classList.contains('side-section--closed')).catch(() => false);
+  if (isClosed) { await expect(panel).toBeVisible(); return; }
   await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 

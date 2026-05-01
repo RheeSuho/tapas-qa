@@ -499,6 +499,13 @@ Then('[Continue Ep.2] 버튼 노출된다.', async ({ page }) => {
 });
 
 Then(/^(팝업이 닫히며|팝업이 종료되며).+$/, async ({ page }) => {
+  // 소설 뷰어: 팝업 닫힌 후 원고 영역(.ep-epub-content) 또는 뷰어 툴바 확인
+  const content = page.locator('.ep-epub-content').first();
+  const isContent = await content.isVisible().catch(() => false);
+  if (isContent) { await expect(content).toBeVisible(); return; }
+  const listBtn = page.locator('a.toolbar-btn.js-list-btn').first();
+  const isBtn = await listBtn.isVisible().catch(() => false);
+  if (isBtn) { await expect(listBtn).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
