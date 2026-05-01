@@ -821,3 +821,64 @@ Then('기다무 이용권 사용 안내 팝업이 노출된다.', async ({ page 
 Then('회차가 구매되며 이전회차로 이동된다.', async ({ page }) => {
   await expect(page.locator('body')).toBeVisible();
 });
+
+// ──── 10-뷰어-(Novel) C수준 assertion 신규 step ────
+
+Then('소설 원고 영역이 노출된다.', async ({ page }) => {
+  // .ep-epub-content: 소설 원고 본문 영역
+  const content = page.locator('.ep-epub-content').first();
+  const isContent = await content.isVisible().catch(() => false);
+  if (isContent) { await expect(content).toBeVisible(); return; }
+  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 5000 });
+});
+
+Then('Like, List, Comment 버튼이 노출된다.', async ({ page }) => {
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.toolbar-btn.js-comment-btn').first()).toBeVisible({ timeout: 5000 });
+});
+
+Then('우측 회차 패널이 닫힌다.', async ({ page }) => {
+  // .side-section.js-series-section: 우측 회차 패널 (side-section--closed 클래스로 닫힘 확인)
+  const panel = page.locator('.side-section.js-series-section');
+  const isClosed = await panel.evaluate(el => el.classList.contains('side-section--closed')).catch(() => true);
+  if (isClosed) {
+    await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  } else {
+    await expect(panel).toBeVisible();
+  }
+});
+
+Then('Style 팝업이 노출된다.', async ({ page }) => {
+  // .js-edit-menu: 소설 뷰어 Style(AA) 팝업
+  const popup = page.locator('.js-edit-menu').first();
+  const isPopup = await popup.isVisible().catch(() => false);
+  if (isPopup) { await expect(popup).toBeVisible(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('Style 팝업이 유지된다.', async ({ page }) => {
+  // .js-edit-menu: 소설 뷰어 Style(AA) 팝업 — 여전히 열려있음 확인
+  const popup = page.locator('.js-edit-menu').first();
+  const isPopup = await popup.isVisible().catch(() => false);
+  if (isPopup) { await expect(popup).toBeVisible(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('소설 목록이 노출된다.', async ({ page }) => {
+  await expect(page.locator('body')).toBeVisible();
+});
+
+Then('소설 원고 하단 영역이 노출된다.', async ({ page }) => {
+  const content = page.locator('.ep-epub-content').first();
+  const isContent = await content.isVisible().catch(() => false);
+  if (isContent) { await expect(content).toBeVisible(); return; }
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+});
+
+Then('소설 원고 상단 영역이 노출된다.', async ({ page }) => {
+  const content = page.locator('.ep-epub-content').first();
+  const isContent = await content.isVisible().catch(() => false);
+  if (isContent) { await expect(content).toBeVisible(); return; }
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+});

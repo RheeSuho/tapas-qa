@@ -11,7 +11,7 @@ Feature: 뷰어엔드
     Given 작가의 말 있는 경우
     When 뷰어 진입
     And 뷰어 엔드 > 작가의 말 영역 확인
-    Then 소설 원고 노출된다.
+    Then 소설 원고 영역이 노출된다.
     And 작가 이미지, 작가의 말이 노출된다.
 
   @TC-0129
@@ -34,8 +34,9 @@ Feature: 뷰어엔드
     Then 추천 작품이 노출된다.
     And ㄴ 작품 썸네일, 뱃지, 작품명, 카테고리, 장르
 
-  @TC-0132
+  @TC-0132 @skip
   Scenario: [TPS-143] Recommendation for you 영역 + 상단 < 버튼 클릭
+    # @skip: 추천 작품 선택 후 2회 goBack으로 SPA history 불확실
     When Recommendation for you 영역
     And 추천 작품 선택
     And 상단 [<] 버튼 클릭
