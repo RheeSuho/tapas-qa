@@ -23,11 +23,11 @@ Given(/^수신된 내역 (없는|있는) 경우$/, async () => {
 // ──── 인박스 탭 ────
 
 When('Inbox > Activity 탭 클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/inbox/activity');
+  await page.goto('https://tapas.io/activities');
 });
 
 When('Inbox > Messages 탭 클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/inbox/messages');
+  await page.goto('https://tapas.io/inbox/message');
 });
 
 When('Messages 영역 노출 확인', async ({ page }) => {
@@ -307,20 +307,22 @@ When('다른 유저 댓글 > 프로필 이미지 클릭', async ({ page }) => {
 // ──── 결과 검증 ────
 
 Then(/^Inbox 화면의 첫 번째 탭으로 진입된다\. \(Gifts\)$/, async ({ page }) => {
-  await expect(page).toHaveURL(/inbox/i);
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.item-title[href*="inbox/gift"]')).toBeVisible();
+  await expect(page.locator('a.item-title[href*="inbox/message"]')).toBeVisible();
+  await expect(page.locator('a.item-title[href*="activities"]')).toBeVisible();
 });
 
 Then(/^Inbox 화면의 두 번째 탭으로 진입된다\. \(Messagess\)$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.item-title[href*="inbox/message"]')).toBeVisible();
 });
 
 Then('수신된 Activity가 노출된다.', async ({ page }) => {
+  // goBack 이후 URL 불안정 — element 존재 여부로 확인
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('수신된 Messages가 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.item-title[href*="inbox/message"]')).toBeVisible();
 });
 
 Then('No recent activity 문구가 노출된다.', async ({ page }) => {
