@@ -4,10 +4,11 @@ export const TEST_DATA = {
     workTitle: 'The Edge of Olympus',
   },
   series: {
-    comic: 'https://tapas.io/series/the-beginning-after-the-end/episodes',
+    // /info URL 사용 — /episodes는 500 에러 발생
+    comic: 'https://tapas.io/series/villainesses-have-more-fun/info',
     novel: 'https://tapas.io/series/the-unbeatable-game-novel',
-    // WUF 띠배너 + 공지사항 띠배너 + 기다무/유료 회차 모두 있는 시리즈
-    wuf: 'https://tapas.io/series/i-was-the-real-head-of-the-house/episodes',
+    // WUF 기다무/유료 회차 있는 시리즈 (/info URL)
+    wuf: 'https://tapas.io/series/i-was-the-real-head-of-the-house/info',
     // 소설 뷰어 테스트용
     novelViewer: 'https://tapas.io/series/the-necromancers-knight-novel',
   },
