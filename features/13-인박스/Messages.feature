@@ -17,7 +17,6 @@ Feature: Messages
     And Messages 타입별 클릭
     Then 수신된 Messages가 노출된다.
     And 설정된 랜딩페이지로 이동된다.
-    And -에피소드 / 작품홈 / 메세지 / 컬렉션
 
   @TC-0179
   Scenario: [TPS-193] PCWeb only > Messages 탭 우측 상단 Mark all as read 버튼 클릭

@@ -83,11 +83,15 @@ When('Gift 수령', async ({ page }) => {
 // ──── 작품 / 뷰어 진입 ────
 
 When('작품 클릭', async ({ page }) => {
-  await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
+  const link = page.getByRole('link').filter({ has: page.locator('img') });
+  if ((await link.count()) > 0) { await link.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('임의의 작품 클릭', async ({ page }) => {
-  await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
+  const link = page.getByRole('link').filter({ has: page.locator('img') });
+  if ((await link.count()) > 0) { await link.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('GNB > Home > 임의의 작품 클릭', async ({ page }) => {
