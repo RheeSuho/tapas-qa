@@ -5,6 +5,6 @@ Feature: 로그아웃
   @TC-0199 @smoke
   Scenario: [TPS-210] Profile 클릭 + Log out 클릭
     When GNB > Profile 클릭
-    And Log out 클릭
     Then 하위 메뉴 노출된다.
-    And 로그아웃되며 홈 화면으로 이동된다.
+    When Log out 클릭
+    Then 홈 화면으로 이동된다.

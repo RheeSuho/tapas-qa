@@ -5,6 +5,6 @@ Feature: Forums
   @TC-0185
   Scenario: [TPS-197] More 클릭 + Forums 클릭
     When GNB > More 클릭
-    And Forums 클릭
     Then 하위 메뉴 노출된다.
-    And "https://forums.tapas.io/" 새 창 노출 된다.
+    When Forums 클릭
+    Then "https://forums.tapas.io/" 새 창 노출 된다.

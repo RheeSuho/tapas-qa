@@ -5,6 +5,6 @@ Feature: Contact
   @TC-0187
   Scenario: [TPS-195] More 클릭 + Contact 클릭
     When GNB > More 클릭
-    And Contact 클릭
     Then 하위 메뉴 노출된다.
-    And 메일 앱이 열린다.
+    When Contact 클릭
+    Then 메일 앱이 열린다.
