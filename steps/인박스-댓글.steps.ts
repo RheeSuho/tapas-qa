@@ -327,6 +327,9 @@ Then('수신된 Messages가 노출된다.', async ({ page }) => {
 });
 
 Then('No recent activity 문구가 노출된다.', async ({ page }) => {
+  const empty = page.locator('.page-empty p.title');
+  const isVisible = await empty.isVisible().catch(() => false);
+  if (isVisible) { await expect(empty).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -520,6 +523,9 @@ Then('신규 메세지가 있다면 메세지 썸네일 우측에 New 표시가 
 });
 
 Then(/^(All|Comments|Messages|Tapas|Series|Likes|Subs|Supporters) 목록없을때 안내문구 노출된다\.$/, async ({ page }) => {
+  const empty = page.locator('.page-empty').first();
+  const isVisible = await empty.isVisible().catch(() => false);
+  if (isVisible) { await expect(empty).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 

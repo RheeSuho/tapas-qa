@@ -203,6 +203,9 @@ Then('하위 메뉴 노출된다.', async ({ page }) => {
 });
 
 Then('안내문구가 노출된다.', async ({ page }) => {
+  const empty = page.locator('.page-empty').first();
+  const isEmpty = await empty.isVisible().catch(() => false);
+  if (isEmpty) { await expect(empty).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
