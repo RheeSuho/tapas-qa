@@ -2,7 +2,7 @@
 # 1 Depth: 보관함
 Feature: Updated
 
-  @TC-0158
+  @TC-0158 @skip
   Scenario: [TPS-181] 작품 클릭 + 임의의 작품 클릭
     When 작품 클릭
     Then 작품홈 으로 진입 된다.

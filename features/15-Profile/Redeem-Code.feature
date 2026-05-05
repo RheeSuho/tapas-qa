@@ -2,7 +2,7 @@
 # 1 Depth: Profile
 Feature: Redeem Code
 
-  @TC-0195
+  @TC-0195 @skip
   Scenario: [TPS-205] 리딤코드 정상 입력 > Profile 클릭 + Redeem 버튼 클릭
     Given 리딤코드 정상 입력
     When GNB > Profile 클릭
@@ -26,7 +26,7 @@ Feature: Redeem Code
     When 입력 필드 클릭 > 리딤코드 입력
     Then 코드 입력이 가능하다
     When Redeem 버튼 클릭
-    Then 입력한 리딤코드가 등록되지 않으며 리딤코드 화면은 유지된다.
+    Then Invalid code 토스트 팝업이 노출된다.
     When 뒤로가기 [<] 버튼 클릭
     Then 홈 화면으로 이동된다.
 

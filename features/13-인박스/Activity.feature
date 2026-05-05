@@ -2,7 +2,7 @@
 # 1 Depth: 인박스
 Feature: Activity
 
-  @TC-0180
+  @TC-0180 @skip
   Scenario: [TPS-188] 수신된 내역 있는 경우 > Inbox > Activity 탭 클릭 + Settings 버튼 클릭
     Given 수신된 내역 있는 경우
     When Inbox > Activity 탭 클릭

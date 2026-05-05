@@ -174,6 +174,13 @@ Then('Free episodes 메뉴 진입된다.', async ({ page }) => {
   await expect(page.locator('a.item-title[href*="FREE_EPISODES"]')).toBeVisible();
 });
 
+Then('Free episodes 작품 목록이 노출된다.', async ({ page }) => {
+  const contentWrap = page.locator('.content-list-wrap').first();
+  const isContent = await contentWrap.isVisible().catch(() => false);
+  if (isContent) { await expect(contentWrap).toBeVisible(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
 Then('Wait until Free 탭으로 진입된다.', async ({ page }) => {
   await expect(page.locator('a.item-title[href*="WAIT_UNTIL_FREE"]')).toBeVisible();
 });

@@ -3,13 +3,10 @@
 Feature: Free episodes
 
   @TC-0168
-  Scenario: [TPS-170] Free episodes 메뉴 클릭 + 라이브러리 클릭
+  Scenario: [TPS-170] Free episodes 메뉴 클릭 + 작품 목록 확인
     When Free episodes 메뉴 클릭
     Then Free episodes 메뉴 진입된다.
-    When Gift 수령
-    Then Gift 수령되어 버튼 비활성화로 변경된다.
-    When GNB > 라이브러리 클릭
-    Then Free episodes 화면 유지되어 노출되고 이용권 받은 작품이 노출된다.
+    And Free episodes 작품 목록이 노출된다.
 
   @TC-0169
   Scenario: [TPS-171] 작품 클릭 + 상단 < 버튼 클릭

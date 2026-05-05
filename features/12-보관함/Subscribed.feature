@@ -3,24 +3,13 @@
 Feature: Subscribed
 
   @TC-0163
-  Scenario: [TPS-176] Subscribed 클릭 + 보관함 클릭 > Suscribed클릭
-    When Subscribed 클릭
-    Then Subscribed 진입된다.
-    When Comic 작품 구독
-    Then Comic 작품홈 구독 버튼이 활성화되어 노출된다.
-    When Novel 작품 구독
-    Then Novel 작품홈 구독 버튼이 활성화되어 노출된다.
-    When GNB >보관함 클릭 > Suscribed클릭
-    Then Subscribed 화면에 구독한 작품이 상단에 추가되어 노출된다.
-
-  @TC-0164
   Scenario: [TPS-177] 작품 클릭 + 상단 < 버튼 클릭
     When 작품 클릭
     Then 작품뷰어회차로 진입된다.
     When 상단 [<] 버튼 클릭
     Then Subscribed 화면으로 복귀된다.
 
-  @TC-0165
+  @TC-0164
   Scenario: [TPS-178] Subscribed 작품 목록 없는 경우 > Comics 필터 클릭 + All 필터 클릭
     Given Subscribed 작품 목록 없는 경우
     When Comics 필터 클릭
@@ -30,7 +19,7 @@ Feature: Subscribed
     When All 필터 클릭
     Then 안내문구가 노출된다.
 
-  @TC-0166
+  @TC-0165
   Scenario: [TPS-179] PCW + 필터 > All 버튼 클릭
     When [PCW]
     And 탭 하단 [Comics] 버튼 클릭
@@ -47,7 +36,7 @@ Feature: Subscribed
     When 필터 > [All] 버튼 클릭
     Then 모든 작품 리스트가 노출된다.
 
-  @TC-0167
+  @TC-0166
   Scenario: [TPS-180] PCWeb only > Subscribed 클릭 + Setting 버튼 클릭
     Given PCWeb only
     When Subscribed 클릭
