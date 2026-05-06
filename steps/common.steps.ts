@@ -403,6 +403,8 @@ Then('GNB 메뉴와 홈 화면이 정상 노출된다', async ({ page }) => {
 Given('로그인하지 않은 상태다', async ({ page }) => {
   await page.context().clearCookies();
   await page.goto('https://tapas.io/', { waitUntil: 'domcontentloaded' });
+  // 쿠키 초기화 후 배너가 다시 노출되므로 Accept 처리
+  await page.getByRole('button', { name: /accept/i }).click({ timeout: 5000 }).catch(() => {});
 });
 
 // 로그인 공통 액션
