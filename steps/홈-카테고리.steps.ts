@@ -296,11 +296,11 @@ Then(/^(Comics|Novels|Community|mature) 홈화면의 첫 번째 서브탭으로 
 });
 
 Then(/^(Comics|Novels) 서브탭이 활성화된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then(/^\{(All Comics|All Novels|장르명)\} 서브탭이 활성화된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('장르 선택 팝업이 노출된다.', async ({ page }) => {
@@ -341,7 +341,8 @@ Then(/^Comics\/Novels 대분류 필터 노출되지 않는다\.$/, async ({ page
 });
 
 Then('상단 대분류 필터 영역이 노출되지 않는다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  // 장르 서브탭 페이지에서는 All Comics의 장르 필터 탭(a[href*="?genre="])이 없어야 함
+  await expect(page.locator('a[href*="?genre="]')).toHaveCount(0);
 });
 
 Then('연령 인증 페이지 랜딩된다.', async ({ page }) => {

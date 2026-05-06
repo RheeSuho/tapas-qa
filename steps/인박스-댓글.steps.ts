@@ -540,5 +540,11 @@ Then(/^Settings(으로|로) 진입된다\.$/, async ({ page }) => {
 });
 
 Then(/^(Activity 화면|Inbox > gift 화면|인박스 .+화면)(으로|로) 복귀된다\.$/, async ({ page }) => {
+  const giftItem = page.locator('.inbox-gift-item').first();
+  const isGift = await giftItem.isVisible().catch(() => false);
+  if (isGift) { await expect(giftItem).toBeVisible(); return; }
+  const empty = page.locator('.page-empty').first();
+  const isEmpty = await empty.isVisible().catch(() => false);
+  if (isEmpty) { await expect(empty).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });

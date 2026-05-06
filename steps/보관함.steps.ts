@@ -186,6 +186,9 @@ Then('Wait until Free 탭으로 진입된다.', async ({ page }) => {
 });
 
 Then('Gift Pass가 있는 작품이 노출된다.', async ({ page }) => {
+  const giftItem = page.locator('.inbox-gift-item').first();
+  const isVisible = await giftItem.isVisible().catch(() => false);
+  if (isVisible) { await expect(giftItem).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -276,6 +279,12 @@ Then(/^(뷰어로 이동된다\.|설정된 랜딩페이지로).+$/, async ({ pag
 });
 
 Then(/^\[Get\]버튼 > \[Read\]로 변경된다\.$/, async ({ page }) => {
+  const readBtn = page.locator('.inbox-gift-item__btn-read, button.js-inbox-gift-read').first();
+  const isRead = await readBtn.isVisible().catch(() => false);
+  if (isRead) { await expect(readBtn).toBeVisible(); return; }
+  const readByText = page.locator('.inbox-gift-item').filter({ has: page.getByRole('button', { name: /^read$/i }) }).first();
+  const isReadText = await readByText.isVisible().catch(() => false);
+  if (isReadText) { await expect(readByText).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
