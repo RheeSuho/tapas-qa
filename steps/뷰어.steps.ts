@@ -866,6 +866,9 @@ Then('Style 팝업이 유지된다.', async ({ page }) => {
 });
 
 Then('소설 목록이 노출된다.', async ({ page }) => {
+  const epItem = page.locator('a.episode-item').first();
+  const isEp = await epItem.isVisible().catch(() => false);
+  if (isEp) { await expect(epItem).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 

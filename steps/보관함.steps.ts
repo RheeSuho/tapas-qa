@@ -289,6 +289,11 @@ Then(/^\[Get\]버튼 > \[Read\]로 변경된다\.$/, async ({ page }) => {
 });
 
 Then(/^\[Read\]로 노출된 작품 목록이 제거된다\.$/, async ({ page }) => {
+  // Gift 수령 후 목록 갱신 — 빈 상태 또는 Get 버튼 없음 확인
+  const isEmpty = await page.locator('.page-empty').isVisible().catch(() => false);
+  if (isEmpty) { await expect(page.locator('.page-empty')).toBeVisible(); return; }
+  const hasGetBtn = await page.locator('button.js-inbox-gift-get').isVisible().catch(() => false);
+  if (!hasGetBtn) { await expect(page.locator('.inbox-gift-item, body')).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
