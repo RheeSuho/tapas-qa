@@ -446,8 +446,16 @@ When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({
   await page.getByRole('button', { name: /accept/i }).click({ timeout: 3000 }).catch(() => {});
   const emailInput = page.getByPlaceholder(/email/i).first();
   const pwInput = page.getByPlaceholder(/password/i).first();
-  if ((await emailInput.count()) > 0) await emailInput.fill(email);
-  if ((await pwInput.count()) > 0) await pwInput.fill(password);
+  // fill() 은 React input 이벤트를 트리거하지 않아 Login 버튼이 disabled 유지됨
+  // pressSequentially() 로 실제 타이핑 이벤트 발생시켜 버튼 활성화
+  if ((await emailInput.count()) > 0) {
+    await emailInput.click();
+    await emailInput.pressSequentially(email, { delay: 30 });
+  }
+  if ((await pwInput.count()) > 0) {
+    await pwInput.click();
+    await pwInput.pressSequentially(password, { delay: 30 });
+  }
   const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
   if ((await loginBtn.count()) > 0) await loginBtn.last().click();
   // signin URL을 벗어날 때까지 대기 (auth.setup.ts 동일 패턴)
