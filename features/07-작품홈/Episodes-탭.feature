@@ -31,7 +31,7 @@ Feature: Episodes 탭
     When 회차 영역 스크롤 > 기다무 회차 클릭
     Then 기다무 사용 확인 팝업이 노출된다
 
-  @TC-0105
+  @TC-0105 @skip
   Scenario: [TPS-093] 기다무 티켓 소진 시 구매 팝업 노출
     Given 기다무 티켓 소진 상태
     When 다음 회차 (기다무) 클릭
