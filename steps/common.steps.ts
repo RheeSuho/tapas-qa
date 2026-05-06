@@ -442,6 +442,8 @@ When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({
   const password = process.env.TAPAS_PASSWORD ?? '';
   // 폼이 렌더링될 때까지 대기 (auth.setup.ts 동일 패턴)
   await page.getByPlaceholder(/email/i).waitFor({ timeout: 10000 }).catch(() => {});
+  // signin 페이지에서도 쿠키 배너가 재노출될 수 있으므로 Accept 처리
+  await page.getByRole('button', { name: /accept/i }).click({ timeout: 3000 }).catch(() => {});
   const emailInput = page.getByPlaceholder(/email/i).first();
   const pwInput = page.getByPlaceholder(/password/i).first();
   if ((await emailInput.count()) > 0) await emailInput.fill(email);
