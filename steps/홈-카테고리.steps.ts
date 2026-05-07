@@ -29,8 +29,8 @@ When(/^(Comics|Novels|Daily|Popular|All Novels|All Comics) 서브탭 클릭$/, a
 // 서브탭 클릭 — 따옴표로 감싼 실제 값 ("Romance", "All Comics" 등)
 When('{string} 서브탭 클릭', async ({ page }, tabName: string) => {
   await page.waitForLoadState('domcontentloaded');
-  // "All Comics" → img[alt="All Genres"], "All Novels" → img[alt="All Genres"] (Novels 섹션)
-  const altMap: Record<string, string> = { 'All Comics': 'All Genres', 'All Novels': 'All Genres' };
+  // "All Comics" → img[alt="All Genres"] (Comics), "All Novels" → img[alt="All Genre"] (Novels, 's' 없음)
+  const altMap: Record<string, string> = { 'All Comics': 'All Genres', 'All Novels': 'All Genre' };
   const altName = altMap[tabName] || tabName;
   // 1. img[alt] 매칭 (이미지 기반 장르 탭)
   const byAlt = page.locator(`a:has(img[alt="${altName}"])`);

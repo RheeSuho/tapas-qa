@@ -215,13 +215,21 @@ When('배너 섹션 내 작품을 클릭한다', async ({ page }) => {
 });
 
 When('더보기 링크를 클릭한다', async ({ page }) => {
-  const moreLink = page.getByRole('link', { name: /more|see all/i }).first();
+  // Tapas 섹션 더보기: /landing-list/ href + img[alt="right arrow"]
+  const moreLink = page.locator('a[href*="/landing-list/"]').filter({ has: page.locator('img[alt="right arrow"]') }).first();
   if ((await moreLink.count()) > 0) {
     await moreLink.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    test.skip(true, '더보기 링크가 현재 페이지에 없음 — 동적 콘텐츠');
+    return;
   }
+  // 폴백: /menu/subtab 링크 중 right arrow 이미지 포함
+  const subtabMore = page.locator('a[href*="/menu/"]').filter({ has: page.locator('img[alt="right arrow"]') }).first();
+  if ((await subtabMore.count()) > 0) {
+    await subtabMore.click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    return;
+  }
+  test.skip(true, '더보기 링크가 현재 페이지에 없음 — 동적 콘텐츠');
 });
 
 // 슬라이드 전환 전 번호 저장용 (TPS-021)
