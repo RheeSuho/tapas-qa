@@ -62,7 +62,10 @@ const passed  = results.stats?.expected   ?? 0;
 const failed  = results.stats?.unexpected ?? 0;
 const skipped = results.stats?.skipped    ?? 0;
 const total   = passed + failed + skipped;
-const durationSec = ((results.stats?.duration ?? 0) / 1000).toFixed(1);
+const totalSec = Math.round((results.stats?.duration ?? 0) / 1000);
+const durationMin = Math.floor(totalSec / 60);
+const durationRemSec = totalSec % 60;
+const durationStr = durationMin > 0 ? `${durationMin}분 ${durationRemSec}초` : `${durationRemSec}초`;
 
 // 실패 테스트 이름 + BDD steps 수집
 const failedTests = [];
@@ -98,7 +101,7 @@ const blocks = [
     fields: [
       { type: 'mrkdwn', text: `*결과*\n${statusText}` },
       { type: 'mrkdwn', text: `*통과 / 전체*\n${passed} / ${total}` },
-      { type: 'mrkdwn', text: `*소요 시간*\n${durationSec}초` },
+      { type: 'mrkdwn', text: `*소요 시간*\n${durationStr}` },
       { type: 'mrkdwn', text: `*실행 시각*\n${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}` },
     ]
   }
@@ -153,7 +156,7 @@ const req = https.request(options, res => {
   res.on('data', d => data += d);
   res.on('end', () => {
     if (res.statusCode === 200) {
-      console.log(`Slack 알림 전송 완료 — ${statusText} (${passed}/${total}, ${durationSec}초)`);
+      console.log(`Slack 알림 전송 완료 — ${statusText} (${passed}/${total}, ${durationStr})`);
     } else {
       console.error(`Slack 전송 실패: ${res.statusCode} ${data}`);
       process.exit(1);
