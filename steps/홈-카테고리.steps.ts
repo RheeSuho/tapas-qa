@@ -32,8 +32,9 @@ When('{string} 서브탭 클릭', async ({ page }, tabName: string) => {
   // "All Comics" → img[alt="All Genres"] (Comics), "All Novels" → img[alt="All Genre"] (Novels, 's' 없음)
   const altMap: Record<string, string> = { 'All Comics': 'All Genres', 'All Novels': 'All Genre' };
   const altName = altMap[tabName] || tabName;
-  // 1. img[alt] 매칭 (이미지 기반 장르 탭)
+  // 1. img[alt] 매칭 (이미지 기반 장르 탭) — 병렬 실행 시 이미지 지연 로딩 대비 waitFor 추가
   const byAlt = page.locator(`a:has(img[alt="${altName}"])`);
+  await byAlt.first().waitFor({ timeout: 5000 }).catch(() => {});
   if ((await byAlt.count()) > 0) { await byAlt.first().click(); return; }
   // 2. role=link accessible name 매칭
   const tab = page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') });

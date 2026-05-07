@@ -1,7 +1,8 @@
 Feature: 회원 가입
 
-  @TC-0002
+  @TC-0002 @skip
   Scenario: [TPS-008] 이메일로 신규 회원 가입
+    # @skip: 신규 이메일 계정 필요 — 재실행 시 중복 가입 오류
     Given 로그인하지 않은 상태다
     When Login 버튼을 클릭한다
     And 이메일로 회원가입을 시도한다
