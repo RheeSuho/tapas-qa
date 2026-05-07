@@ -127,7 +127,7 @@ if (REPORT_URL) {
     type: 'actions',
     elements: [{
       type: 'button',
-      text: { type: 'plain_text', text: '📋 리포트 보기' },
+      text: { type: 'plain_text', text: '📊 대시보드 보기' },
       url: REPORT_URL,
       style: allPassed ? 'primary' : 'danger',
     }]
@@ -135,7 +135,7 @@ if (REPORT_URL) {
 } else {
   blocks.push({
     type: 'context',
-    elements: [{ type: 'mrkdwn', text: '📋 상세 리포트: 터미널에서 `npm run report`' }]
+    elements: [{ type: 'mrkdwn', text: '📋 상세 리포트: 터미널에서 `npm run allure`' }]
   });
 }
 

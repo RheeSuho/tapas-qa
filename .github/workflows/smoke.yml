@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   smoke:
@@ -38,27 +38,32 @@ jobs:
           AUTH_STATE_B64: ${{ secrets.AUTH_STATE_B64 }}
         continue-on-error: true
 
-      - name: Upload Playwright report
+      - name: Restore Allure history
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
+        continue-on-error: true
+        run: |
+          git fetch origin gh-pages --depth=1
+          git checkout origin/gh-pages -- history
+          mkdir -p allure-results/history
+          cp -r history/. allure-results/history/
 
-      - name: Upload test results (JSON)
+      - name: Generate Allure report
         if: always()
-        uses: actions/upload-artifact@v4
+        run: npx allure generate allure-results --clean -o allure-report
+
+      - name: Deploy to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: test-results
-          path: test-results/
-          retention-days: 7
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          publish_branch: gh-pages
 
       - name: Send Slack notification
         if: always()
         run: |
-          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          node scripts/notify-slack.js Smoke "$RUN_URL"
+          DASHBOARD_URL="https://rheesuho.github.io/tapas-qa"
+          node scripts/notify-slack.js Smoke "$DASHBOARD_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
