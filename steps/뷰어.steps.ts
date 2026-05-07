@@ -110,18 +110,20 @@ When('이전 회차 이동 버튼 클릭', async ({ page }) => {
 
 When('[더보기] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.toolbar-btn.js-toolbar-btn[data-type="more"]').first().click();
+  await page.locator('a.toolbar-btn[data-type="more"]').click();
+  await page.waitForTimeout(500);
 });
 
 When('하단 [더보기] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.toolbar-btn.js-toolbar-btn[data-type="more"]').last().click();
+  await page.locator('a.toolbar-btn[data-type="more"]').click();
+  await page.waitForTimeout(500);
 });
 
 When('[더보기] 버튼 재클릭 > [Subscribe] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  const moreBtn = page.locator('a.toolbar-btn.js-toolbar-btn[data-type="more"]');
-  if ((await moreBtn.count()) > 0) await moreBtn.first().click();
+  const moreBtn = page.locator('a.toolbar-btn[data-type="more"]');
+  if ((await moreBtn.count()) > 0) await moreBtn.click();
   const subBtn = page.getByRole('button', { name: /subscribe/i });
   if ((await subBtn.count()) > 0) { await subBtn.first().click(); return; }
   await expect(page.locator('body')).toBeVisible();
@@ -238,7 +240,10 @@ When('팝업 이외 영역 클릭', async ({ page }) => {
 });
 
 When('[Report] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /report/i });
+  // Report는 <a class="js-report-btn"> (link), button role 아님
+  const reportLink = page.locator('a.js-report-btn');
+  if ((await reportLink.count()) > 0) { await reportLink.first().click(); return; }
+  const btn = page.getByRole('link', { name: /report/i });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
