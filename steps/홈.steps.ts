@@ -228,14 +228,11 @@ When('더보기 링크를 클릭한다', async ({ page }) => {
 let _slideBeforeNum: number = 0;
 
 When('빅배너 영역에서 8초 대기한다', async ({ page }) => {
-  // 현재 슬라이드 번호 저장 (text-s-white 클래스 = 활성 슬라이드)
   const indicator = page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first();
-  const text = await indicator.textContent().catch(() => null);
+  const text = await indicator.textContent({ timeout: 5000 }).catch(() => null);
   _slideBeforeNum = parseInt(text?.trim() || '0');
-  // SPA 클라이언트 라우팅 재진입 시 page navigation 이벤트 발생 가능 → catch로 무시
-  await page.waitForTimeout(8500).catch(() => {});
-  // navigation이 발생한 경우 안정화 대기
-  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  await page.waitForTimeout(8500);
+  await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 });
 
 Then('다음 빅배너로 자동 전환된다', async ({ page }) => {

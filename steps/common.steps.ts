@@ -9,7 +9,7 @@ const { Given, When, Then, Before } = createBdd();
 
 // 모든 시나리오 시작 전 홈으로 이동 (Given 없는 시나리오 포함)
 Before(async ({ page }) => {
-  await page.goto('/', { waitUntil: 'domcontentloaded' }).catch(() => page.goto('/'));
+  await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
 });
 
 // ──── 서비스 접속 ────
