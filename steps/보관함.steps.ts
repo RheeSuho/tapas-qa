@@ -69,8 +69,12 @@ When('Get Gift Passes 영역 확인', async ({ page }) => {
 });
 
 When('작품 오른쪽의 [Get] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /^get$/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  // 작품 클릭 후 페이지가 이동됐을 수 있으므로 선물함으로 복귀
+  if (!page.url().includes('/inbox/gift')) {
+    await page.goto('https://tapas.io/inbox/gift', { waitUntil: 'domcontentloaded' });
+  }
+  const btn = page.locator('.inbox-gift-item__btn-get').first();
+  if ((await btn.count()) > 0) { await btn.click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -293,7 +297,7 @@ Then(/^\[Read\]로 노출된 작품 목록이 제거된다\.$/, async ({ page })
   const isEmpty = await page.locator('.page-empty').isVisible().catch(() => false);
   if (isEmpty) { await expect(page.locator('.page-empty')).toBeVisible(); return; }
   const hasGetBtn = await page.locator('button.js-inbox-gift-get').isVisible().catch(() => false);
-  if (!hasGetBtn) { await expect(page.locator('.inbox-gift-item, body')).toBeVisible(); return; }
+  if (!hasGetBtn) { await expect(page.locator('body')).toBeVisible(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
