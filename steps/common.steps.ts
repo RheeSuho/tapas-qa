@@ -429,10 +429,17 @@ When('구글로 로그인을 시도한다', async ({ page }) => {
 });
 
 When('미가입 이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
+  await page.getByPlaceholder(/email/i).waitFor({ timeout: 10000 }).catch(() => {});
   const emailInput = page.getByPlaceholder(/email/i).first();
   const pwInput = page.getByPlaceholder(/password/i).first();
-  if ((await emailInput.count()) > 0) await emailInput.fill('notregistered@example.com');
-  if ((await pwInput.count()) > 0) await pwInput.fill('WrongPassword123!');
+  if ((await emailInput.count()) > 0) {
+    await emailInput.click();
+    await emailInput.pressSequentially('notregistered@example.com', { delay: 30 });
+  }
+  if ((await pwInput.count()) > 0) {
+    await pwInput.click();
+    await pwInput.pressSequentially('WrongPassword123!', { delay: 30 });
+  }
   const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
   if ((await loginBtn.count()) > 0) await loginBtn.last().click();
 });
