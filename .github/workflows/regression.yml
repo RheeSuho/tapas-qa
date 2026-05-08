@@ -32,6 +32,8 @@ jobs:
         env:
           TAPAS_EMAIL: ${{ secrets.TAPAS_EMAIL }}
           TAPAS_PASSWORD: ${{ secrets.TAPAS_PASSWORD }}
+          TAPAS_UNVERIFIED_EMAIL: ${{ secrets.TAPAS_UNVERIFIED_EMAIL }}
+          TAPAS_UNVERIFIED_PASSWORD: ${{ secrets.TAPAS_UNVERIFIED_PASSWORD }}
           TAPAS_BASE_URL: https://tapas.io
           AUTH_STATE_B64: ${{ secrets.AUTH_STATE_B64 }}
         continue-on-error: true

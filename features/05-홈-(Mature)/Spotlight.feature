@@ -1,6 +1,6 @@
 Feature: Spotlight (섹션 서브탭)
 
-  @TC-0071 @skip
+  @TC-0071
   Scenario: [TPS-064] 미로그인/미인증 상태 > mature 클릭
     Given 미로그인 / 미인증 상태
     When 미로그인 / 미인증 아이디 로그인 상태

@@ -138,8 +138,27 @@ Given(/^미로그인 \/ 미인증 상태$/, async ({ page }) => {
   await page.goto('https://tapas.io/');
 });
 
-When(/^미로그인 \/ 미인증 아이디 로그인 상태$/, async () => {
-  // 미인증 계정으로 로그인한 상태 — 사전 조건, 자동화 범위 외
+When(/^미로그인 \/ 미인증 아이디 로그인 상태$/, async ({ page }) => {
+  const email = process.env.TAPAS_UNVERIFIED_EMAIL ?? '';
+  const password = process.env.TAPAS_UNVERIFIED_PASSWORD ?? '';
+  if (!email) { test.skip(true, 'TAPAS_UNVERIFIED_EMAIL 환경변수 없음'); return; }
+  await page.goto('/account/signin', { waitUntil: 'domcontentloaded' });
+  await page.getByPlaceholder(/email/i).waitFor({ timeout: 10000 }).catch(() => {});
+  const cookieBtn = page.getByRole('button', { name: /accept/i });
+  if ((await cookieBtn.count()) > 0) await cookieBtn.first().click();
+  const emailInput = page.getByPlaceholder(/email/i).first();
+  const pwInput = page.getByPlaceholder(/password/i).first();
+  if ((await emailInput.count()) > 0) {
+    await emailInput.click();
+    await emailInput.pressSequentially(email, { delay: 30 });
+  }
+  if ((await pwInput.count()) > 0) {
+    await pwInput.click();
+    await pwInput.pressSequentially(password, { delay: 30 });
+  }
+  const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
+  if ((await loginBtn.count()) > 0) await loginBtn.last().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When(/^성인에 해당되는 연\/월\/일 입력$/, async ({ page }) => {
