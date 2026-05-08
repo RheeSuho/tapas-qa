@@ -7,6 +7,13 @@ import { GnbPage } from '../pages/GnbPage';
 
 const { Given, When, Then, Before } = createBdd();
 
+// @skip 태그가 있는 시나리오는 skipped로 처리
+Before(async ({ $tags }) => {
+  if ($tags.includes('@skip')) {
+    test.skip(true, '@skip — 자동화 제외 케이스');
+  }
+});
+
 // 모든 시나리오 시작 전 홈으로 이동 (Given 없는 시나리오 포함)
 Before(async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});

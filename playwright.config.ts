@@ -57,7 +57,6 @@ projects: [
     {
       name: 'chromium',
       testDir: bddTestDir,
-      grepInvert: /@skip/,
       use: {
         ...devices['Desktop Chrome'],
         storageState: STORAGE_STATE,
@@ -67,7 +66,6 @@ projects: [
     {
       name: 'firefox',
       testDir: bddTestDir,
-      grepInvert: /@skip/,
       use: {
         ...devices['Desktop Firefox'],
         storageState: STORAGE_STATE,
@@ -77,7 +75,6 @@ projects: [
     {
       name: 'webkit',
       testDir: bddTestDir,
-      grepInvert: /@skip/,
       use: {
         ...devices['Desktop Safari'],
         storageState: STORAGE_STATE,
