@@ -101,8 +101,10 @@ const blocks = [
     type: 'section',
     fields: [
       { type: 'mrkdwn', text: `*결과*\n${statusText}` },
-      { type: 'mrkdwn', text: `*통과 / 전체*\n${passed} / ${total}` },
       { type: 'mrkdwn', text: `*소요 시간*\n${durationStr}` },
+      { type: 'mrkdwn', text: `*통과*\n${passed}` },
+      { type: 'mrkdwn', text: `*실패*\n${failed === 0 ? '0' : `❌ ${failed}`}` },
+      { type: 'mrkdwn', text: `*Skip*\n${skipped}` },
       { type: 'mrkdwn', text: `*실행 시각*\n${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}` },
     ]
   }
