@@ -73,12 +73,13 @@ function walk(suites) {
   for (const suite of suites || []) {
     for (const spec of suite.specs || []) {
       for (const test of spec.tests || []) {
-        const result = test.results?.[0];
-        if (result?.status === 'failed' || result?.status === 'timedOut') {
+        const lastResult = test.results?.[test.results.length - 1];
+        if (lastResult?.status === 'failed' || lastResult?.status === 'timedOut') {
           const match = spec.title.match(/\[TPS-\d+\]/);
           const title = match ? `${match[0]} ${spec.title.replace(match[0], '').trim()}` : spec.title;
-          const steps = extractBddSteps(result.steps || []);
-          failedTests.push({ title, steps });
+          const steps = extractBddSteps(lastResult.steps || []);
+          const retryCount = test.results.length - 1; // 재시도 횟수
+          failedTests.push({ title, steps, retryCount });
         }
       }
     }
@@ -108,7 +109,10 @@ const blocks = [
 ];
 
 if (failedTests.length > 0) {
-  const failList = failedTests.slice(0, 10).map(t => `• ${t.title}`).join('\n');
+  const failList = failedTests.slice(0, 10).map(t => {
+    const retryLabel = t.retryCount > 0 ? ` _(재시도 ${t.retryCount}회 후 실패)_` : '';
+    return `• ${t.title}${retryLabel}`;
+  }).join('\n');
   const more = failedTests.length > 10 ? `\n외 ${failedTests.length - 10}개 더...` : '';
   blocks.push({
     type: 'section',
