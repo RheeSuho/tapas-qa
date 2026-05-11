@@ -3,6 +3,10 @@
 import { createBdd } from 'playwright-bdd';
 import { test, expect } from '@playwright/test';
 import { GnbPage } from '../pages/GnbPage';
+import * as fs from 'fs';
+import * as path from 'path';
+
+const UNVERIFIED_AUTH_FILE = path.join(process.cwd(), '.auth/unverified.json');
 
 const { Given, When, Then } = createBdd();
 
@@ -139,26 +143,25 @@ Given(/^미로그인 \/ 미인증 상태$/, async ({ page }) => {
 });
 
 When(/^미로그인 \/ 미인증 아이디 로그인 상태$/, async ({ page }) => {
-  const email = process.env.TAPAS_UNVERIFIED_EMAIL ?? '';
-  const password = process.env.TAPAS_UNVERIFIED_PASSWORD ?? '';
-  if (!email) { test.skip(true, 'TAPAS_UNVERIFIED_EMAIL 환경변수 없음'); return; }
-  await page.goto('/account/signin', { waitUntil: 'domcontentloaded' });
-  await page.getByPlaceholder(/email/i).waitFor({ timeout: 10000 }).catch(() => {});
-  const cookieBtn = page.getByRole('button', { name: /accept/i });
-  if ((await cookieBtn.count()) > 0) await cookieBtn.first().click();
-  const emailInput = page.getByPlaceholder(/email/i).first();
-  const pwInput = page.getByPlaceholder(/password/i).first();
-  if ((await emailInput.count()) > 0) {
-    await emailInput.click();
-    await emailInput.pressSequentially(email, { delay: 30 });
+  // CI: UNVERIFIED_AUTH_STATE_B64에서 파일 복원
+  const b64 = process.env.UNVERIFIED_AUTH_STATE_B64;
+  if (b64 && !fs.existsSync(UNVERIFIED_AUTH_FILE)) {
+    fs.mkdirSync(path.dirname(UNVERIFIED_AUTH_FILE), { recursive: true });
+    fs.writeFileSync(UNVERIFIED_AUTH_FILE, Buffer.from(b64, 'base64').toString('utf-8'));
   }
-  if ((await pwInput.count()) > 0) {
-    await pwInput.click();
-    await pwInput.pressSequentially(password, { delay: 30 });
+
+  if (!fs.existsSync(UNVERIFIED_AUTH_FILE)) {
+    test.skip(true, '미인증 세션 없음 — npm run test:setup:unverified 실행 필요');
+    return;
   }
-  const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
-  if ((await loginBtn.count()) > 0) await loginBtn.last().click();
-  await page.waitForLoadState('domcontentloaded').catch(() => {});
+
+  // 메인 계정 쿠키 클리어 후 미인증 계정 세션 복원
+  await page.context().clearCookies();
+  const state = JSON.parse(fs.readFileSync(UNVERIFIED_AUTH_FILE, 'utf-8'));
+  if (state.cookies?.length) {
+    await page.context().addCookies(state.cookies);
+  }
+  await page.goto('https://tapas.io/', { waitUntil: 'domcontentloaded' });
 });
 
 When(/^성인에 해당되는 연\/월\/일 입력$/, async ({ page }) => {

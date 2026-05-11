@@ -34,6 +34,7 @@ jobs:
           TAPAS_PASSWORD: ${{ secrets.TAPAS_PASSWORD }}
           TAPAS_UNVERIFIED_EMAIL: ${{ secrets.TAPAS_UNVERIFIED_EMAIL }}
           TAPAS_UNVERIFIED_PASSWORD: ${{ secrets.TAPAS_UNVERIFIED_PASSWORD }}
+          UNVERIFIED_AUTH_STATE_B64: ${{ secrets.UNVERIFIED_AUTH_STATE_B64 }}
           TAPAS_BASE_URL: https://tapas.io
           AUTH_STATE_B64: ${{ secrets.AUTH_STATE_B64 }}
         continue-on-error: true
