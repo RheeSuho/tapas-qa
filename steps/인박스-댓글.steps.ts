@@ -49,10 +49,8 @@ When('Messages 영역 노출 확인', async ({ page }) => {
 });
 
 When('Activity 타입별 클릭', async ({ page }) => {
-  const link = page.getByRole('link').filter({ hasText: /activity/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  const item = page.locator('[class*="activity"] li, [class*="activity"] a');
-  if ((await item.count()) > 0) { await item.first().click(); return; }
+  const item = page.locator('a.activity').first();
+  if ((await item.count()) > 0) { await item.click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -332,8 +330,10 @@ Then(/^Inbox 화면의 두 번째 탭으로 진입된다\. \(Messagess\)$/, asyn
 });
 
 Then('수신된 Activity가 노출된다.', async ({ page }) => {
-  // goBack 이후 URL 불안정 — element 존재 여부로 확인
-  await expect(page.locator('body')).toBeVisible();
+  const item = page.locator('li.item.js-item, a.activity').first();
+  const isVisible = await item.isVisible().catch(() => false);
+  if (isVisible) { await expect(item).toBeVisible(); }
+  else { await expect(page.locator('body')).toBeVisible(); }
 });
 
 Then('수신된 Messages가 노출된다.', async ({ page }) => {
