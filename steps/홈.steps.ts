@@ -148,11 +148,24 @@ Then('섹션 컨텐츠가 노출된다', async ({ page }) => {
 });
 
 Then('프로모션 배너가 노출된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  // 프로모션 배너: h-48 height의 얇은 가로 배너 (빅배너와 구분)
+  const promoBanner = page.locator('a').filter({ has: page.locator('div.h-48') });
+  const count = await promoBanner.count();
+  if (count === 0) {
+    test.skip(true, '프로모션 배너 미운영 — 동적 콘텐츠');
+    return;
+  }
+  await expect(promoBanner.first()).toBeVisible();
 });
 
-When('프로모션 배너를 클릭한다', async () => {
-  test.skip(true, '프로모션 배너 미운영 — 동적 콘텐츠');
+When('프로모션 배너를 클릭한다', async ({ page }) => {
+  const promoBanner = page.locator('a').filter({ has: page.locator('div.h-48') });
+  if ((await promoBanner.count()) === 0) {
+    test.skip(true, '프로모션 배너 미운영 — 동적 콘텐츠');
+    return;
+  }
+  await promoBanner.first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('빅배너를 클릭한다', async ({ page }) => {

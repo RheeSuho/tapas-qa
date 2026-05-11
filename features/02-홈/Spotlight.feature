@@ -1,6 +1,6 @@
 Feature: Spotlight
 
-  @TC-0014 @skip
+  @TC-0014
   Scenario: [TPS-019] Spotlight 서브탭 + 프로모션 배너 클릭
     When 홈 > Spotlight 서브탭을 클릭한다
     Then Spotlight 서브탭 화면이 노출된다
