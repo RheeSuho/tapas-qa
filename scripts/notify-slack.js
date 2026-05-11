@@ -67,19 +67,30 @@ const durationMin = Math.floor(totalSec / 60);
 const durationRemSec = totalSec % 60;
 const durationStr = durationMin > 0 ? `${durationMin}분 ${durationRemSec}초` : `${durationRemSec}초`;
 
-// 실패 테스트 이름 + BDD steps 수집
+// 실패/동적skip 테스트 수집
 const failedTests = [];
+const dynamicSkips = [];  // test.skip(true, '사유') — 런타임 skip만 (사유 있는 것)
+
 function walk(suites) {
   for (const suite of suites || []) {
     for (const spec of suite.specs || []) {
       for (const test of spec.tests || []) {
         const lastResult = test.results?.[test.results.length - 1];
+        const match = spec.title.match(/\[TPS-[\w-]+\]/);
+        const title = match ? `${match[0]} ${spec.title.replace(match[0], '').trim()}` : spec.title;
+
         if (lastResult?.status === 'failed' || lastResult?.status === 'timedOut') {
-          const match = spec.title.match(/\[TPS-\d+\]/);
-          const title = match ? `${match[0]} ${spec.title.replace(match[0], '').trim()}` : spec.title;
           const steps = extractBddSteps(lastResult.steps || []);
-          const retryCount = test.results.length - 1; // 재시도 횟수
+          const retryCount = test.results.length - 1;
           failedTests.push({ title, steps, retryCount });
+        }
+
+        // 동적 skip: annotations에 type='skip' + description 있는 경우
+        const skipAnnotation = (test.annotations || []).find(
+          a => a.type === 'skip' && a.description
+        );
+        if (skipAnnotation) {
+          dynamicSkips.push({ title, reason: skipAnnotation.description });
         }
       }
     }
@@ -110,6 +121,15 @@ const blocks = [
     text: { type: 'mrkdwn', text: `통과 ${passed}  |  실패 ${failed}  |  Skip ${skipped}` }
   }
 ];
+
+if (dynamicSkips.length > 0) {
+  const skipList = dynamicSkips.slice(0, 10).map(t => `• ${t.title} : ${t.reason}`).join('\n');
+  const more = dynamicSkips.length > 10 ? `\n외 ${dynamicSkips.length - 10}개 더...` : '';
+  blocks.push({
+    type: 'section',
+    text: { type: 'mrkdwn', text: `*Skip 사유*\n${skipList}${more}` }
+  });
+}
 
 if (failedTests.length > 0) {
   const failList = failedTests.slice(0, 10).map(t => {
