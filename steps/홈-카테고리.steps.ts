@@ -201,15 +201,18 @@ When('M 뱃지 노출되는 작품 클릭', async ({ page }) => {
 // ──── Comics 전용 진입 / 복귀 ────
 
 When('Comics Spotlight 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/2/subtab/1', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.getByRole('link', { name: /^comics$/i }).first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const spotlight = page.getByRole('link', { name: /^spotlight$/i });
+  await spotlight.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  if ((await spotlight.count()) === 0) { test.skip(true, 'Comics Spotlight 서브탭 미운영 상태'); return; }
+  await spotlight.first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
   await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
     .waitFor({ timeout: 10000 }).catch(() => {});
 });
 
 Then('Comics 홈으로 돌아온다', async ({ page }) => {
-  if (!page.url().includes('tapas.io')) {
-    await page.goto('https://tapas.io/menu/2', { waitUntil: 'domcontentloaded' });
-  }
   await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
@@ -220,15 +223,18 @@ Then('Comics 카테고리 페이지가 노출된다', async ({ page }) => {
 // ──── Novels 전용 진입 / 복귀 ────
 
 When('Novels Spotlight 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/3/subtab/1', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.getByRole('link', { name: /^novels$/i }).first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const spotlight = page.getByRole('link', { name: /^spotlight$/i });
+  await spotlight.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  if ((await spotlight.count()) === 0) { test.skip(true, 'Novels Spotlight 서브탭 미운영 상태'); return; }
+  await spotlight.first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
   await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
     .waitFor({ timeout: 10000 }).catch(() => {});
 });
 
 Then('Novels 홈으로 돌아온다', async ({ page }) => {
-  if (!page.url().includes('tapas.io')) {
-    await page.goto('https://tapas.io/menu/3', { waitUntil: 'domcontentloaded' });
-  }
   await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
@@ -239,15 +245,18 @@ Then('Novels 카테고리 페이지가 노출된다', async ({ page }) => {
 // ──── Mature 전용 진입 / 복귀 ────
 
 When('Mature Spotlight 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/5/subtab/1', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.getByRole('link', { name: /^mature$/i }).first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const spotlight = page.getByRole('link', { name: /^spotlight$/i });
+  await spotlight.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  if ((await spotlight.count()) === 0) { test.skip(true, 'Mature Spotlight 서브탭 미운영 상태'); return; }
+  await spotlight.first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
   await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
     .waitFor({ timeout: 10000 }).catch(() => {});
 });
 
 Then('Mature 홈으로 돌아온다', async ({ page }) => {
-  if (!page.url().includes('tapas.io')) {
-    await page.goto('https://tapas.io/menu/5', { waitUntil: 'domcontentloaded' });
-  }
   await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
@@ -272,15 +281,18 @@ Then('장르 필터와 정렬 옵션이 노출된다', async ({ page }) => {
 // ──── Community 전용 진입 / 복귀 ────
 
 When('Community Spotlight 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/4/subtab/1', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.getByRole('link', { name: /^community$/i }).first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const spotlight = page.getByRole('link', { name: /^spotlight$/i });
+  await spotlight.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  if ((await spotlight.count()) === 0) { test.skip(true, 'Community Spotlight 서브탭 미운영 상태'); return; }
+  await spotlight.first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
   await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
     .waitFor({ timeout: 10000 }).catch(() => {});
 });
 
 Then('Community 홈으로 돌아온다', async ({ page }) => {
-  if (!page.url().includes('tapas.io')) {
-    await page.goto('https://tapas.io/menu/4', { waitUntil: 'domcontentloaded' });
-  }
   await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 

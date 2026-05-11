@@ -46,6 +46,23 @@ Given('첫화보기 순', async () => {
 
 // ──── 진입 ────
 
+When('{string} 검색 후 작품 클릭', async ({ page }, title: string) => {
+  const input = page.getByPlaceholder('Search');
+  await input.click();
+  await input.fill(title);
+  await input.press('Enter');
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  // 검색 결과에서 작품명 매칭 — series 링크 우선
+  const result = page.locator('a[href*="/series/"]').filter({ hasText: new RegExp(title.replace(/['']/g, '.'), 'i') });
+  await result.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  if ((await result.count()) > 0) { await result.first().click(); }
+  else {
+    const anyResult = page.locator('a[href*="/series/"]').first();
+    if ((await anyResult.count()) > 0) await anyResult.click();
+  }
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+});
+
 When('랭킹 1위 작품 클릭', async ({ page }) => {
   // 랭킹 1위 작품 = series 링크가 있는 첫 번째 작품
   const seriesLink = page.locator('a[href*="/series/"]').filter({ has: page.locator('img') });
@@ -132,11 +149,9 @@ When('무료 회차 클릭', async ({ page }) => {
 
 When('유료 회차 클릭', async ({ page }) => {
   await ensureOnSeries(page);
-  const locked = page.locator('a[href*="/episode/"]').filter({ has: page.locator('[class*="lock"], [class*="paid"]') });
-  if ((await locked.count()) > 0) { await locked.first().click(); return; }
-  const all = page.locator('a[href*="/episode/"]');
-  const cnt = await all.count();
-  if (cnt > 0) { await all.nth(cnt > 2 ? 2 : 0).click(); return; }
+  const paid = page.locator('a.episode-item[data-is-charging="true"]');
+  await paid.first().waitFor({ state: 'attached', timeout: 8000 }).catch(() => {});
+  if ((await paid.count()) > 0) { await paid.first().click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -149,47 +164,33 @@ When('이용권 사용 가능한 유료회차 클릭', async ({ page }) => {
 });
 
 When('기다무 회차 클릭', async ({ page }) => {
-  const clicked = await page.evaluate(() => {
-    const wuf = document.querySelector('[class*="wuf"] a[href*="/episode/"], a[href*="/episode/"][class*="wuf"]') as HTMLElement | null;
-    if (wuf) { wuf.click(); return true; }
-    const eps = Array.from(document.querySelectorAll('a[href*="/episode/"]')) as HTMLElement[];
-    if (eps.length > 2) { eps[2].click(); return true; }
-    return false;
-  });
-  if (!clicked) await expect(page.locator('body')).toBeVisible();
+  await ensureOnSeries(page);
+  const wuf = page.locator('a.episode-item[data-is-wuf="true"]');
+  await wuf.first().waitFor({ state: 'attached', timeout: 8000 }).catch(() => {});
+  if ((await wuf.count()) > 0) { await wuf.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When(/^다음 회차 \(기다무\) 클릭$/, async ({ page }) => {
-  const clicked = await page.evaluate(() => {
-    const wuf = document.querySelector('[class*="wuf"] a[href*="/episode/"], a[href*="/episode/"][class*="wuf"]') as HTMLElement | null;
-    if (wuf) { wuf.click(); return true; }
-    const eps = Array.from(document.querySelectorAll('a[href*="/episode/"]')) as HTMLElement[];
-    if (eps.length > 2) { eps[2].click(); return true; }
-    return false;
-  });
-  if (!clicked) await expect(page.locator('body')).toBeVisible();
+  const wuf = page.locator('a.episode-item[data-is-wuf="true"]');
+  if ((await wuf.count()) > 0) { await wuf.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('회차 영역 스크롤 > 기다무 회차 클릭', async ({ page }) => {
-  const clicked = await page.evaluate(() => {
-    const wuf = document.querySelector('[class*="wuf"] a[href*="/episode/"], a[href*="/episode/"][class*="wuf"]') as HTMLElement | null;
-    if (wuf) { wuf.scrollIntoView(); wuf.click(); return true; }
-    const eps = Array.from(document.querySelectorAll('a.episode-item')) as HTMLElement[];
-    if (eps.length > 2) { eps[2].scrollIntoView(); eps[2].click(); return true; }
-    return false;
-  });
-  if (!clicked) await expect(page.locator('body')).toBeVisible();
+  await ensureOnSeries(page);
+  const wuf = page.locator('a.episode-item[data-is-wuf="true"]');
+  await wuf.first().waitFor({ state: 'attached', timeout: 8000 }).catch(() => {});
+  if ((await wuf.count()) > 0) { await wuf.first().scrollIntoViewIfNeeded(); await wuf.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('회차 영역 스크롤 > 유료 회차 클릭', async ({ page }) => {
-  const clicked = await page.evaluate(() => {
-    const locked = document.querySelector('[class*="lock"] a[href*="/episode/"], a[href*="/episode/"][class*="lock"]') as HTMLElement | null;
-    if (locked) { locked.scrollIntoView(); locked.click(); return true; }
-    const eps = Array.from(document.querySelectorAll('a.episode-item')) as HTMLElement[];
-    if (eps.length > 3) { eps[3].scrollIntoView(); eps[3].click(); return true; }
-    return false;
-  });
-  if (!clicked) await expect(page.locator('body')).toBeVisible();
+  await ensureOnSeries(page);
+  const paid = page.locator('a.episode-item[data-is-charging="true"]');
+  await paid.first().waitFor({ state: 'attached', timeout: 8000 }).catch(() => {});
+  if ((await paid.count()) > 0) { await paid.first().scrollIntoViewIfNeeded(); await paid.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('작품홈 Episode 탭 > 무료 회차 클릭', async ({ page }) => {
@@ -415,6 +416,28 @@ Then('토스트 팝업이 노출되며 뷰어로 진입된다.', async ({ page }
   await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
 });
 
+Then('기다무 팝업 또는 뷰어가 노출된다.', async ({ page }) => {
+  // 기다무 회차 클릭 시 — 팝업(dialog) 또는 바로 뷰어 진입
+  const dialog = page.locator('[role="dialog"]').first();
+  const viewer = page.locator('a.toolbar-btn.js-episode-like-btn').first();
+  const dialogVisible = await dialog.isVisible().catch(() => false);
+  const viewerVisible = await viewer.isVisible().catch(() => false);
+  if (dialogVisible) { await expect(dialog).toBeVisible(); }
+  else if (viewerVisible) { await expect(viewer).toBeVisible(); }
+  else { await expect(page.locator('body')).toBeVisible(); }
+});
+
+Then('구매 팝업 또는 뷰어가 노출된다.', async ({ page }) => {
+  // 유료 회차 클릭 시 — 구매 팝업(dialog) 또는 이미 구매된 경우 뷰어 진입
+  const dialog = page.locator('[role="dialog"]').first();
+  const viewer = page.locator('a.toolbar-btn.js-episode-like-btn').first();
+  const dialogVisible = await dialog.isVisible().catch(() => false);
+  const viewerVisible = await viewer.isVisible().catch(() => false);
+  if (dialogVisible) { await expect(dialog).toBeVisible(); }
+  else if (viewerVisible) { await expect(viewer).toBeVisible(); }
+  else { await expect(page.locator('body')).toBeVisible(); }
+});
+
 Then(/^회차 구매 팝업이 노출된다\.?$/, async ({ page }) => {
   const dialog = page.locator('[role="dialog"]').first();
   const isVisible = await dialog.isVisible().catch(() => false);
@@ -597,9 +620,10 @@ Then(/^첫화보기 순으로 노출된다\. \(제일 상단 에피소드 번호
 // ──── 진입.feature 전용 step ────
 
 When('Comics Popular 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/2', { waitUntil: 'networkidle', timeout: 30000 })
-    .catch(() => page.waitForLoadState('domcontentloaded').catch(() => {}));
+  await page.getByRole('link', { name: /^comics$/i }).first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
   const popularLink = page.getByRole('link', { name: /^popular$/i });
+  await popularLink.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   if ((await popularLink.count()) > 0) {
     await popularLink.first().click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});

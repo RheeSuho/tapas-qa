@@ -22,12 +22,26 @@ Given(/^수신된 내역 (없는|있는) 경우$/, async () => {
 
 // ──── 인박스 탭 ────
 
+async function ensureOnInbox(page: any) {
+  if (!page.url().includes('/inbox/') && !page.url().includes('/activities')) {
+    const icon = page.locator('a[href="/inbox/gift"]');
+    if ((await icon.count()) > 0) await icon.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
+}
+
 When('Inbox > Activity 탭 클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/activities');
+  await ensureOnInbox(page);
+  const tab = page.locator('a.item-title[href="/activities"]');
+  if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('Inbox > Messages 탭 클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/inbox/message');
+  await ensureOnInbox(page);
+  const tab = page.locator('a.item-title[href="/inbox/message"]');
+  if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('Messages 영역 노출 확인', async ({ page }) => {

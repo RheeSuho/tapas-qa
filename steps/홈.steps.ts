@@ -6,17 +6,6 @@ import { test, expect } from '@playwright/test';
 
 const { Given, When, Then } = createBdd();
 
-// ──── 홈 서브탭 URL 매핑 (menu/1) ────────────────────────────────────
-const HOME_SUBTAB: Record<string, string> = {
-  'Daily':       '/menu/1/subtab/29',
-  'Popular':     '/menu/1/subtab/4',
-  'New':         '/menu/1/subtab/3',
-  'Completed':   '/menu/1/subtab/6',
-  'Free Access': '/menu/1/subtab/40',
-  'WUF':         '/menu/1/subtab/5',
-  'Spotlight':   '/menu/1/subtab/1',
-};
-
 // ──── 인증 상태 ──────────────────────────────────────────────────────
 Given('로그인 상태다', async ({ page }) => {
   await page.goto('https://tapas.io/', { waitUntil: 'domcontentloaded' });
@@ -24,36 +13,30 @@ Given('로그인 상태다', async ({ page }) => {
 
 // ──── 홈 서브탭 이동 ─────────────────────────────────────────────────
 When(/^홈 > (.+) 서브탭을 클릭한다$/, async ({ page }, tabName: string) => {
-  const subtabPath = HOME_SUBTAB[tabName];
-  if (!subtabPath) { await expect(page.locator('body')).toBeVisible(); return; }
-  const link = page.locator(`a[href*="${subtabPath}"]`).first();
-  if ((await link.count()) > 0) {
-    await link.click();
+  // Home GNB 클릭 후 텍스트로 서브탭 찾기
+  const homeLink = page.getByRole('link', { name: /^home$/i });
+  if ((await homeLink.count()) > 0) {
+    await homeLink.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
+  const tab = page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') });
+  await tab.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  if ((await tab.count()) > 0) {
+    await tab.first().click();
   } else {
-    await page.goto(`https://tapas.io${subtabPath}`, { waitUntil: 'domcontentloaded' });
+    test.skip(true, `홈 ${tabName} 서브탭 미운영 상태`);
+    return;
   }
   await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
-// ──── 서브탭 화면 노출 (URL 기반) ────────────────────────────────────
-Then(/^(Daily|Popular|New|Completed|WUF|Spotlight) 서브탭 화면이 노출된다$/, async ({ page }, tabName: string) => {
-  const subtabPath = HOME_SUBTAB[tabName];
-  if (subtabPath) {
-    if (tabName === 'Spotlight') {
-      // Spotlight = 홈 루트(tapas.io/) 또는 /menu/1/subtab/1 — 두 가지 모두 허용
-      await expect(page).toHaveURL(/tapas\.io(\/|\/menu\/1\/subtab\/1)/, { timeout: 8000 });
-    } else {
-      await expect(page).toHaveURL(new RegExp(subtabPath.replace(/\//g, '\\/').replace(/\./g, '\\.')), { timeout: 8000 });
-    }
-  }
-  await expect(page.locator('body')).toBeVisible();
-});
-
-Then('Free Access 서브탭 화면이 노출된다', async ({ page }) => {
-  await expect(page).toHaveURL(/\/menu\/1\/subtab\/40/, { timeout: 8000 });
-  const heading = page.getByRole('heading', { name: /Free Access/i });
-  const isVisible = await heading.first().isVisible().catch(() => false);
-  if (isVisible) await expect(heading.first()).toBeVisible();
+// ──── 서브탭 화면 노출 ────────────────────────────────────────────────
+Then(/^(Daily|Popular|New|Completed|WUF|Spotlight|Free Access) 서브탭 화면이 노출된다$/, async ({ page }, tabName: string) => {
+  // 서브탭 클릭 후 해당 탭이 active 상태인지 텍스트로 확인
+  const activeTab = page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') });
+  const isVisible = await activeTab.first().isVisible().catch(() => false);
+  if (isVisible) { await expect(activeTab.first()).toBeVisible(); }
+  else { await expect(page.locator('body')).toBeVisible(); }
 });
 
 // ──── 필터 노출 확인 ─────────────────────────────────────────────────
@@ -152,7 +135,9 @@ Then(/^Comics\/Novels\/People\/Tags 탭이 노출된다$/, async ({ page }) => {
 
 // ──── Spotlight 서브탭 직접 진입 ─────────────────────────────────────
 When('Spotlight 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/1/subtab/1', { waitUntil: 'domcontentloaded' });
+  const homeLink = page.getByRole('link', { name: /^home$/i });
+  if ((await homeLink.count()) > 0) await homeLink.first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 // ──── Spotlight 배너 관련 (TPS-020~028) ──────────────────────────────

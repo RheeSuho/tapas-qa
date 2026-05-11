@@ -61,6 +61,28 @@ When('GNB > Home > Novels > Popular 서브탭 진입', async ({ page }) => {
   if ((await popular.count()) > 0) await popular.first().click();
 });
 
+When('GNB > Home > Novels > Daily 서브탭 진입', async ({ page }) => {
+  await page.goto('https://tapas.io/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.getByRole('link', { name: /^novels$/i }).first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const daily = page.getByRole('link', { name: /^daily$/i });
+  await daily.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  if ((await daily.count()) > 0) await daily.first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const seriesLink = page.locator('a[href*="/series/"]').first();
+  await seriesLink.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  if ((await seriesLink.count()) > 0) {
+    await seriesLink.click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
+});
+
+When('첫 번째 에피소드 클릭', async ({ page }) => {
+  const ep = page.locator('a.episode-item').first();
+  if ((await ep.count()) > 0) { await ep.click(); return; }
+  await expect(page.locator('body')).toBeVisible();
+});
+
 // ──── 툴바 / 하단 영역 ────
 
 When('하단 툴바 확인', async ({ page }) => {

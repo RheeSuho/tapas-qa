@@ -2,6 +2,10 @@ export const TEST_DATA = {
   search: {
     keyword: 'Olympus',
     workTitle: 'The Edge of Olympus',
+    comicWuf: 'I Was the Real Head of the House',
+    comicPaid: 'The Eccentric Duchess',
+    novelWuf: "The Villain's Sidekick",
+    novelPaid: 'Overlord',
   },
   series: {
     // /info URL 사용 — /episodes는 500 에러 발생
@@ -9,6 +13,9 @@ export const TEST_DATA = {
     novel: 'https://tapas.io/series/the-unbeatable-game-novel',
     // WUF 기다무/유료 회차 있는 시리즈 (/info URL)
     wuf: 'https://tapas.io/series/i-was-the-real-head-of-the-house/info',
+    comicPaid: 'https://tapas.io/series/the-eccentric-duchess/info',
+    novelWuf: 'https://tapas.io/series/the-villains-sidekick-novel/info',
+    novelPaid: 'https://tapas.io/series/overlord-novel/info',
     // 소설 뷰어 테스트용
     novelViewer: 'https://tapas.io/series/the-necromancers-knight-novel',
   },

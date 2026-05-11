@@ -17,49 +17,81 @@ Given(/^(Updated|Recent|Subscribed|Free Episodes|Wait Until Free|PCWeb only) 작
 // GNB > 라이브러리 메뉴 클릭 / GNB > 라이브러리 클릭 — common.steps.ts의 /^GNB > ([^>]+) 클릭$/ 에서 처리
 
 When('GNB >보관함 클릭 > Suscribed클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/reading-list?category=SUBSCRIBED');
+  const lib = page.locator('a[href="/reading-list"]');
+  if ((await lib.count()) > 0) await lib.first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const tab = page.locator('a[href*="category=SUBSCRIBED"]');
+  if ((await tab.count()) > 0) await tab.first().click();
 });
 
 When('GNB 보관함 아이콘 클릭 > Recent 클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/reading-list?category=RECENT');
+  const lib = page.locator('a[href="/reading-list"]');
+  if ((await lib.count()) > 0) await lib.first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const tab = page.locator('a[href*="category=RECENT"]');
+  if ((await tab.count()) > 0) await tab.first().click();
 });
 
+async function ensureOnReadingList(page: any) {
+  if (!page.url().includes('reading-list')) {
+    const lib = page.locator('a[href="/reading-list"]');
+    if ((await lib.count()) > 0) await lib.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
+}
+
 When('Recent 클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/reading-list?category=RECENT');
+  await ensureOnReadingList(page);
+  const tab = page.locator('a[href*="category=RECENT"]');
+  if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('Subscribed 클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/reading-list?category=SUBSCRIBED');
+  await ensureOnReadingList(page);
+  const tab = page.locator('a[href*="category=SUBSCRIBED"]');
+  if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('Free episodes 메뉴 클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/reading-list?category=FREE_EPISODES');
+  await ensureOnReadingList(page);
+  const tab = page.locator('a[href*="category=FREE_EPISODES"]');
+  if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('Wait until Free 메뉴 클릭', async ({ page }) => {
-  await page.goto('https://tapas.io/reading-list?category=WAIT_UNTIL_FREE');
+  await ensureOnReadingList(page);
+  const tab = page.locator('a[href*="category=WAIT_UNTIL_FREE"]');
+  if ((await tab.count()) > 0) { await tab.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 // Comics 필터 클릭 — 인박스-댓글.steps.ts의 /^(All|Comics|Novels) 필터 클릭$/ 에서 처리
 
 When('우상단 필터 > [Comics] 버튼 클릭', async ({ page }) => {
-  const base = page.url().split('?')[0].includes('reading-list') ? page.url().split('?')[0] : 'https://tapas.io/reading-list';
-  await page.goto(base + '?type=COMICS');
+  const btn = page.locator('a[href*="type=COMICS"]');
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('필터 > [All] 버튼 클릭', async ({ page }) => {
-  const base = page.url().split('?')[0].includes('reading-list') ? page.url().split('?')[0] : 'https://tapas.io/reading-list';
-  await page.goto(base);
+  const btn = page.locator('a.item-title').filter({ hasText: /^all$/i });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('필터 > [Novels] 버튼 클릭', async ({ page }) => {
-  const base = page.url().split('?')[0].includes('reading-list') ? page.url().split('?')[0] : 'https://tapas.io/reading-list';
-  await page.goto(base + '?type=BOOKS');
+  const btn = page.locator('a[href*="type=BOOKS"]');
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('탭 하단 [Comics] 버튼 클릭', async ({ page }) => {
-  const base = page.url().split('?')[0].includes('reading-list') ? page.url().split('?')[0] : 'https://tapas.io/reading-list';
-  await page.goto(base + '?type=COMICS');
+  const btn = page.locator('a[href*="type=COMICS"]');
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 // ──── Gift Passes ────
@@ -71,7 +103,9 @@ When('Get Gift Passes 영역 확인', async ({ page }) => {
 When('작품 오른쪽의 [Get] 버튼 클릭', async ({ page }) => {
   // 작품 클릭 후 페이지가 이동됐을 수 있으므로 선물함으로 복귀
   if (!page.url().includes('/inbox/gift')) {
-    await page.goto('https://tapas.io/inbox/gift', { waitUntil: 'domcontentloaded' });
+    const giftLink = page.locator('a[href="/inbox/gift"]');
+    if ((await giftLink.count()) > 0) await giftLink.first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
   }
   const btn = page.locator('.inbox-gift-item__btn-get').first();
   if ((await btn.count()) > 0) { await btn.click(); return; }
