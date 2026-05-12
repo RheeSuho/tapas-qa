@@ -204,7 +204,6 @@ When('Comics Spotlight 서브탭에 접속한다', async ({ page }) => {
   await page.getByRole('link', { name: /^comics$/i }).first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   const spotlight = page.getByRole('link', { name: /^spotlight$/i });
-  await spotlight.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   if ((await spotlight.count()) === 0) { test.skip(true, 'Comics Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
@@ -226,7 +225,6 @@ When('Novels Spotlight 서브탭에 접속한다', async ({ page }) => {
   await page.getByRole('link', { name: /^novels$/i }).first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   const spotlight = page.getByRole('link', { name: /^spotlight$/i });
-  await spotlight.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   if ((await spotlight.count()) === 0) { test.skip(true, 'Novels Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
@@ -248,7 +246,6 @@ When('Mature Spotlight 서브탭에 접속한다', async ({ page }) => {
   await page.getByRole('link', { name: /^mature$/i }).first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   const spotlight = page.getByRole('link', { name: /^spotlight$/i });
-  await spotlight.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   if ((await spotlight.count()) === 0) { test.skip(true, 'Mature Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
