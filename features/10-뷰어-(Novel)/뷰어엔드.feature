@@ -34,9 +34,8 @@ Feature: 뷰어엔드
     Then 추천 작품이 노출된다.
     And ㄴ 작품 썸네일, 뱃지, 작품명, 카테고리, 장르
 
-  @TC-0132 @skip
+  @TC-0132
   Scenario: [TPS-143] Recommendation for you 영역 + 상단 < 버튼 클릭
-    # @skip: 추천 작품 선택 후 2회 goBack으로 SPA history 불확실
     When Recommendation for you 영역
     And 추천 작품 선택
     And 상단 [<] 버튼 클릭

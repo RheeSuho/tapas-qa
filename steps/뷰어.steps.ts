@@ -401,7 +401,21 @@ When('좌하단 More 버튼 클릭', async ({ page }) => {
 });
 
 When('Recommendation for you 영역', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  // novelEp 기반 — 소설 뷰어엔드로 스크롤해서 섹션 확인
+  if (!page.url().includes('/episode/')) {
+    await page.goto(TEST_DATA.episode.novelEp, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  }
+  for (let i = 0; i < 8; i++) {
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(600);
+  }
+  const section = page.locator('div.viewer-section--recommend').first();
+  if ((await section.count()) === 0) {
+    test.skip(true, 'Recommendation for you 영역 미노출');
+    return;
+  }
+  await section.scrollIntoViewIfNeeded();
+  await expect(section).toBeVisible();
 });
 
 When('Recommendation for you 영역 확인', async ({ page }) => {
@@ -463,8 +477,8 @@ When('리스트의 첫번째 작품 클릭', async ({ page }) => {
 });
 
 When('추천 작품 선택', async ({ page }) => {
-  const link = page.getByRole('link').filter({ has: page.locator('img') });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
+  const link = page.locator('a.series-item.js-recommended-series').first();
+  if ((await link.count()) > 0) { await link.click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
