@@ -237,7 +237,7 @@ When('빅배너 영역에서 8초 대기한다', async ({ page }) => {
   const indicator = page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first();
   const text = await indicator.textContent({ timeout: 5000 }).catch(() => null);
   _slideBeforeNum = parseInt(text?.trim() || '0');
-  await page.waitForTimeout(8500);
+  await page.waitForTimeout(12000);
   await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 });
 
