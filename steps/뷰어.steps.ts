@@ -238,7 +238,11 @@ When('[전체화면] 버튼 재클릭', async ({ page }) => {
 
 When('[Support] 버튼 클릭', async ({ page }) => {
   const btn = page.locator('a.toolbar-btn.js-support-btn').first();
-  if ((await btn.count()) > 0) { await btn.click(); return; }
+  if ((await btn.count()) > 0) {
+    await btn.click();
+    await expect(page.locator('div.popup-support')).toBeVisible({ timeout: 5000 });
+    return;
+  }
   await expect(page.locator('body')).toBeVisible();
 });
 
