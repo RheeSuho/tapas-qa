@@ -75,9 +75,8 @@ Feature: 하단 툴바
     And 뷰어 화면 위로 More 팝업이 노출된다.
     And 팝업이 닫힌다.
 
-  @TC-0142 @skip
+  @TC-0142
   Scenario: [TPS-155] 첫 번째 작가 서포트 활성화 > Support 버튼 클릭 + 우상단 x 버튼 클릭
-    # @skip: 작가 Support 버튼 유무가 작가 설정에 의존
     Given 첫 번째 작가 서포트 활성화
     When [Support] 버튼 클릭
     And 우상단 [x] 버튼 클릭

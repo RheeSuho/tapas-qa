@@ -28,5 +28,7 @@ export const TEST_DATA = {
     comicSparks: 'https://tapas.io/episode/317574',
     // 소설 뷰어 테스트용 (The Necromancer's Knight)
     novelEp: 'https://tapas.io/episode/3125421',
+    // 작가 Support 버튼 있는 에피소드 (My Superhero)
+    superheroEp: 'https://tapas.io/episode/2481682',
   },
 };

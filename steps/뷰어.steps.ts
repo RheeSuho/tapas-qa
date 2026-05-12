@@ -29,8 +29,13 @@ Given(/^(작가의 말이 등록된 회차|광고가 설정된 작품|이벤트 
   await page.goto(TEST_DATA.episode.comicSparks, { waitUntil: 'domcontentloaded', timeout: 60000 });
 });
 
-Given(/^(구독 상태|PCW only|첫 번째 작가).+$/, async () => {
+Given(/^(구독 상태|PCW only).+$/, async () => {
   // account/device state — Background가 이미 에피소드로 이동
+});
+
+Given('첫 번째 작가 서포트 활성화', async ({ page }) => {
+  // Support 버튼이 항상 있는 My Superhero 에피소드로 진입
+  await page.goto(TEST_DATA.episode.superheroEp, { waitUntil: 'domcontentloaded', timeout: 60000 });
 });
 
 Given('작가의 말 있는 경우', async () => {
@@ -232,8 +237,8 @@ When('[전체화면] 버튼 재클릭', async ({ page }) => {
 });
 
 When('[Support] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /support/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  const btn = page.locator('a.toolbar-btn.js-support-btn').first();
+  if ((await btn.count()) > 0) { await btn.click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
