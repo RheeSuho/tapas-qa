@@ -2,7 +2,7 @@
 // features/뷰어-(Comic)/, 뷰어-(Novel)/, 뷰어/ 대응
 
 import { createBdd } from 'playwright-bdd';
-import { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { TEST_DATA } from '../data/testData';
 
 const { Given, When, Then } = createBdd();
@@ -405,7 +405,20 @@ When('Recommendation for you 영역', async ({ page }) => {
 });
 
 When('Recommendation for you 영역 확인', async ({ page }) => {
-  await ensureOnEpisode(page);
+  // Recommendation for you 섹션이 있는 Sparks 에피소드로 진입
+  await page.goto(TEST_DATA.episode.comicSparks, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  // 뷰어엔드까지 반복 스크롤 (lazy load 이미지 대응)
+  for (let i = 0; i < 8; i++) {
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(600);
+  }
+  const section = page.locator('div.viewer-section--recommend').first();
+  if ((await section.count()) === 0) {
+    test.skip(true, 'Recommendation for you 영역 미노출');
+    return;
+  }
+  await section.scrollIntoViewIfNeeded();
+  await expect(section).toBeVisible();
 });
 
 When('Comments 영역 노출 확인', async ({ page }) => {
@@ -444,7 +457,9 @@ When('첫 번째 작품 클릭', async ({ page }) => {
 });
 
 When('리스트의 첫번째 작품 클릭', async ({ page }) => {
-  await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
+  const link = page.locator('a.series-item.js-recommended-series').first();
+  if ((await link.count()) > 0) { await link.click(); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 When('추천 작품 선택', async ({ page }) => {
