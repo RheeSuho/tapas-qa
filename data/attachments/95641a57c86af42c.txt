@@ -1,0 +1,1 @@
+[unverified-setup] 로그인 버튼 비활성 (reCAPTCHA 등). headed 모드 필요: npm run test:setup:unverified
