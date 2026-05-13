@@ -7,7 +7,7 @@ Feature: 진입
     When 작품홈 Episode 탭 > 무료 회차 클릭
     Then 뷰어 원고 이미지와 리스트 버튼이 노출된다.
 
-  @TC-0217
+  @TC-0217 @smoke
   Scenario: [TPS-NEW-05] 검색 > 코믹 기다무 작품 > 기다무 회차 클릭
     When "I Was the Real Head of the House" 검색 후 작품 클릭
     And 기다무 회차 클릭

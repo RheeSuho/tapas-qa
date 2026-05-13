@@ -9,7 +9,7 @@ Feature: 진입
     When 첫 번째 에피소드 클릭
     Then 에피소드 1화로 진입된다.
 
-  @TC-0219
+  @TC-0219 @smoke
   Scenario: [TPS-NEW-07] 검색 > 소설 기다무 작품 > 기다무 회차 클릭
     When "The Villain's Sidekick" 검색 후 작품 클릭
     And 기다무 회차 클릭
