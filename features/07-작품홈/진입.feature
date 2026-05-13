@@ -7,21 +7,21 @@ Feature: 진입
     Then 작품홈으로 진입된다
 
   @TC-0213
-  Scenario: [TPS-NEW-01] 검색 > 코믹 기다무 작품 클릭 시 작품홈 진입
+  Scenario: [TPS-213] 검색 > 코믹 기다무 작품 클릭 시 작품홈 진입
     When "I Was the Real Head of the House" 검색 후 작품 클릭
     Then 작품홈으로 진입된다
 
   @TC-0214
-  Scenario: [TPS-NEW-02] 검색 > 코믹 유료 작품 클릭 시 작품홈 진입
+  Scenario: [TPS-214] 검색 > 코믹 유료 작품 클릭 시 작품홈 진입
     When "The Eccentric Duchess" 검색 후 작품 클릭
     Then 작품홈으로 진입된다
 
   @TC-0215
-  Scenario: [TPS-NEW-03] 검색 > 소설 기다무 작품 클릭 시 작품홈 진입
+  Scenario: [TPS-215] 검색 > 소설 기다무 작품 클릭 시 작품홈 진입
     When "The Villain's Sidekick" 검색 후 작품 클릭
     Then 작품홈으로 진입된다
 
   @TC-0216
-  Scenario: [TPS-NEW-04] 검색 > 소설 유료 작품 클릭 시 작품홈 진입
+  Scenario: [TPS-216] 검색 > 소설 유료 작품 클릭 시 작품홈 진입
     When "Overlord" 검색 후 작품 클릭
     Then 작품홈으로 진입된다

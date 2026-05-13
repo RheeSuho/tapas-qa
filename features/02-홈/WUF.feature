@@ -8,7 +8,7 @@ Feature: WUF
     And 작품 목록이 노출된다
 
   @TC-0228
-  Scenario: [TPS-NEW-16] WUF 서브탭 > 섹션 더보기 클릭 + 홈으로 복귀
+  Scenario: [TPS-228] WUF 서브탭 > 섹션 더보기 클릭 + 홈으로 복귀
     When 홈 > WUF 서브탭을 클릭한다
     And 더보기 링크를 클릭한다
     Then 랜딩 리스트로 이동된다
