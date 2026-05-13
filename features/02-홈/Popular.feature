@@ -1,6 +1,6 @@
 Feature: Popular
 
-  @TC-0027
+  @TC-0021
   Scenario: [TPS-015] Popular 서브탭 진입 + Comics/Novels 필터 동작 확인
     When 홈 > Popular 서브탭을 클릭한다
     Then Popular 서브탭 화면이 노출된다
@@ -9,7 +9,7 @@ Feature: Popular
     When Novels 필터를 클릭한다
     Then Novels 작품 목록으로 전환된다
 
-  @TC-0222
+  @TC-0022
   Scenario: [TPS-222] Popular 서브탭 > 최하단 스크롤 후 랭킹 300위 이내 노출 확인
     When 홈 > Popular 서브탭을 클릭한다
     And 페이지 최하단까지 스크롤한다

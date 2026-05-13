@@ -2,7 +2,7 @@
 # 1 Depth: Profile
 Feature: 보유 잉크
 
-  @TC-0191
+  @TC-0236
   Scenario: [TPS-211] Profile 클릭 + Ink 영역 확인
     When GNB > Profile 클릭
     Then 하위 메뉴 노출된다.

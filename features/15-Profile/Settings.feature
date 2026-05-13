@@ -2,7 +2,7 @@
 # 1 Depth: Profile
 Feature: Settings
 
-  @TC-0198
+  @TC-0233
   Scenario: [TPS-208] Profile 클릭 + 하위 영역 확인.
     When GNB > Profile 클릭
     Then 하위 메뉴 노출된다.

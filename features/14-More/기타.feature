@@ -2,7 +2,7 @@
 # 1 Depth: More
 Feature: 기타
 
-  @TC-0182
+  @TC-0226
   Scenario: [TPS-201] More 클릭 + More 영역 확인
     When GNB > More 클릭
     Then 하위 메뉴 노출된다.

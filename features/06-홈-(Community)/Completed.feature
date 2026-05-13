@@ -1,11 +1,11 @@
 Feature: Completed
 
-  @TC-0231
+  @TC-0091
   Scenario: [TPS-231] Community 홈 > Completed 서브탭 진입 확인
     When Community Completed 서브탭에 접속한다
     Then 작품 목록이 노출된다
 
-  @TC-0232
+  @TC-0092
   Scenario: [TPS-232] Community 홈 > Completed 서브탭 > 섹션 더보기 클릭 + 홈으로 복귀
     When Community Completed 서브탭에 접속한다
     And 더보기 링크를 클릭한다

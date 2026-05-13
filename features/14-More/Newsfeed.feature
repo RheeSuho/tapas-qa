@@ -2,7 +2,7 @@
 # 1 Depth: More
 Feature: Newsfeed
 
-  @TC-0186
+  @TC-0225
   Scenario: [TPS-200] More 클릭 + 뉴스 리스트 클릭
     When GNB > More 클릭
     Then 하위 메뉴 노출된다.

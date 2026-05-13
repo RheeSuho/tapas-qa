@@ -2,7 +2,7 @@
 # 1 Depth: More
 Feature: Contact
 
-  @TC-0187
+  @TC-0220
   Scenario: [TPS-195] More 클릭 + Contact 클릭
     When GNB > More 클릭
     Then 하위 메뉴 노출된다.

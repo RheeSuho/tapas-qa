@@ -1,13 +1,13 @@
 Feature: WUF
 
-  @TC-0028
+  @TC-0036
   Scenario: [TPS-029] WUF 서브탭 진입 확인
     When 홈 > WUF 서브탭을 클릭한다
     Then WUF 서브탭 화면이 노출된다
     And Wait Until Free 섹션이 노출된다
     And 작품 목록이 노출된다
 
-  @TC-0228
+  @TC-0037
   Scenario: [TPS-228] WUF 서브탭 > 섹션 더보기 클릭 + 홈으로 복귀
     When 홈 > WUF 서브탭을 클릭한다
     And 더보기 링크를 클릭한다

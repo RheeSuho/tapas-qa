@@ -2,7 +2,7 @@
 # 1 Depth: Profile
 Feature: 기타
 
-  @TC-0189
+  @TC-0234
   Scenario: [TPS-209] 로그인 상태 > Profile 클릭 + Profile 영역 확인
     Given 로그인 상태
     When GNB > Profile 클릭
