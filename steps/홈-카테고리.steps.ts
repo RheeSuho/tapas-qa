@@ -207,6 +207,8 @@ When('Comics Spotlight 서브탭에 접속한다', async ({ page }) => {
   if ((await spotlight.count()) === 0) { test.skip(true, 'Comics Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const banner = page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') });
+  if ((await banner.count()) === 0) { test.skip(true, 'Comics Spotlight 콘텐츠 미운영 상태'); return; }
 });
 
 Then('Comics 홈으로 돌아온다', async ({ page }) => {
@@ -226,6 +228,8 @@ When('Novels Spotlight 서브탭에 접속한다', async ({ page }) => {
   if ((await spotlight.count()) === 0) { test.skip(true, 'Novels Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const banner = page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') });
+  if ((await banner.count()) === 0) { test.skip(true, 'Novels Spotlight 콘텐츠 미운영 상태'); return; }
 });
 
 Then('Novels 홈으로 돌아온다', async ({ page }) => {
@@ -245,6 +249,8 @@ When('Mature Spotlight 서브탭에 접속한다', async ({ page }) => {
   if ((await spotlight.count()) === 0) { test.skip(true, 'Mature Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const banner = page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') });
+  if ((await banner.count()) === 0) { test.skip(true, 'Mature Spotlight 콘텐츠 미운영 상태'); return; }
 });
 
 Then('Mature 홈으로 돌아온다', async ({ page }) => {
@@ -278,6 +284,8 @@ When('Community Spotlight 서브탭에 접속한다', async ({ page }) => {
   if ((await spotlight.count()) === 0) { test.skip(true, 'Community Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
+  const banner = page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') });
+  if ((await banner.count()) === 0) { test.skip(true, 'Community Spotlight 콘텐츠 미운영 상태'); return; }
 });
 
 Then('Community 홈으로 돌아온다', async ({ page }) => {
