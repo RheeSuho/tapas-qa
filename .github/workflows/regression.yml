@@ -11,6 +11,10 @@ permissions:
 jobs:
   regression:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
 
     steps:
       - uses: actions/checkout@v4
@@ -26,9 +30,9 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run regression tests
+      - name: Run regression tests (shard ${{ matrix.shard }}/2)
         id: regression
-        run: npm run test:bdd
+        run: npm run test:bdd -- --shard=${{ matrix.shard }}/2
         env:
           TAPAS_EMAIL: ${{ secrets.TAPAS_EMAIL }}
           TAPAS_PASSWORD: ${{ secrets.TAPAS_PASSWORD }}
@@ -39,8 +43,64 @@ jobs:
           AUTH_STATE_B64: ${{ secrets.AUTH_STATE_B64 }}
         continue-on-error: true
 
-      - name: Restore Allure history
+      - name: Rename results for this shard
         if: always()
+        run: |
+          mkdir -p test-results
+          if [ -f test-results/results.json ]; then
+            cp test-results/results.json test-results/results-shard-${{ matrix.shard }}.json
+          fi
+
+      - name: Upload allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.shard }}
+          path: allure-results/
+          retention-days: 1
+
+      - name: Upload shard results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: results-shard-${{ matrix.shard }}
+          path: test-results/results-shard-${{ matrix.shard }}.json
+          retention-days: 1
+
+  report:
+    needs: regression
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download allure results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-*
+          merge-multiple: true
+          path: allure-results/
+
+      - name: Download shard results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: results-shard-*
+          merge-multiple: true
+          path: test-results/
+
+      - name: Merge shard results
+        run: node scripts/merge-results.js test-results test-results/results.json
+
+      - name: Restore Allure history
         continue-on-error: true
         run: |
           git fetch origin gh-pages --depth=1
@@ -49,11 +109,9 @@ jobs:
           cp -r history/. allure-results/history/
 
       - name: Generate Allure report
-        if: always()
         run: npx allure-commandline generate allure-results --clean -o allure-report
 
       - name: Deploy to GitHub Pages
-        if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -61,13 +119,14 @@ jobs:
           publish_branch: gh-pages
 
       - name: Send Slack notification
-        if: always()
         run: |
           DASHBOARD_URL="https://rheesuho.github.io/tapas-qa"
           node scripts/notify-slack.js Regression "$DASHBOARD_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - name: Fail if tests failed
-        if: steps.regression.outcome == 'failure'
-        run: exit 1
+      - name: Fail if any tests failed
+        run: |
+          UNEXPECTED=$(node -e "const r=require('./test-results/results.json'); console.log(r.stats.unexpected||0)")
+          echo "실패한 테스트: $UNEXPECTED"
+          if [ "$UNEXPECTED" -gt 0 ]; then exit 1; fi
