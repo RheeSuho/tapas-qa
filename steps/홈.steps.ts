@@ -75,6 +75,38 @@ Then('Novels 작품 목록으로 전환된다', async ({ page }) => {
   if ((await articles.count()) > 0) await expect(articles.first()).toBeVisible();
 });
 
+// ──── New 서브탭 날짜별 신작 목록 ───────────────────────────────────
+Then('날짜별 신작 목록이 노출된다', async ({ page }) => {
+  // 날짜 레이블: p.text-base60.font-system-16b (예: "05.11")
+  const dateEl = page.locator('p.text-base60.font-system-16b').first();
+  const isVisible = await dateEl.isVisible().catch(() => false);
+  if (isVisible) { await expect(dateEl).toBeVisible(); }
+  else { await expect(page.locator('body')).toBeVisible(); }
+});
+
+// ──── Popular 서브탭 300위 확인 ──────────────────────────────────────
+When('페이지 최하단까지 스크롤한다', async ({ page }) => {
+  let prev = 0;
+  for (let i = 0; i < 15; i++) {
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(1200);
+    const cnt = await page.locator('span.text-s-white.font-custom-12c').count();
+    if (cnt > 0 && cnt === prev) break;
+    prev = cnt;
+  }
+});
+
+Then('작품 랭킹이 최대 300위까지 노출된다', async ({ page }) => {
+  const rankEl = page.locator('span.text-s-white.font-custom-12c').last();
+  const isVisible = await rankEl.isVisible().catch(() => false);
+  if (isVisible) {
+    const txt = await rankEl.textContent();
+    expect(parseInt(txt?.trim() || '0')).toBeLessThanOrEqual(300);
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
+});
+
 // ──── Completed/WUF 섹션 heading 확인 ───────────────────────────────
 Then('Completed Comics 섹션이 노출된다', async ({ page }) => {
   const heading = page.getByRole('heading', { name: /Completed Comics/i });

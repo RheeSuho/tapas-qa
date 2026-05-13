@@ -8,3 +8,9 @@ Feature: New
     And 작품 목록이 노출된다
     When Novels 필터를 클릭한다
     Then Novels 작품 목록으로 전환된다
+
+  @TC-0221
+  Scenario: [TPS-NEW-09] New 서브탭 > 날짜별 신작 목록 노출 확인
+    When 홈 > New 서브탭을 클릭한다
+    Then New 서브탭 화면이 노출된다
+    And 날짜별 신작 목록이 노출된다

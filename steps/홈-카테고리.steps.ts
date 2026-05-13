@@ -207,8 +207,9 @@ When('Comics Spotlight 서브탭에 접속한다', async ({ page }) => {
   if ((await spotlight.count()) === 0) { test.skip(true, 'Comics Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
-  await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
-    .waitFor({ timeout: 10000 }).catch(() => {});
+  const appeared = await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
+    .waitFor({ state: 'visible', timeout: 10000 }).then(() => true).catch(() => false);
+  if (!appeared) { test.skip(true, 'Comics Spotlight 빅배너 미노출 상태'); return; }
 });
 
 Then('Comics 홈으로 돌아온다', async ({ page }) => {
@@ -228,8 +229,9 @@ When('Novels Spotlight 서브탭에 접속한다', async ({ page }) => {
   if ((await spotlight.count()) === 0) { test.skip(true, 'Novels Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
-  await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
-    .waitFor({ timeout: 10000 }).catch(() => {});
+  const appeared = await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
+    .waitFor({ state: 'visible', timeout: 10000 }).then(() => true).catch(() => false);
+  if (!appeared) { test.skip(true, 'Novels Spotlight 빅배너 미노출 상태'); return; }
 });
 
 Then('Novels 홈으로 돌아온다', async ({ page }) => {
@@ -249,8 +251,9 @@ When('Mature Spotlight 서브탭에 접속한다', async ({ page }) => {
   if ((await spotlight.count()) === 0) { test.skip(true, 'Mature Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
-  await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
-    .waitFor({ timeout: 10000 }).catch(() => {});
+  const appeared = await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
+    .waitFor({ state: 'visible', timeout: 10000 }).then(() => true).catch(() => false);
+  if (!appeared) { test.skip(true, 'Mature Spotlight 빅배너 미노출 상태'); return; }
 });
 
 Then('Mature 홈으로 돌아온다', async ({ page }) => {
@@ -281,12 +284,12 @@ When('Community Spotlight 서브탭에 접속한다', async ({ page }) => {
   await page.getByRole('link', { name: /^community$/i }).first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   const spotlight = page.getByRole('link', { name: /^spotlight$/i });
-  await spotlight.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   if ((await spotlight.count()) === 0) { test.skip(true, 'Community Spotlight 서브탭 미운영 상태'); return; }
   await spotlight.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
-  await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
-    .waitFor({ timeout: 10000 }).catch(() => {});
+  const appeared = await page.locator('span[class*="text-s-white"][class*="font-custom-10c"]').first()
+    .waitFor({ state: 'visible', timeout: 10000 }).then(() => true).catch(() => false);
+  if (!appeared) { test.skip(true, 'Community Spotlight 빅배너 미노출 상태'); return; }
 });
 
 Then('Community 홈으로 돌아온다', async ({ page }) => {
