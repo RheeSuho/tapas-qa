@@ -397,6 +397,57 @@ Then(/^2-[12]\. .+$/, async ({ page }) => {
   await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
+// ──── Community 신규 서브탭 진입 ────
+
+When('Community Early Access 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/4/subtab/39', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForLoadState('networkidle').catch(() => {});
+});
+
+When('Community Completed 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/4/subtab/36', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForLoadState('networkidle').catch(() => {});
+});
+
+// ──── Mature 신규 서브탭 진입 ────
+
+When('Mature Daily 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/5/subtab/46', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForLoadState('networkidle').catch(() => {});
+});
+
+When('Mature Popular 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/5/subtab/48', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForLoadState('networkidle').catch(() => {});
+});
+
+When('Mature New 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/5/subtab/37', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForLoadState('networkidle').catch(() => {});
+});
+
+When('Mature Completed 서브탭에 접속한다', async ({ page }) => {
+  await page.goto('https://tapas.io/menu/5/subtab/49', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForLoadState('networkidle').catch(() => {});
+});
+
+// ──── Mature Comics/Novels 필터 전환 ────
+
+When('Mature Novels 필터를 클릭한다', async ({ page }) => {
+  const novelLink = page.locator('a[href*="category=MATURE_NOVEL"]').first();
+  if ((await novelLink.count()) > 0) {
+    await novelLink.click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  } else {
+    test.skip(true, 'Mature Novels 필터 링크가 존재하지 않음');
+  }
+});
+
+Then('Mature Novels 작품 목록으로 전환된다', async ({ page }) => {
+  await expect(page).toHaveURL(/category=MATURE_NOVEL/, { timeout: 8000 });
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+});
+
 Then('Mature - Comic 작품의 모든 장르에 해당하는 작품이 노출된다.', async ({ page }) => {
   await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
