@@ -77,10 +77,13 @@ Then('Novels 작품 목록으로 전환된다', async ({ page }) => {
 
 // ──── New 서브탭 날짜별 신작 목록 ───────────────────────────────────
 Then('날짜별 신작 목록이 노출된다', async ({ page }) => {
-  // 날짜 레이블: p.text-base60.font-system-16b (예: "05.11")
+  // 신작 있음: 날짜 레이블 노출 / 신작 없음: "No results were found." 문구 노출 — 둘 다 정상
   const dateEl = page.locator('p.text-base60.font-system-16b').first();
-  const isVisible = await dateEl.isVisible().catch(() => false);
-  if (isVisible) { await expect(dateEl).toBeVisible(); }
+  const noResult = page.getByText('No results were found.').first();
+  const hasDate = await dateEl.isVisible().catch(() => false);
+  const hasNoResult = await noResult.isVisible().catch(() => false);
+  if (hasDate) { await expect(dateEl).toBeVisible(); }
+  else if (hasNoResult) { await expect(noResult).toBeVisible(); }
   else { await expect(page.locator('body')).toBeVisible(); }
 });
 
