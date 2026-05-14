@@ -123,11 +123,18 @@ const blocks = [
 ];
 
 if (dynamicSkips.length > 0) {
-  const skipList = dynamicSkips.slice(0, 10).map(t => `• ${t.title} : ${t.reason}`).join('\n');
-  const more = dynamicSkips.length > 10 ? `\n외 ${dynamicSkips.length - 10}개 더...` : '';
+  // reason 기준 그룹핑
+  const grouped = {};
+  for (const t of dynamicSkips) {
+    if (!grouped[t.reason]) grouped[t.reason] = [];
+    grouped[t.reason].push(t.title);
+  }
+  const skipList = Object.entries(grouped).map(([reason, titles]) =>
+    `> ${reason}\n` + titles.map(t => ` • ${t}`).join('\n')
+  ).join('\n');
   blocks.push({
     type: 'section',
-    text: { type: 'mrkdwn', text: `*Skip 사유*\n${skipList}${more}` }
+    text: { type: 'mrkdwn', text: `*Skip 사유 (${dynamicSkips.length}건)*\n${skipList}` }
   });
 }
 
