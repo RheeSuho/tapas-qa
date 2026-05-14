@@ -5,7 +5,8 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-const STORAGE_STATE = path.join(__dirname, '.auth/user.json');
+const IS_QA = (process.env.TAPAS_BASE_URL || '').includes('qa.');
+const STORAGE_STATE = path.join(__dirname, IS_QA ? '.auth/user.qa.json' : '.auth/user.json');
 
 // BDD: features/*.feature + steps/*.ts → .features-gen 디렉토리로 자동 컴파일
 const bddTestDir = defineBddConfig({

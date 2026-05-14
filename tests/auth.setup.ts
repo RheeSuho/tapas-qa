@@ -7,7 +7,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 const AUTH_MAX_AGE_HOURS = 24;
-const authFile = path.join(__dirname, '../.auth/user.json');
+const IS_QA = (process.env.TAPAS_BASE_URL || '').includes('qa.');
+const authFile = path.join(__dirname, IS_QA ? '../.auth/user.qa.json' : '../.auth/user.json');
 
 setup('이메일 계정으로 로그인하고 세션 저장', async ({ page }) => {
   const authDir = path.dirname(authFile);
@@ -32,8 +33,8 @@ setup('이메일 계정으로 로그인하고 세션 저장', async ({ page }) =
     console.log(`[setup] 세션이 오래됨 (${ageHours.toFixed(1)}시간), 재로그인`);
   }
 
-  const email = process.env.TAPAS_EMAIL;
-  const password = process.env.TAPAS_PASSWORD;
+  const email = IS_QA ? (process.env.TAPAS_QA_EMAIL || process.env.TAPAS_EMAIL) : process.env.TAPAS_EMAIL;
+  const password = IS_QA ? (process.env.TAPAS_QA_PASSWORD || process.env.TAPAS_PASSWORD) : process.env.TAPAS_PASSWORD;
   if (!email || !password) {
     throw new Error('TAPAS_EMAIL / TAPAS_PASSWORD 환경변수가 없습니다.');
   }
