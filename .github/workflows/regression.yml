@@ -40,6 +40,8 @@ jobs:
         env:
           TAPAS_EMAIL: ${{ secrets.TAPAS_EMAIL }}
           TAPAS_PASSWORD: ${{ secrets.TAPAS_PASSWORD }}
+          TAPAS_QA_EMAIL: ${{ secrets.TAPAS_QA_EMAIL }}
+          TAPAS_QA_PASSWORD: ${{ secrets.TAPAS_QA_PASSWORD }}
           TAPAS_UNVERIFIED_EMAIL: ${{ secrets.TAPAS_UNVERIFIED_EMAIL }}
           TAPAS_UNVERIFIED_PASSWORD: ${{ secrets.TAPAS_UNVERIFIED_PASSWORD }}
           UNVERIFIED_AUTH_STATE_B64: ${{ secrets.UNVERIFIED_AUTH_STATE_B64 }}

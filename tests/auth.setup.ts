@@ -15,7 +15,8 @@ setup('이메일 계정으로 로그인하고 세션 저장', async ({ page }) =
   if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
 
   // CI 전용: GitHub Secret에서 auth state를 직접 복원 (login 흐름 스킵)
-  const authStateB64 = process.env.AUTH_STATE_B64;
+  // QA 환경은 prod 세션을 재사용할 수 없으므로 B64 복원 스킵 → 실제 로그인 수행
+  const authStateB64 = !IS_QA ? process.env.AUTH_STATE_B64 : null;
   if (authStateB64) {
     console.log('[setup] AUTH_STATE_B64 감지 — 로그인 없이 세션 복원');
     fs.writeFileSync(authFile, Buffer.from(authStateB64, 'base64').toString('utf-8'));
