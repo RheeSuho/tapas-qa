@@ -1,0 +1,5 @@
+[unverified-setup] 로그인 중 오류 발생 — TPS-064는 skip 처리됩니다: Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+Call log:
+  - navigating to "https://qa.tapas.io/", waiting until "domcontentloaded"
+
+[unverified-setup] headed 모드에서 재실행: npm run test:setup:unverified
