@@ -14,7 +14,7 @@ async function ensureOnSeries(page: any) {
     await page.waitForLoadState('domcontentloaded');
     // 리다이렉트로 시리즈 페이지 벗어났으면 재시도
     if (!page.url().includes('/series/')) {
-      await page.goto('https://tapas.io/series/the-beginning-after-the-end/episodes');
+      await page.goto(TEST_DATA.series.comic);
       await page.waitForLoadState('domcontentloaded');
     }
   }

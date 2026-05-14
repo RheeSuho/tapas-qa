@@ -139,7 +139,7 @@ When('더보기[>] 영역 클릭', async ({ page }) => {
 
 Given(/^미로그인 \/ 미인증 상태$/, async ({ page }) => {
   await page.context().clearCookies();
-  await page.goto('https://tapas.io/');
+  await page.goto('/');
 });
 
 When(/^미로그인 \/ 미인증 아이디 로그인 상태$/, async ({ page }) => {
@@ -161,7 +161,7 @@ When(/^미로그인 \/ 미인증 아이디 로그인 상태$/, async ({ page }) 
   if (state.cookies?.length) {
     await page.context().addCookies(state.cookies);
   }
-  await page.goto('https://tapas.io/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
 });
 
 When(/^성인에 해당되는 연\/월\/일 입력$/, async ({ page }) => {
@@ -408,34 +408,34 @@ Then(/^2-[12]\. .+$/, async ({ page }) => {
 // ──── Community 신규 서브탭 진입 ────
 
 When('Community Early Access 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/4/subtab/39', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto('/menu/4/subtab/39', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForLoadState('networkidle').catch(() => {});
 });
 
 When('Community Completed 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/4/subtab/36', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto('/menu/4/subtab/36', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForLoadState('networkidle').catch(() => {});
 });
 
 // ──── Mature 신규 서브탭 진입 ────
 
 When('Mature Daily 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/5/subtab/46', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto('/menu/5/subtab/46', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForLoadState('networkidle').catch(() => {});
 });
 
 When('Mature Popular 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/5/subtab/48', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto('/menu/5/subtab/48', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForLoadState('networkidle').catch(() => {});
 });
 
 When('Mature New 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/5/subtab/37', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto('/menu/5/subtab/37', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForLoadState('networkidle').catch(() => {});
 });
 
 When('Mature Completed 서브탭에 접속한다', async ({ page }) => {
-  await page.goto('https://tapas.io/menu/5/subtab/49', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto('/menu/5/subtab/49', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForLoadState('networkidle').catch(() => {});
 });
 

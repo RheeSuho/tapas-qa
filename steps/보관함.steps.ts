@@ -166,7 +166,7 @@ When('Novel 작품 구독', async ({ page }) => {
 async function goBackSafely(page: any) {
   await page.goBack();
   if (page.url() === 'about:blank' || page.url() === '') {
-    await page.goto('https://tapas.io');
+    await page.goto('/');
   }
 }
 

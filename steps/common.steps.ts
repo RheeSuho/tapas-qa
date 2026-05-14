@@ -42,7 +42,7 @@ Given('로그인 상태', async ({ page }) => {
 
 Given('미로그인 상태', async ({ page }) => {
   await page.context().clearCookies();
-  await page.goto('https://tapas.io/');
+  await page.goto('/');
 });
 
 Given('구독 상태', async () => {
@@ -141,7 +141,7 @@ When('상단네비바 [<] 또는 단말 백버튼 클릭', async ({ page }) => {
   await page.goBack();
   // 배너 링크가 새 탭으로 열렸을 경우 goBack()이 about:blank로 이동할 수 있음
   if (page.url() === 'about:blank' || page.url() === '') {
-    await page.goto('https://tapas.io');
+    await page.goto('/');
   }
 });
 
@@ -409,7 +409,7 @@ Then('GNB 메뉴와 홈 화면이 정상 노출된다', async ({ page }) => {
 // 인증 사전 조건
 Given('로그인하지 않은 상태다', async ({ page }) => {
   await page.context().clearCookies();
-  await page.goto('https://tapas.io/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   // 쿠키 초기화 후 배너가 다시 노출되므로 Accept 처리
   await page.getByRole('button', { name: /accept/i }).click({ timeout: 5000 }).catch(() => {});
 });

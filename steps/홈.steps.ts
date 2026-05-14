@@ -8,7 +8,7 @@ const { Given, When, Then } = createBdd();
 
 // ──── 인증 상태 ──────────────────────────────────────────────────────
 Given('로그인 상태다', async ({ page }) => {
-  await page.goto('https://tapas.io/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
 });
 
 // ──── 홈 서브탭 이동 ─────────────────────────────────────────────────

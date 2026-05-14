@@ -60,14 +60,14 @@ When('소설 작품 진입', async ({ page }) => {
 });
 
 When('GNB > Home > Novels > Popular 서브탭 진입', async ({ page }) => {
-  await page.goto('https://tapas.io/');
+  await page.goto('/');
   await page.getByRole('link', { name: /^novels$/i }).first().click();
   const popular = page.getByRole('link', { name: /popular/i });
   if ((await popular.count()) > 0) await popular.first().click();
 });
 
 When('GNB > Home > Novels > Daily 서브탭 진입', async ({ page }) => {
-  await page.goto('https://tapas.io/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.getByRole('link', { name: /^novels$/i }).first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   const daily = page.getByRole('link', { name: /^daily$/i });

@@ -35,7 +35,7 @@ export class GnbPage {
         if ((await loginBtn.count()) > 0 && await loginBtn.isEnabled()) {
           await loginBtn.click();
         } else {
-          await this.page.goto('https://tapas.io/account/signin');
+          await this.page.goto('/account/signin');
           await this.page.waitForLoadState('domcontentloaded');
         }
         return;
@@ -47,12 +47,12 @@ export class GnbPage {
       case '라이브러리 메뉴':
       case '라이브러리': {
         const libLink = this.page.getByRole('link', { name: /library/i });
-        if ((await libLink.count()) > 0) { await libLink.first().click(); } else { await this.page.goto('https://tapas.io/reading-list/'); }
+        if ((await libLink.count()) > 0) { await libLink.first().click(); } else { await this.page.goto('/reading-list/'); }
         return;
       }
       case 'Inbox': {
         const inboxLink = this.page.getByRole('link', { name: /inbox/i });
-        if ((await inboxLink.count()) > 0) { await inboxLink.first().click(); } else { await this.page.goto('https://tapas.io/inbox/activity'); }
+        if ((await inboxLink.count()) > 0) { await inboxLink.first().click(); } else { await this.page.goto('/inbox/activity'); }
         return;
       }
     }
