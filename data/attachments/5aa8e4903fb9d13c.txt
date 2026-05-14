@@ -1,2 +1,0 @@
-[setup] AUTH_STATE_B64 감지 — 로그인 없이 세션 복원
-[setup] 세션 복원 완료
