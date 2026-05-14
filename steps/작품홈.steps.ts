@@ -27,9 +27,12 @@ Given(/^(작품홈|시리즈) 진입$/, async ({ page }) => {
 
 // ──── 사전 조건 ────
 
-// WUF series: WUF 띠배너 + 공지사항 띠배너 + 기다무/유료 회차 모두 있는 시리즈
-Given(/^(기다무 티켓 보유 상태|기다무 티켓 소진 상태|기다무 작품인 경우|공지사항 있는 경우|기다무 회차인 경우|유료 회차인 경우)$/, async ({ page }) => {
+Given(/^(기다무 티켓 보유 상태|기다무 티켓 소진 상태|기다무 작품인 경우|기다무 회차인 경우|유료 회차인 경우)$/, async ({ page }) => {
   await page.goto(TEST_DATA.series.wuf, { waitUntil: 'domcontentloaded' });
+});
+
+Given('공지사항 있는 경우', async ({ page }) => {
+  await page.goto(TEST_DATA.series.notice, { waitUntil: 'domcontentloaded' });
 });
 
 // 잉크 보유 상태도 WUF series (유료 회차 포함)
