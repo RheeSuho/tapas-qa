@@ -12,6 +12,8 @@
     "test:smoke:headed": "bddgen && playwright test --project=chromium --grep @smoke --headed",
     "test:smoke:slack": "bddgen && playwright test --project=chromium --grep @smoke; node scripts/notify-slack.js Smoke https://rheesuho.github.io/tapas-qa",
     "test:bdd:slack": "bddgen && playwright test --project=chromium; node scripts/notify-slack.js Regression https://rheesuho.github.io/tapas-qa",
+    "test:qa": "TAPAS_BASE_URL=https://qa.tapas.io bddgen && TAPAS_BASE_URL=https://qa.tapas.io playwright test --project=chromium",
+    "test:qa:headed": "TAPAS_BASE_URL=https://qa.tapas.io bddgen && TAPAS_BASE_URL=https://qa.tapas.io playwright test --project=chromium --headed",
     "notify:slack": "node scripts/notify-slack.js",
     "test:setup": "playwright test --project=setup --headed",
     "test:setup:unverified": "playwright test tests/auth.unverified.setup.ts --headed",
