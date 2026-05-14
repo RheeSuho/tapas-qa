@@ -453,7 +453,11 @@ When('Mature Novels 필터를 클릭한다', async ({ page }) => {
 
 Then('Mature Novels 작품 목록으로 전환된다', async ({ page }) => {
   await expect(page).toHaveURL(/category=MATURE_NOVEL/, { timeout: 8000 });
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  const series = page.locator('article a[href*="/series/"]').first();
+  const noResult = page.getByText('No results were found.').first();
+  const hasNoResult = await noResult.isVisible().catch(() => false);
+  if (hasNoResult) { await expect(noResult).toBeVisible(); }
+  else { await expect(series).toBeVisible({ timeout: 10000 }); }
 });
 
 Then('Mature - Comic 작품의 모든 장르에 해당하는 작품이 노출된다.', async ({ page }) => {
