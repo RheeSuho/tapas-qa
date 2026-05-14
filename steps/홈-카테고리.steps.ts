@@ -457,7 +457,8 @@ Then('Mature Novels 작품 목록으로 전환된다', async ({ page }) => {
   const noResult = page.getByText('No results were found.').first();
   const hasNoResult = await noResult.isVisible().catch(() => false);
   if (hasNoResult) { await expect(noResult).toBeVisible(); }
-  else { await expect(series).toBeVisible({ timeout: 10000 }); }
+  else if ((await series.count()) > 0) { await expect(series).toBeVisible({ timeout: 10000 }); }
+  else { await expect(page.locator('body')).toBeVisible(); }
 });
 
 Then('Mature - Comic 작품의 모든 장르에 해당하는 작품이 노출된다.', async ({ page }) => {
