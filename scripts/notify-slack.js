@@ -130,8 +130,8 @@ if (dynamicSkips.length > 0) {
     grouped[t.reason].push(t.title);
   }
   const skipList = Object.entries(grouped).map(([reason, titles]) =>
-    `> ${reason}\n` + titles.map(t => ` • ${t}`).join('\n')
-  ).join('\n');
+    `*${reason}*\n` + titles.map(t => ` • ${t}`).join('\n')
+  ).join('\n\n');
   blocks.push({
     type: 'section',
     text: { type: 'mrkdwn', text: `*Skip 사유 (${dynamicSkips.length}건)*\n${skipList}` }
