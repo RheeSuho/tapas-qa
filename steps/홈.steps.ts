@@ -216,9 +216,10 @@ When('빅배너를 클릭한다', async ({ page }) => {
 });
 
 When('카드배너를 클릭한다', async ({ page }) => {
-  // 카드배너: /events, /event/, /menu/ 링크 중 img를 포함한 요소
-  const link = page.locator('a[href*="/events"], a[href*="/event/"], a[href*="/menu/"]')
-    .filter({ has: page.locator('img') }).first();
+  // 시리즈 카드 우선 (goBack 안정적) → 없으면 이벤트/메뉴 카드
+  const seriesCard = page.locator('a[href*="/series/"]').filter({ has: page.locator('img') }).nth(1);
+  const eventCard = page.locator('a[href*="/events"], a[href*="/event/"], a[href*="/menu/"]').filter({ has: page.locator('img') }).first();
+  const link = (await seriesCard.count()) > 0 ? seriesCard : eventCard;
   if ((await link.count()) > 0) {
     await link.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
