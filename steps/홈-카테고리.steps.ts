@@ -244,11 +244,11 @@ Then('Novels 카테고리 페이지가 노출된다', async ({ page }) => {
 
 When('Mature Spotlight 서브탭에 접속한다', async ({ page }) => {
   await page.getByRole('link', { name: /^mature$/i }).first().click();
-  await page.waitForLoadState('domcontentloaded').catch(() => {});
-  const spotlight = page.getByRole('link', { name: /^spotlight$/i });
+  await page.locator('a[href*="/menu/5/subtab/"] img[alt="Spotlight"]').first().waitFor({ timeout: 10000 }).catch(() => {});
+  const spotlight = page.locator('a[href*="/menu/5/subtab/"]').filter({ has: page.locator('img[alt="Spotlight"]') });
   if ((await spotlight.count()) === 0) { test.skip(true, 'Mature Spotlight 서브탭 미운영 상태'); return; }
   try { await spotlight.first().click({ timeout: 10000 }); } catch { test.skip(true, 'Mature Spotlight 서브탭 클릭 불가'); return; }
-  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  await page.locator('a[href*="/series/"], a[href*="/event/"]').first().waitFor({ timeout: 10000 }).catch(() => {});
   const banner = page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') });
   if ((await banner.count()) === 0) { test.skip(true, 'Mature Spotlight 콘텐츠 미운영 상태'); return; }
 });
@@ -279,11 +279,11 @@ Then('장르 필터와 정렬 옵션이 노출된다', async ({ page }) => {
 
 When('Community Spotlight 서브탭에 접속한다', async ({ page }) => {
   await page.getByRole('link', { name: /^community$/i }).first().click();
-  await page.waitForLoadState('domcontentloaded').catch(() => {});
-  const spotlight = page.getByRole('link', { name: /^spotlight$/i });
+  await page.locator('a[href*="/menu/4/subtab/"] img[alt="Spotlight"]').first().waitFor({ timeout: 10000 }).catch(() => {});
+  const spotlight = page.locator('a[href*="/menu/4/subtab/"]').filter({ has: page.locator('img[alt="Spotlight"]') });
   if ((await spotlight.count()) === 0) { test.skip(true, 'Community Spotlight 서브탭 미운영 상태'); return; }
   try { await spotlight.first().click({ timeout: 10000 }); } catch { test.skip(true, 'Community Spotlight 서브탭 클릭 불가'); return; }
-  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  await page.locator('a[href*="/series/"], a[href*="/event/"]').first().waitFor({ timeout: 10000 }).catch(() => {});
   const banner = page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') });
   if ((await banner.count()) === 0) { test.skip(true, 'Community Spotlight 콘텐츠 미운영 상태'); return; }
 });
