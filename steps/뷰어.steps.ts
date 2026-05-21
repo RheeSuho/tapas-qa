@@ -9,11 +9,7 @@ const { Given, When, Then } = createBdd();
 
 // 뷰어 툴바 버튼 확인 — prod에서 auto-hide / display:none 상태일 수 있어 graceful 처리
 async function assertToolbarBtn(page: any, selector: string): Promise<void> {
-  const btn = page.locator(selector).first();
-  if ((await btn.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  const vis = await btn.isVisible().catch(() => false);
-  if (vis) await expect(btn).toBeVisible();
-  else await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator(selector).first()).toBeVisible({ timeout: 10000 });
 }
 
 // 에피소드 페이지가 아니면 comicEp2로 이동 (Given 없는 시나리오 대응)

@@ -8,11 +8,7 @@ import { TEST_DATA } from '../data/testData';
 const { Given, When, Then } = createBdd();
 
 async function assertToolbarBtn(page: any, selector: string): Promise<void> {
-  const btn = page.locator(selector).first();
-  if ((await btn.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  const vis = await btn.isVisible().catch(() => false);
-  if (vis) await expect(btn).toBeVisible();
-  else await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator(selector).first()).toBeVisible({ timeout: 10000 });
 }
 
 // 시리즈 페이지가 아니면 comic 시리즈로 이동 (Given 없는 시나리오 대응)
