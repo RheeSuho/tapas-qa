@@ -34,9 +34,11 @@ When('GNB 보관함 아이콘 클릭 > Recent 클릭', async ({ page }) => {
 
 async function ensureOnReadingList(page: any) {
   if (!page.url().includes('reading-list')) {
-    const lib = page.locator('a[href="/reading-list"]');
-    if ((await lib.count()) > 0) await lib.first().click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    await page.goto('/reading-list', { waitUntil: 'domcontentloaded' }).catch(() => {});
+    await page.waitForTimeout(500);
+    if (page.url().includes('signin')) {
+      throw new Error('[보관함] 로그인 세션 만료 — storageState 재생성 필요 (npm run test:setup)');
+    }
   }
 }
 

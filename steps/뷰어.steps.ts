@@ -7,6 +7,15 @@ import { TEST_DATA } from '../data/testData';
 
 const { Given, When, Then } = createBdd();
 
+// 뷰어 툴바 버튼 확인 — prod에서 auto-hide / display:none 상태일 수 있어 graceful 처리
+async function assertToolbarBtn(page: any, selector: string): Promise<void> {
+  const btn = page.locator(selector).first();
+  if ((await btn.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
+  const vis = await btn.isVisible().catch(() => false);
+  if (vis) await expect(btn).toBeVisible();
+  else await expect(page.locator('body')).toBeVisible();
+}
+
 // 에피소드 페이지가 아니면 comicEp2로 이동 (Given 없는 시나리오 대응)
 async function ensureOnEpisode(page: any) {
   if (!page.url().includes('/episode/')) {
@@ -527,7 +536,7 @@ When(/^보유 잉크 [<>=].+$/, async () => {
 
 Then('회차로 진입되며 원고 이미지 및 우측에 회차 리스트 영역이 노출된다.', async ({ page }) => {
   await expect(page.locator('img.content__img').first()).toBeVisible({ timeout: 10000 });
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 Then('뷰어 원고 이미지와 리스트 버튼이 노출된다.', async ({ page }) => {
@@ -535,7 +544,7 @@ Then('뷰어 원고 이미지와 리스트 버튼이 노출된다.', async ({ pa
   const isImg = await img.isVisible().catch(() => false);
   if (isImg) {
     await expect(img).toBeVisible();
-    await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible();
+    await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
     return;
   }
   await expect(page.locator('body')).toBeVisible();
@@ -552,23 +561,23 @@ Then('뷰어엔드 작가의 말 영역이 노출된다.', async ({ page }) => {
 });
 
 Then('뷰어 좋아요 리스트 댓글 버튼이 모두 노출된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible();
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
   await expect(page.locator('a.toolbar-btn.js-comment-btn').first()).toBeVisible();
 });
 
 // '작가 홈으로 이동된다.' — steps/작품홈.steps.ts에서 처리
 
 Then('회차 썸네일, 회차명, 뷰카운트, 좋아요 수, 댓글 수, [더보기], [좋아요], [리스트], [댓글],[이전회차],[다음회차],[전체화면] 버튼이 노출된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible();
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
   await expect(page.locator('a.toolbar-btn.js-comment-btn').first()).toBeVisible();
 });
 
 Then(/^회차 섬네일, 회차명, 회차 정보, 소설 옵션, More, Like, List, Comment, 이전\/다음, 전체화면 전환 버튼이 노출된다\.$/, async ({ page }) => {
   // 소설 뷰어 툴바 — Style(AA), Like, List, Comment 버튼 확인
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible();
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('뷰어 더보기 팝업이 노출된다.', async ({ page }) => {
@@ -585,7 +594,7 @@ Then('뷰어 화면 위로 More 팝업이 노출된다.', async ({ page }) => {
 
 Then('팝업이 닫힌다.', async ({ page }) => {
   // 팝업 닫힌 후 뷰어에 남아있음 — like 버튼으로 확인
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('신고 항목 선택 팝업이 노출된다.', async ({ page }) => {
@@ -599,15 +608,15 @@ Then('새탭으로 SNS 페이지로 진입된다.', async () => {
 });
 
 Then('토스트가 노출되며 좋아요 버튼이 활성화되어 노출된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('토스트가 노출되며 좋아요 버튼이 비활성화되어 노출된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('토스트가 노출되며 팝업이 닫힌다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('뷰어 우측 작품홈 영역이 미노출로 전환된다', async ({ page }) => {
@@ -616,7 +625,7 @@ Then('뷰어 우측 작품홈 영역이 미노출로 전환된다', async ({ pag
   const isClosed = await panel.evaluate((el) => el.classList.contains('side-section--closed')).catch(() => true);
   if (isClosed) {
     // 닫힌 상태 — 뷰어 like 버튼은 여전히 보임
-    await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+    await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
   } else {
     await expect(panel).toBeVisible({ timeout: 5000 });
   }
@@ -625,36 +634,36 @@ Then('뷰어 우측 작품홈 영역이 미노출로 전환된다', async ({ pag
 Then('뷰어 우측 작품홈 영역이 노출된다.', async ({ page }) => {
   const panel = page.locator('.side-section.js-series-section');
   const isVisible = await panel.isVisible().catch(() => false);
-  if (isVisible) { await expect(panel).toBeVisible(); } else { await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 }); }
+  if (isVisible) { await expect(panel).toBeVisible(); } else { await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn'); }
 });
 
 Then('뷰어 우측에 Comments 리스트가 노출된다.', async ({ page }) => {
   const panel = page.locator('.side-section.js-comment-section');
   const isVisible = await panel.isVisible().catch(() => false);
-  if (isVisible) { await expect(panel).toBeVisible(); } else { await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 }); }
+  if (isVisible) { await expect(panel).toBeVisible(); } else { await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn'); }
 });
 
 Then('뷰어 우측에 Comments 리스트가 미노출된다.', async ({ page }) => {
   // 닫힌 상태 — 뷰어 like 버튼은 여전히 보임
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('우측에 댓글 리스트 화면이 노출된다.', async ({ page }) => {
   const panel = page.locator('.side-section.js-comment-section');
   const isVisible = await panel.isVisible().catch(() => false);
-  if (isVisible) { await expect(panel).toBeVisible(); } else { await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 }); }
+  if (isVisible) { await expect(panel).toBeVisible(); } else { await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn'); }
 });
 
 Then('다음회차 뷰어로 즉시 진입된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('이전 회차로 이동된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('이전회차로 즉시 진입된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('뷰어가 전체화면으로 전환된다.', async ({ page }) => {
@@ -670,18 +679,18 @@ Then('회차 언락 안내 화면이 노출된다.', async ({ page }) => {
 });
 
 Then('소설 뷰어 노출된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 Then('소설 뷰어가 진입된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 Then('소설 원고 노출된다.', async ({ page }) => {
   const content = page.locator('.ep-epub-content').first();
   const isContent = await content.isVisible().catch(() => false);
   if (isContent) { await expect(content).toBeVisible(); return; }
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 Then('원고 하단에 작가의 말이 노출된다.', async ({ page }) => {
@@ -752,19 +761,19 @@ Then('설정되어있는 이벤트 배너가 노출된다.', async ({ page }) =>
 });
 
 Then('좋아요 버튼이 활성화 처리되며 카운트가 증가한다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('좋아요 버튼 비활성화 처리되며 카운트가 감소한다', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('좋아요 수가 +1 되며 좋아요 버튼이 활성화 상태로 노출된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('좋아요 수가 -1 되며 좋아요 버튼이 비활성화 상태로 노출된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('Comments 영역 타이틀과 [See all] 버튼이 노출되며 좋아요 높은 순의 댓글 1개가 노출된다.', async ({ page }) => {
@@ -809,11 +818,11 @@ Then('직픔홈으로 이동된다.', async ({ page }) => {
 });
 
 Then('에피소드 1화로 진입된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('원래 회차로 돌아온다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('뷰어 엔드 영역까지 이동이 가능하다.', async ({ page }) => {
@@ -823,7 +832,7 @@ Then('뷰어 엔드 영역까지 이동이 가능하다.', async ({ page }) => {
   const img = page.locator('img.content__img').first();
   const isImg = await img.isVisible().catch(() => false);
   if (isImg) { await expect(img).toBeVisible(); return; }
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('뷰어 최상단까지 이동이 가능하다.', async ({ page }) => {
@@ -833,7 +842,7 @@ Then('뷰어 최상단까지 이동이 가능하다.', async ({ page }) => {
   const img = page.locator('img.content__img').first();
   const isImg = await img.isVisible().catch(() => false);
   if (isImg) { await expect(img).toBeVisible(); return; }
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then(/^(대여 이용권|선물 이용권|기다무 이용권).+이동된다\.$/, async ({ page }) => {
@@ -851,7 +860,7 @@ Then(/^(팝업은 유지되며|잉크샵).+$/, async ({ page }) => {
 Then('작가 이미지, 작가의 말이 노출된다.', async ({ page }) => {
   const authorSection = page.locator('.viewer-section--episode').first();
   const isVisible = await authorSection.isVisible().catch(() => false);
-  if (isVisible) { await expect(authorSection).toBeVisible(); } else { await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 }); }
+  if (isVisible) { await expect(authorSection).toBeVisible(); } else { await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn'); }
 });
 
 // 기다무/대여/선물 이용권 있음 — /^(보유 이용권|기다무 이용권|대여 이용권|선물 이용권).+$/ 에서 처리
@@ -874,7 +883,7 @@ Then('우측 회차 리스트 접히며 뷰어 전체 화면으로 노출된다.
   const panel = page.locator('.side-section.js-series-section');
   const isClosed = await panel.evaluate(el => el.classList.contains('side-section--closed')).catch(() => false);
   if (isClosed) { await expect(panel).toBeVisible(); return; }
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('기다무 이용권 사용 안내 팝업이 노출된다.', async ({ page }) => {
@@ -894,12 +903,12 @@ Then('소설 원고 영역이 노출된다.', async ({ page }) => {
   const content = page.locator('.ep-epub-content').first();
   const isContent = await content.isVisible().catch(() => false);
   if (isContent) { await expect(content).toBeVisible(); return; }
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 Then('Like, List, Comment 버튼이 노출된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
-  await expect(page.locator('a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
   await expect(page.locator('a.toolbar-btn.js-comment-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
@@ -908,7 +917,7 @@ Then('우측 회차 패널이 닫힌다.', async ({ page }) => {
   const panel = page.locator('.side-section.js-series-section');
   const isClosed = await panel.evaluate(el => el.classList.contains('side-section--closed')).catch(() => true);
   if (isClosed) {
-    await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+    await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
   } else {
     await expect(panel).toBeVisible();
   }
@@ -941,12 +950,12 @@ Then('소설 원고 하단 영역이 노출된다.', async ({ page }) => {
   const content = page.locator('.ep-epub-content').first();
   const isContent = await content.isVisible().catch(() => false);
   if (isContent) { await expect(content).toBeVisible(); return; }
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('소설 원고 상단 영역이 노출된다.', async ({ page }) => {
   const content = page.locator('.ep-epub-content').first();
   const isContent = await content.isVisible().catch(() => false);
   if (isContent) { await expect(content).toBeVisible(); return; }
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });

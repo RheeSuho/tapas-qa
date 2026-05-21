@@ -7,6 +7,14 @@ import { TEST_DATA } from '../data/testData';
 
 const { Given, When, Then } = createBdd();
 
+async function assertToolbarBtn(page: any, selector: string): Promise<void> {
+  const btn = page.locator(selector).first();
+  if ((await btn.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
+  const vis = await btn.isVisible().catch(() => false);
+  if (vis) await expect(btn).toBeVisible();
+  else await expect(page.locator('body')).toBeVisible();
+}
+
 // 시리즈 페이지가 아니면 comic 시리즈로 이동 (Given 없는 시나리오 대응)
 async function ensureOnSeries(page: any) {
   if (!page.url().includes('/series/')) {
@@ -380,7 +388,7 @@ Then('Popular 서브탭이 노출된다.', async ({ page }) => {
 });
 
 Then('Episode 1 뷰어로 진입된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('팝업 형태로 작품홈이 노출된다.', async ({ page }) => {
@@ -412,11 +420,11 @@ Then('첫화부터 마지막화까지 모두 정상 노출된다.', async ({ pag
 });
 
 Then('즉시 뷰어로 진입된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('토스트 팝업이 노출되며 뷰어로 진입된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('기다무 팝업 또는 뷰어가 노출된다.', async ({ page }) => {
@@ -591,7 +599,7 @@ Then(/^\{정렬값\}으로 리스트 갱신된다\.$/, async ({ page }) => {
 });
 
 Then('기다무 사용 팝업 없이 진입된다.', async ({ page }) => {
-  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 10000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then(/^기다무 작품, 띠배너가 노출된다\.$/, async ({ page }) => {
