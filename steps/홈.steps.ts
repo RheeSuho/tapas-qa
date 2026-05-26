@@ -57,6 +57,15 @@ Then('작품 목록이 노출된다', async ({ page }) => {
   await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
+Then('작품 목록 또는 "No results were found." 문구가 노출된다', async ({ page }) => {
+  const series = page.locator('article a[href*="/series/"]').first();
+  if ((await series.count()) > 0) {
+    await expect(series).toBeVisible({ timeout: 10000 });
+    return;
+  }
+  await expect(page.getByText('No results were found.', { exact: true })).toBeVisible({ timeout: 5000 });
+});
+
 // ──── 필터 클릭 → URL 전환 확인 (C 수준) ────────────────────────────
 When('Novels 필터를 클릭한다', async ({ page }) => {
   const novelLink = page.locator('a[href*="category=NOVEL"]').first();

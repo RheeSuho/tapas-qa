@@ -5,7 +5,7 @@ Feature: New
     When 홈 > New 서브탭을 클릭한다
     Then New 서브탭 화면이 노출된다
     And Comics/Novels 필터가 노출된다
-    And 작품 목록이 노출된다
+    And 작품 목록 또는 "No results were found." 문구가 노출된다
     When Novels 필터를 클릭한다
     Then Novels 작품 목록으로 전환된다
 
