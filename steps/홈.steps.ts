@@ -258,17 +258,25 @@ When('배너 섹션 내 작품을 클릭한다', async ({ page }) => {
 });
 
 When('더보기 링크를 클릭한다', async ({ page }) => {
-  // Tapas 섹션 더보기: /landing-list/ href + img[alt="right arrow"]
+  // SPA 재렌더링으로 click() 중 element detach 반복 → JS click으로 우회 (CLAUDE.md 12.4 패턴)
   const moreLink = page.locator('a[href*="/landing-list/"]').filter({ has: page.locator('img[alt="right arrow"]') }).first();
   if ((await moreLink.count()) > 0) {
-    await moreLink.click();
+    const href = await moreLink.getAttribute('href');
+    await page.evaluate((h) => {
+      const el = document.querySelector(`a[href="${h}"]`) as HTMLElement | null;
+      if (el) el.click();
+    }, href);
     await page.waitForLoadState('domcontentloaded').catch(() => {});
     return;
   }
   // 폴백: /menu/subtab 링크 중 right arrow 이미지 포함
   const subtabMore = page.locator('a[href*="/menu/"]').filter({ has: page.locator('img[alt="right arrow"]') }).first();
   if ((await subtabMore.count()) > 0) {
-    await subtabMore.click();
+    const href = await subtabMore.getAttribute('href');
+    await page.evaluate((h) => {
+      const el = document.querySelector(`a[href="${h}"]`) as HTMLElement | null;
+      if (el) el.click();
+    }, href);
     await page.waitForLoadState('domcontentloaded').catch(() => {});
     return;
   }
