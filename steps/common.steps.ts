@@ -7,10 +7,14 @@ import { GnbPage } from '../pages/GnbPage';
 
 const { Given, When, Then, Before } = createBdd();
 
-// @skip 태그가 있는 시나리오는 skipped로 처리
+// @skip / @qa 태그 처리
 Before(async ({ $tags }) => {
   if ($tags.includes('@skip')) {
     test.skip(true, '@skip — 자동화 제외 케이스');
+  }
+  const IS_QA = (process.env.TAPAS_BASE_URL || '').includes('qa.');
+  if ($tags.includes('@qa') && !IS_QA) {
+    test.skip(true, '@qa — QA 환경에서만 실행 (npm run test:qa)');
   }
 });
 

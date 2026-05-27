@@ -9,10 +9,12 @@ Feature: Ink shop
     Then 하위 메뉴 노출된다.
     And Ink shop 화면 노출된다.
 
-  @TC-0228 @skip
+  @TC-0228 @qa
   Scenario: [TPS-203] 임의의 잉크 티어 클릭 + 잉크 구매 동작
-    # @skip: 실제 결제 카드 필요
-    When 임의의 잉크 티어 클릭
+    # @qa: QA 전용 — Stripe 테스트 카드로 결제 (Prod에서는 자동 skip)
+    When GNB > Profile 클릭
+    And Ink shop 클릭
+    And 임의의 잉크 티어 클릭
     Then 잉크 구매 팝업이 노출된다.
     When 잉크 구매 동작
-    Then 잉크가 구매 되며 현재 보유 잉크량이 추가된다.
+    Then 구매 성공 메시지가 노출된다.
