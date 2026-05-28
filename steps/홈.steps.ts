@@ -58,7 +58,10 @@ Then('작품 목록이 노출된다', async ({ page }) => {
 });
 
 Then('작품 목록 또는 "No results were found." 문구가 노출된다', async ({ page }) => {
+  // SPA 서브탭 클릭 후 콘텐츠 렌더링이 domcontentloaded 이후에 완료되므로
+  // waitFor로 먼저 기다린 다음 count() 체크
   const series = page.locator('article a[href*="/series/"]').first();
+  await series.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   if ((await series.count()) > 0) {
     await expect(series).toBeVisible({ timeout: 10000 });
     return;

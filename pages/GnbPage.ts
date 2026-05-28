@@ -59,7 +59,10 @@ export class GnbPage {
     // 일반 링크 (Home, Comics, Novels, Community, Mature, More, Profile 등)
     const link = this.page.getByRole('link', { name: new RegExp(`^${label}$`, 'i') });
     if ((await link.count()) > 0) {
+      const prevUrl = this.page.url();
       await link.first().click();
+      // SPA는 domcontentloaded가 즉시 통과되므로 URL 변경으로 네비게이션 완료 확인
+      await this.page.waitForURL(url => url.href !== prevUrl, { timeout: 5000 }).catch(() => {});
       return;
     }
     // 버튼으로 재시도
