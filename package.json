@@ -21,7 +21,10 @@
     "test:setup:unverified": "playwright test tests/auth.unverified.setup.ts --headed",
     "report": "playwright show-report",
     "allure": "allure-commandline generate allure-results --clean -o allure-report && allure-commandline open allure-report",
-    "health": "bddgen && playwright test --project=chromium; npm run report"
+    "health": "bddgen && playwright test --project=chromium; npm run report",
+    "test:mweb": "bddgen && playwright test --project=mobile-safari",
+    "test:mweb:headed": "bddgen && playwright test --project=mobile-safari --headed",
+    "test:mweb:smoke": "bddgen && playwright test --project=mobile-safari --grep @smoke"
   },
   "keywords": [],
   "author": "",

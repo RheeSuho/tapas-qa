@@ -11,7 +11,14 @@ const STORAGE_STATE = path.join(__dirname, IS_QA ? '.auth/user.qa.json' : '.auth
 // BDD: features/*.feature + steps/*.ts → .features-gen 디렉토리로 자동 컴파일
 const bddTestDir = defineBddConfig({
   features: 'features/**/*.feature',
-  steps: 'steps/**/*.ts',
+  steps: 'steps/*.ts',  // mobile/ 서브디렉토리 제외
+});
+
+// BDD: Mweb features-mweb/*.feature + steps/mobile/*.ts
+const bddMobileTestDir = defineBddConfig({
+  outputDir: '.features-gen-mweb',
+  features: 'features-mweb/**/*.feature',
+  steps: 'steps/mobile/**/*.ts',
 });
 
 /**
@@ -83,15 +90,17 @@ projects: [
       dependencies: ['setup'],
     },
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+    /* Mweb — m.tapas.io / iPhone 13 */
+    {
+      name: 'mobile-safari',
+      testDir: bddMobileTestDir,
+      use: {
+        ...devices['iPhone 13'],
+        baseURL: 'https://m.tapas.io',
+        storageState: STORAGE_STATE,
+      },
+      dependencies: ['setup'],
+    },
 
     /* Test against branded browsers. */
     // {
