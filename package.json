@@ -22,9 +22,11 @@
     "report": "playwright show-report",
     "allure": "allure-commandline generate allure-results --clean -o allure-report && allure-commandline open allure-report",
     "health": "bddgen && playwright test --project=chromium; npm run report",
-    "test:mweb": "bddgen && playwright test --project=mobile-safari",
-    "test:mweb:headed": "bddgen && playwright test --project=mobile-safari --headed",
-    "test:mweb:smoke": "bddgen && playwright test --project=mobile-safari --grep @smoke"
+    "test:mweb": "bddgen && playwright test --project=mobile-safari --project=mobile-safari-common",
+    "test:mweb:only": "bddgen && playwright test --project=mobile-safari",
+    "test:mweb:common": "bddgen && playwright test --project=mobile-safari-common",
+    "test:mweb:headed": "bddgen && playwright test --project=mobile-safari --project=mobile-safari-common --headed",
+    "test:mweb:smoke": "bddgen && playwright test --project=mobile-safari --project=mobile-safari-common --grep @smoke"
   },
   "keywords": [],
   "author": "",

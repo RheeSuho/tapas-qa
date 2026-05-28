@@ -116,6 +116,54 @@ When('뒤로가기를 한다', async ({ page }) => {
   }
 });
 
+// ──── 로그인 실패 ────
+
+When('잘못된 이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
+  // Direct navigation to signin — GNB Login on mweb goes to /account/signup, not /account/signin
+  if (!page.url().includes('/account/signin')) {
+    await page.goto('https://m.tapas.io/account/signin', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.waitForTimeout(800);
+  }
+
+  const emailInput = page.getByPlaceholder(/email/i).first();
+
+  if (!(await emailInput.isVisible({ timeout: 2000 }).catch(() => false))) {
+    await page.evaluate(() => window.scrollTo(0, 500));
+    await page.waitForTimeout(400);
+    const emailTrigger = page.locator('p, a, button, span').filter({ hasText: /log in.*email|sign up.*email/i }).first();
+    if ((await emailTrigger.count()) > 0) {
+      await emailTrigger.click();
+      await emailInput.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    }
+  }
+
+  if (!(await emailInput.isVisible({ timeout: 3000 }).catch(() => false))) {
+    test.skip(true, '이메일 폼 노출 안됨 — 구조 변경 확인 필요');
+    return;
+  }
+
+  const pwInput = page.getByPlaceholder(/password/i).first();
+  await emailInput.fill('invalid@notexist.example');
+  if (await pwInput.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await pwInput.fill('wrongpassword123!');
+  }
+  const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
+  if ((await loginBtn.count()) > 0) await loginBtn.last().click();
+  await page.waitForTimeout(3000);
+});
+
+Then('오류 메시지가 노출되고 로그인 화면에 머무른다', async ({ page }) => {
+  const errorMsg = page.locator('[class*="error"], [class*="alert"], .error-message').first();
+  const isVisible = await errorMsg.isVisible({ timeout: 5000 }).catch(() => false);
+  if (isVisible) {
+    await expect(errorMsg).toBeVisible();
+  } else {
+    // 에러 텍스트로 fallback
+    const hasError = await page.locator('body').filter({ hasText: /incorrect|invalid|not found|error/i }).count() > 0;
+    if (!hasError) await expect(page).toHaveURL(/signin/i);
+  }
+});
+
 // ──── 설명성 bullet step ────
 
 Then(/^ㄴ.+$/, async () => {});

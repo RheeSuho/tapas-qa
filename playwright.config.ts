@@ -14,11 +14,18 @@ const bddTestDir = defineBddConfig({
   steps: 'steps/*.ts',  // mobile/ 서브디렉토리 제외
 });
 
-// BDD: Mweb features-mweb/*.feature + steps/mobile/*.ts
+// BDD: Mweb features-mweb/*.feature + steps/mobile/*.ts (Mweb 전용 시나리오)
 const bddMobileTestDir = defineBddConfig({
   outputDir: '.features-gen-mweb',
   features: 'features-mweb/**/*.feature',
   steps: 'steps/mobile/**/*.ts',
+});
+
+// BDD: 공통 TC를 iPhone 13 에뮬레이션으로 실행 (steps/*.ts 재사용)
+const bddMobileCommonTestDir = defineBddConfig({
+  outputDir: '.features-gen-mweb-common',
+  features: 'features/**/*.feature',
+  steps: 'steps/*.ts',
 });
 
 /**
@@ -90,13 +97,24 @@ projects: [
       dependencies: ['setup'],
     },
 
-    /* Mweb — m.tapas.io / iPhone 13 */
+    /* Mweb — m.tapas.io / iPhone 13 (Mweb 전용 시나리오) */
     {
       name: 'mobile-safari',
       testDir: bddMobileTestDir,
       use: {
         ...devices['iPhone 13'],
         baseURL: 'https://m.tapas.io',
+        storageState: STORAGE_STATE,
+      },
+      dependencies: ['setup'],
+    },
+
+    /* Mweb 공통 — 162개 공통 TC를 iPhone 13으로 실행 */
+    {
+      name: 'mobile-safari-common',
+      testDir: bddMobileCommonTestDir,
+      use: {
+        ...devices['iPhone 13'],
         storageState: STORAGE_STATE,
       },
       dependencies: ['setup'],
