@@ -319,8 +319,8 @@ Then('랜딩 페이지로 이동된다', async ({ page }) => {
   await expect(page.locator('body')).toBeVisible();
 });
 
-Then('랜딩 리스트로 이동된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+Then('랜딩 리스트로 이동되고 작품 목록이 노출된다', async ({ page }) => {
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 When('뒤로가기를 한다', async ({ page }) => {

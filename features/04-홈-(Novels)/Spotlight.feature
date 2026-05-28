@@ -46,6 +46,6 @@ Feature: Spotlight (섹션 서브탭)
   Scenario: [TPS-054] 섹션메뉴 더보기 클릭 + Novels 홈으로 복귀
     When Novels Spotlight 서브탭에 접속한다
     And 더보기 링크를 클릭한다
-    Then 랜딩 리스트로 이동된다
+    Then 랜딩 리스트로 이동되고 작품 목록이 노출된다
     When 뒤로가기를 한다
     Then Novels 홈으로 돌아온다
