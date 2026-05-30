@@ -5,7 +5,9 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-const IS_QA = (process.env.TAPAS_BASE_URL || '').includes('qa.');
+const IS_QA =
+  (process.env.TAPAS_BASE_URL || '').includes('qa.') ||
+  (process.env.TAPAS_MWEB_BASE_URL || '').includes('qa-m.');
 const STORAGE_STATE = path.join(__dirname, IS_QA ? '.auth/user.qa.json' : '.auth/user.json');
 
 // BDD: features/*.feature + steps/*.ts → .features-gen 디렉토리로 자동 컴파일
@@ -103,7 +105,7 @@ projects: [
       testDir: bddMobileTestDir,
       use: {
         ...devices['iPhone 13'],
-        baseURL: 'https://m.tapas.io',
+        baseURL: process.env.TAPAS_MWEB_BASE_URL || 'https://m.tapas.io',
         storageState: STORAGE_STATE,
       },
       dependencies: ['setup'],

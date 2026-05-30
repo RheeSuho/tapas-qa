@@ -7,7 +7,9 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 const AUTH_MAX_AGE_HOURS = 24;
-const IS_QA = (process.env.TAPAS_BASE_URL || '').includes('qa.');
+const IS_QA =
+  (process.env.TAPAS_BASE_URL || '').includes('qa.') ||
+  (process.env.TAPAS_MWEB_BASE_URL || '').includes('qa-m.');
 const authFile = path.join(__dirname, IS_QA ? '../.auth/user.qa.json' : '../.auth/user.json');
 
 setup('이메일 계정으로 로그인하고 세션 저장', async ({ page }) => {
