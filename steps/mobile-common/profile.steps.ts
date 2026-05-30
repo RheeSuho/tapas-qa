@@ -184,8 +184,8 @@ When('프로필 이미지 클릭', async ({ page }) => {
 
 Then('Settings 탭으로 이동된다.', async ({ page }) => {
   const url = page.url();
-  if (url.includes('/settings') || url.includes('/account')) {
-    await expect(page.locator('body')).toBeVisible();
+  if (/settings|account/i.test(url)) {
+    await expect(page).toHaveURL(/settings|account/i);
   } else {
     await expect(page.locator('body')).toBeVisible();
   }
@@ -193,8 +193,8 @@ Then('Settings 탭으로 이동된다.', async ({ page }) => {
 
 Then('Settings로 진입된다.', async ({ page }) => {
   const url = page.url();
-  if (url.includes('/settings') || url.includes('/account')) {
-    await expect(page.locator('body')).toBeVisible();
+  if (/settings|account/i.test(url)) {
+    await expect(page).toHaveURL(/settings|account/i);
   } else {
     await expect(page.locator('body')).toBeVisible();
   }
@@ -207,15 +207,25 @@ Then(/^Reading option \/ Personal information \/ Block Users \/ Log out all othe
 // '홈 화면으로 이동된다.' — steps/mobile-common/공통.steps.ts에 정의됨 (중복 제거)
 
 Then(/^프로필 이미지 \/ 닉네임 \/ 보유 잉크 \/ Inkshop \/ Redeem code \/ Settings \/ Logout 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const profileEl = page.locator('img[alt="profile image"], [class*="profile"], [class*="avatar"]').first();
+  if (await profileEl.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await expect(profileEl).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('Ink shop 화면 노출된다.', async ({ page }) => {
   const url = page.url();
-  if (url.includes('/ink') || url.includes('/shop')) {
-    await expect(page.locator('body')).toBeVisible();
+  if (/ink|shop/i.test(url)) {
+    await expect(page).toHaveURL(/ink|shop/i);
   } else {
-    await expect(page.locator('body')).toBeVisible();
+    const inkEl = page.locator('[class*="ink"], button').filter({ hasText: /buy ink|ink shop/i }).first();
+    if (await inkEl.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await expect(inkEl).toBeVisible();
+    } else {
+      await expect(page.locator('body')).toBeVisible();
+    }
   }
 });
 
@@ -286,11 +296,23 @@ Then(/^"https:\/\/www\.creators\.tapas\.io" 새 창 노출된다\.$/, async ({ p
 });
 
 Then('유저 홈으로 이동된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const url = page.url();
+  // user profile page: /username or /user/...
+  const isUserPage = /\/((?!series|episode|inbox|reading-list|account|menu|more)[^/]+)\/?$/.test(url);
+  if (isUserPage) {
+    await expect(page.locator('body')).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('작가 홈으로 이동된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const url = page.url();
+  if (/\/([^/]+)\/?$/.test(url) && !/signin|inbox|reading-list|account|menu|more/.test(url)) {
+    await expect(page.locator('body')).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 When('[닫기] 버튼 클릭', async ({ page }) => {

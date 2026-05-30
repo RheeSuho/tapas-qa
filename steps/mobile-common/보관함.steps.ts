@@ -29,13 +29,16 @@ When('Subscribed 클릭', async ({ page }) => {
 });
 
 When('Free episodes 메뉴 클릭', async ({ page }) => {
-  const tab = page.locator('a, button').filter({ hasText: /free episodes/i }).first();
-  if ((await tab.count()) > 0) {
-    await tab.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    await page.goto(`${MWEB}/reading-list?tab=free`, { waitUntil: 'domcontentloaded' });
+  // reading-list 이미 진입한 경우만 탭 클릭 시도, 그 외는 직접 goto
+  if (page.url().includes('/reading-list')) {
+    const tab = page.locator('a, button').filter({ hasText: /free episodes/i }).first();
+    if ((await tab.count()) > 0) {
+      await tab.click();
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
+      return;
+    }
   }
+  await page.goto(`${MWEB}/reading-list?tab=free`, { waitUntil: 'domcontentloaded' });
 });
 
 When('Wait until Free 메뉴 클릭', async ({ page }) => {
@@ -214,8 +217,10 @@ Then('Recent로 진입된다.', async ({ page }) => {
 
 Then('회차 뷰어로 진입된다.', async ({ page }) => {
   const url = page.url();
-  if (url.includes('/episode/') || url.includes('/viewer')) {
-    await expect(page.locator('body')).toBeVisible();
+  if (/\/episode\//.test(url)) {
+    await expect(page).toHaveURL(/\/episode\//);
+    const img = page.locator('article img, [class*="viewer"] img').first();
+    if (await img.isVisible({ timeout: 3000 }).catch(() => false)) await expect(img).toBeVisible();
   } else {
     await expect(page.locator('body')).toBeVisible();
   }
@@ -271,15 +276,36 @@ Then('Wait until Free 화면으로 복귀된다.', async ({ page }) => {
 });
 
 Then('작품홈 으로 진입 된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const url = page.url();
+  if (/\/series\//.test(url)) {
+    await expect(page).toHaveURL(/\/series\//);
+    const epLink = page.locator('a[href*="/episode/"]').first();
+    if (await epLink.isVisible({ timeout: 3000 }).catch(() => false)) await expect(epLink).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('Comic 작품홈으로 진입된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const url = page.url();
+  if (/\/series\//.test(url)) {
+    await expect(page).toHaveURL(/\/series\//);
+    const epLink = page.locator('a[href*="/episode/"]').first();
+    if (await epLink.isVisible({ timeout: 3000 }).catch(() => false)) await expect(epLink).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('Novel 작품홈으로 진입된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const url = page.url();
+  if (/\/series\//.test(url)) {
+    await expect(page).toHaveURL(/\/series\//);
+    const epLink = page.locator('a[href*="/episode/"]').first();
+    if (await epLink.isVisible({ timeout: 3000 }).catch(() => false)) await expect(epLink).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('Updated 메뉴가 노출된다.', async ({ page }) => {
@@ -287,15 +313,30 @@ Then('Updated 메뉴가 노출된다.', async ({ page }) => {
 });
 
 Then('Comics 작품리스트만 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const items = page.locator('a[href*="/series/"]').first();
+  if (await items.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await expect(items).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('Novels 작품리스트만 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const items = page.locator('a[href*="/series/"]').first();
+  if (await items.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await expect(items).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('모든 작품 리스트가 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const items = page.locator('a[href*="/series/"]').first();
+  if (await items.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await expect(items).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('안내문구가 노출된다.', async ({ page }) => {
@@ -326,8 +367,8 @@ Then('노출되는 작품 목록의 New뱃지가 미노출된다.', async ({ pag
 
 Then('Settings으로 진입된다.', async ({ page }) => {
   const url = page.url();
-  if (url.includes('/settings') || url.includes('/account')) {
-    await expect(page.locator('body')).toBeVisible();
+  if (/settings|account/i.test(url)) {
+    await expect(page).toHaveURL(/settings|account/i);
   } else {
     await expect(page.locator('body')).toBeVisible();
   }

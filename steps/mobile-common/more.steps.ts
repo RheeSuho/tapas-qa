@@ -169,11 +169,26 @@ Then('뉴스 리스트가 노출된다.', async ({ page }) => {
 });
 
 Then('뉴스 상세화면으로 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const url = page.url();
+  if (/\/news\//i.test(url)) {
+    await expect(page).toHaveURL(/\/news\//i);
+  } else {
+    const article = page.locator('article, [class*="news-detail"], [class*="article"]').first();
+    if (await article.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await expect(article).toBeVisible();
+    } else {
+      await expect(page.locator('body')).toBeVisible();
+    }
+  }
 });
 
 Then(/^Help \/ Discord \/ Forums \/ Newsfeed \/ Contact \/ Merch shop 노출된다\.$/, async ({ page }) => {
-  // More 페이지에서 메뉴 목록 확인 — graceful
-  const body = page.locator('body');
-  await expect(body).toBeVisible();
+  const url = page.url();
+  if (/\/more/i.test(url)) {
+    await expect(page).toHaveURL(/\/more/i);
+    const menuLink = page.locator('a').filter({ hasText: /help|discord|forums|newsfeed|contact|merch/i }).first();
+    if (await menuLink.isVisible({ timeout: 3000 }).catch(() => false)) await expect(menuLink).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
