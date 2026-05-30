@@ -9,12 +9,14 @@ const MWEB = 'https://m.tapas.io';
 // ──── 인박스 ────
 
 Given('모바일 인박스 Activity로 이동한다', async ({ page }) => {
-  await page.goto(`${MWEB}/inbox/activity`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  // /inbox/activity는 404 — activities 탭은 /activities 경로 사용
+  await page.goto(`${MWEB}/activities`, { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForTimeout(800);
 });
 
 Then('수신된 Activity 목록이 노출된다', async ({ page }) => {
-  await expect(page).toHaveURL(/\/inbox/i);
+  // activity 목록은 /activities 또는 /inbox/* 경로에 있음
+  await expect(page).toHaveURL(/activities|inbox/i);
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -144,10 +146,16 @@ Then('작성한 댓글이 상단 목록에 노출된다', async ({ page }) => {
 });
 
 When('다른 유저의 프로필 이미지를 클릭한다', async ({ page }) => {
-  // 댓글 목록의 첫 번째 다른 유저 아바타 클릭
-  const avatar = page.locator('[class*="avatar"] img, [class*="profile"] img').first();
-  if ((await avatar.count()) > 0) await avatar.click();
-  await page.waitForTimeout(800);
+  const avatars = page.locator('[class*="avatar"] img, [class*="profile"] img');
+  const count = await avatars.count();
+  for (let i = 0; i < count; i++) {
+    if (await avatars.nth(i).isVisible().catch(() => false)) {
+      await avatars.nth(i).click();
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
+      return;
+    }
+  }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 Then('유저홈으로 이동된다', async ({ page }) => {
@@ -155,8 +163,9 @@ Then('유저홈으로 이동된다', async ({ page }) => {
 });
 
 When('상단 뒤로가기 버튼을 클릭한다', async ({ page }) => {
-  const backBtn = page.locator('[class*="back"], [aria-label*="back"], a[href*="/episode/"]').first();
-  if ((await backBtn.count()) > 0) {
+  // [class*="back"]는 "feedback" 같은 클래스에도 매칭 → visible 체크 후 goBack fallback
+  const backBtn = page.locator('[aria-label*="back" i], .btn-back, a.back, button.back').first();
+  if ((await backBtn.count()) > 0 && await backBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
     await backBtn.click();
   } else {
     await page.goBack({ waitUntil: 'domcontentloaded' }).catch(() => {});

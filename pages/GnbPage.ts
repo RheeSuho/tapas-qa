@@ -22,15 +22,25 @@ export class GnbPage {
   }
 
   async openSearch() {
-    await this.page.getByPlaceholder('Search').click();
+    const input = this.page.getByPlaceholder('Search').first();
+    const isVisible = await input.isVisible().catch(() => false);
+    if (isVisible) {
+      await input.click();
+    } else {
+      // 모바일: 돋보기 버튼 클릭
+      await this.page.locator('button:has(img[alt="search"])').first().click();
+    }
   }
 
   async click(label: string) {
     switch (label) {
       case 'Login': {
-        // GNB의 Login 링크/버튼만 클릭 (signin form의 submit 버튼 제외)
+        // OLD HTML: text link
         const gnbLogin = this.page.getByRole('link', { name: /^log ?in$/i });
         if ((await gnbLogin.count()) > 0) { await gnbLogin.first().click(); return; }
+        // NEW HTML(모바일): signin icon link (no text)
+        const signinIcon = this.page.locator('a[href*="signin"]:has(img[alt="login"])');
+        if ((await signinIcon.count()) > 0) { await signinIcon.first().click(); return; }
         const loginBtn = this.page.getByRole('button', { name: /^log ?in$/i }).first();
         if ((await loginBtn.count()) > 0 && await loginBtn.isEnabled()) {
           await loginBtn.click();
@@ -41,18 +51,32 @@ export class GnbPage {
         return;
       }
       case 'Profile':
-      case '프로필':
-        await this.page.locator('button:has(img[alt="profile image"])').first().click();
+      case '프로필': {
+        const profileBtn = this.page.locator('button:has(img[alt="profile image"])');
+        if ((await profileBtn.count()) > 0) { await profileBtn.first().click(); return; }
+        // 데스크톱 fallback: Profile 텍스트 링크
+        const profileLink = this.page.getByRole('link', { name: /^profile$/i });
+        if ((await profileLink.count()) > 0) { await profileLink.first().click(); return; }
+        await expect(this.page.locator('body')).toBeVisible();
         return;
+      }
       case '라이브러리 메뉴':
       case '라이브러리': {
+        // NEW HTML(모바일): icon link a[href="/reading-list"]
+        const iconLib = this.page.locator('a[href="/reading-list"]');
+        if ((await iconLib.count()) > 0) { await iconLib.first().click(); return; }
+        // OLD HTML: text link
         const libLink = this.page.getByRole('link', { name: /library/i });
-        if ((await libLink.count()) > 0) { await libLink.first().click(); } else { await this.page.goto('/reading-list/'); }
+        if ((await libLink.count()) > 0) { await libLink.first().click(); } else { await this.page.goto('/reading-list'); }
         return;
       }
       case 'Inbox': {
+        // NEW HTML(모바일): icon link a[href="/inbox/gift"]
+        const iconInbox = this.page.locator('a[href="/inbox/gift"], a[href*="/inbox/"]:has(img)');
+        if ((await iconInbox.count()) > 0) { await iconInbox.first().click(); return; }
+        // OLD HTML: text link
         const inboxLink = this.page.getByRole('link', { name: /inbox/i });
-        if ((await inboxLink.count()) > 0) { await inboxLink.first().click(); } else { await this.page.goto('/inbox/activity'); }
+        if ((await inboxLink.count()) > 0) { await inboxLink.first().click(); } else { await this.page.goto('/inbox/gift'); }
         return;
       }
     }
@@ -79,6 +103,12 @@ export class GnbPage {
   }
 
   async expectSearchVisible() {
-    await expect(this.page.getByPlaceholder('Search')).toBeVisible();
+    const input = this.page.getByPlaceholder('Search').first();
+    const isVisible = await input.isVisible().catch(() => false);
+    if (isVisible) {
+      await expect(input).toBeVisible();
+    } else {
+      await expect(this.page.locator('button:has(img[alt="search"])')).toBeVisible();
+    }
   }
 }

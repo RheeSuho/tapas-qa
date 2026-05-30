@@ -74,10 +74,14 @@ When('Publish 클릭', async ({ page }) => {
 // ──── Ink Shop ────
 
 When('보유 잉크 영역 클릭', async ({ page }) => {
-  const el = page.locator('[class*="ink"], [class*="balance"]');
-  if ((await el.count()) > 0) { await el.first().click(); return; }
-  const inkText = page.getByText(/ink/i);
-  if ((await inkText.count()) > 0) { await inkText.first().click(); return; }
+  // Use a, button to avoid Tailwind utility classes (e.g. shrink-0 contains "ink")
+  const el = page.locator('a, button').filter({ hasText: /ink/i }).first();
+  if ((await el.count()) > 0 && await el.isVisible().catch(() => false)) {
+    await el.click();
+    return;
+  }
+  const inkLink = page.locator('a[href*="/ink"], a[href*="/balance"]').first();
+  if ((await inkLink.count()) > 0) { await inkLink.click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 

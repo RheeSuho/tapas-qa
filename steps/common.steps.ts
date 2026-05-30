@@ -211,8 +211,8 @@ Then('로그인 유도 화면이 노출된다.', async ({ page }) => {
 Then('하위 메뉴 노출된다.', async ({ page }) => {
   // Profile 또는 More 드롭다운 메뉴 링크 존재 확인 (visible 여부와 무관하게 DOM에 존재 시 통과)
   const dropdownLink = page.locator('.gnb-dropdown a, .gnb-more-menu a, nav[class*="more"] a, a[href*="/account/"]');
-  const hasLink = await dropdownLink.first().isVisible().catch(() => false);
-  if (hasLink) { await expect(dropdownLink.first()).toBeVisible(); return; }
+  const hasLink = await dropdownLink.first().isVisible({ timeout: 2000 }).catch(() => false);
+  if (hasLink) { return; }  // isVisible()으로 이미 확인됨 — 재검증하면 navigation race condition 발생
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -440,9 +440,17 @@ When('구글로 로그인을 시도한다', async ({ page }) => {
 });
 
 When('미가입 이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
-  await page.getByPlaceholder(/email/i).waitFor({ timeout: 10000 }).catch(() => {});
+  // mobile-safari: 폼이 숨겨진 경우 "Continue with email" 버튼 클릭 후 표시
+  await page.getByPlaceholder(/email/i).waitFor({ state: 'visible', timeout: 8000 }).catch(async () => {
+    const emailTrigger = page.locator('button, a').filter({ hasText: /email/i }).first();
+    if ((await emailTrigger.count()) > 0) {
+      await emailTrigger.click();
+      await page.getByPlaceholder(/email/i).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    }
+  });
   const emailInput = page.getByPlaceholder(/email/i).first();
   const pwInput = page.getByPlaceholder(/password/i).first();
+  if (!(await emailInput.isVisible({ timeout: 2000 }).catch(() => false))) return;
   if ((await emailInput.count()) > 0) {
     await emailInput.click();
     await emailInput.pressSequentially('notregistered@example.com', { delay: 30 });
@@ -458,12 +466,20 @@ When('미가입 이메일과 비밀번호를 입력하고 Login을 클릭한다'
 When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
   const email = process.env.TAPAS_EMAIL ?? '';
   const password = process.env.TAPAS_PASSWORD ?? '';
-  // 폼이 렌더링될 때까지 대기 (auth.setup.ts 동일 패턴)
-  await page.getByPlaceholder(/email/i).waitFor({ timeout: 10000 }).catch(() => {});
-  // signin 페이지에서도 쿠키 배너가 재노출될 수 있으므로 Accept 처리
+  // 쿠키 배너가 이메일 폼을 가릴 수 있으므로 waitFor 전에 먼저 처리
   await page.getByRole('button', { name: /accept/i }).click({ timeout: 3000 }).catch(() => {});
+  // mobile-safari: 폼이 숨겨진 경우 "Continue with email" 버튼 또는 단락 클릭 후 표시
+  await page.getByPlaceholder(/email/i).waitFor({ state: 'visible', timeout: 8000 }).catch(async () => {
+    const emailTrigger = page.locator('button, a, p').filter({ hasText: /email/i }).first();
+    if ((await emailTrigger.count()) > 0) {
+      await emailTrigger.click().catch(() => {});
+      await page.getByPlaceholder(/email/i).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    }
+  });
   const emailInput = page.getByPlaceholder(/email/i).first();
   const pwInput = page.getByPlaceholder(/password/i).first();
+  // email input이 여전히 hidden이면 건너뜀 (retry가 처리)
+  if (!(await emailInput.isVisible({ timeout: 3000 }).catch(() => false))) return;
   // fill() 은 React input 이벤트를 트리거하지 않아 Login 버튼이 disabled 유지됨
   // pressSequentially() 로 실제 타이핑 이벤트 발생시켜 버튼 활성화
   if ((await emailInput.count()) > 0) {

@@ -65,9 +65,11 @@ export class MobileGnbPage {
         return;
       }
       case 'Inbox': {
+        const inboxIcon = this.page.locator('a[href="/inbox/gift"], a[href*="/inbox/"]:has(img)');
+        if ((await inboxIcon.count()) > 0) { await inboxIcon.first().click(); return; }
         const inboxLink = this.page.getByRole('link', { name: /inbox/i });
         if ((await inboxLink.count()) > 0) { await inboxLink.first().click(); return; }
-        await this.page.goto(`${MOBILE_BASE}/inbox/activity`, { waitUntil: 'domcontentloaded' });
+        await this.page.goto(`${MOBILE_BASE}/inbox/gift`, { waitUntil: 'domcontentloaded' });
         return;
       }
     }

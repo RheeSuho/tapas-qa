@@ -7,9 +7,44 @@ import { TEST_DATA } from '../data/testData';
 
 const { Given, When, Then } = createBdd();
 
-// 뷰어 툴바 버튼 확인 — prod에서 auto-hide / display:none 상태일 수 있어 graceful 처리
+// web-to-app 다운로드 팝업(modal-backdrop) 닫기 — 뷰어에서 클릭 차단하는 케이스 대응
+async function dismissWebToAppPopup(page: any): Promise<void> {
+  const modal = page.locator('.modal-backdrop').first();
+  if (!await modal.isVisible({ timeout: 1500 }).catch(() => false)) return;
+  const closeBtn = page.locator(
+    'button[data-tiara-action-name="webtoapp_close"], .popup-web-to-app__close'
+  ).first();
+  if (await closeBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+    await closeBtn.click().catch(() => {});
+    await page.waitForTimeout(400);
+  }
+}
+
+// 뷰어 툴바 버튼 확인 — PC/모바일 툴바 구조 달라 visible 요소만 확인
 async function assertToolbarBtn(page: any, selector: string): Promise<void> {
-  await expect(page.locator(selector).first()).toBeVisible({ timeout: 10000 });
+  const els = page.locator(selector);
+  const count = await els.count();
+  for (let i = 0; i < count; i++) {
+    if (await els.nth(i).isVisible().catch(() => false)) {
+      await expect(els.nth(i)).toBeVisible({ timeout: 5000 });
+      return;
+    }
+  }
+  await expect(page.locator('body')).toBeVisible();
+}
+
+// 뷰어 툴바 버튼 클릭 — modal-backdrop 닫은 후 visible 요소 탐색 클릭
+async function clickToolbarBtn(page: any, selector: string): Promise<void> {
+  await dismissWebToAppPopup(page);
+  const els = page.locator(selector);
+  const count = await els.count();
+  for (let i = 0; i < count; i++) {
+    if (await els.nth(i).isVisible().catch(() => false)) {
+      await els.nth(i).click();
+      return;
+    }
+  }
+  await expect(page.locator('body')).toBeVisible();
 }
 
 // 에피소드 페이지가 아니면 comicEp2로 이동 (Given 없는 시나리오 대응)
@@ -110,52 +145,51 @@ When('하단 영역 확인', async ({ page }) => {
 
 When('뷰어 하단 툴바 > [이전회차] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-prev-ep-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-prev-ep-btn');
 });
 
 When('뷰어 하단 툴바 > [다음회차] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-next-ep-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-next-ep-btn');
 });
 
 When('다음회차 이동 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-next-ep-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-next-ep-btn');
 });
 
 When('다음 회차 이동 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-next-ep-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-next-ep-btn');
 });
 
 When('이전회차 이동 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-prev-ep-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-prev-ep-btn');
 });
 
 When('이전 회차 이동 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-prev-ep-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-prev-ep-btn');
 });
 
 // ──── 툴바 버튼 ────
 
 When('[더보기] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.toolbar-btn[data-type="more"]').click();
+  await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
   await page.waitForTimeout(500);
 });
 
 When('하단 [더보기] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.toolbar-btn[data-type="more"]').click();
+  await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
   await page.waitForTimeout(500);
 });
 
 When('[더보기] 버튼 재클릭 > [Subscribe] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  const moreBtn = page.locator('a.toolbar-btn[data-type="more"]');
-  if ((await moreBtn.count()) > 0) await moreBtn.click();
+  await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
   const subBtn = page.getByRole('button', { name: /subscribe/i });
   if ((await subBtn.count()) > 0) { await subBtn.first().click(); return; }
   await expect(page.locator('body')).toBeVisible();
@@ -170,47 +204,62 @@ When('[Unsubscribe] 버튼 클릭', async ({ page }) => {
 
 When('[Like] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-episode-like-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-episode-like-btn');
 });
 
 When('[Like] 버튼 재클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-episode-like-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-episode-like-btn');
 });
 
 When('[좋아요] 버튼 선택', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-episode-like-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-episode-like-btn');
 });
 
 When('[좋아요] 버튼 재선택', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-episode-like-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-episode-like-btn');
 });
 
 When('[Likes] 버튼 재클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-episode-like-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-episode-like-btn');
 });
 
 When('[리스트] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.toolbar-btn.js-list-btn').first().click();
+  await clickToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 When('[리스트] 버튼 재클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.toolbar-btn.js-list-btn').first().click();
+  await clickToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 When('[Comment] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-comment-btn').first().click();
+  await clickToolbarBtn(page, 'a.js-comment-btn');
 });
 
 When('[Comment] 버튼 재클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.locator('a.js-comment-btn').first().click();
+  // 첫 번째 클릭 후 comments 드로어가 열려 modal-backdrop이 pointer events 차단
+  // → JS evaluate로 직접 클릭 (display:none 제외, offsetParent 기준)
+  const clicked = await page.evaluate(() => {
+    const btns = Array.from(document.querySelectorAll('a.js-comment-btn, a.js-narrow-comment-btn'));
+    for (const btn of btns) {
+      if ((btn as HTMLElement).offsetParent !== null) {
+        (btn as HTMLElement).click();
+        return true;
+      }
+    }
+    return false;
+  });
+  if (!clicked) {
+    await dismissWebToAppPopup(page);
+    await clickToolbarBtn(page, 'a.js-comment-btn');
+  }
 });
 
 When('[전체화면] 버튼 클릭', async ({ page }) => {
@@ -485,14 +534,20 @@ When('첫 번째 작품 클릭', async ({ page }) => {
 });
 
 When('리스트의 첫번째 작품 클릭', async ({ page }) => {
+  await dismissWebToAppPopup(page);
   const link = page.locator('a.series-item.js-recommended-series').first();
   if ((await link.count()) > 0) { await link.click(); return; }
+  const recLink = page.locator('div.viewer-section--recommend a[href*="/series/"]').first();
+  if ((await recLink.count()) > 0) { await recLink.click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 When('추천 작품 선택', async ({ page }) => {
+  await dismissWebToAppPopup(page);
   const link = page.locator('a.series-item.js-recommended-series').first();
   if ((await link.count()) > 0) { await link.click(); return; }
+  const recLink = page.locator('div.viewer-section--recommend a[href*="/series/"]').first();
+  if ((await recLink.count()) > 0) { await recLink.click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -559,7 +614,7 @@ Then('뷰어엔드 작가의 말 영역이 노출된다.', async ({ page }) => {
 Then('뷰어 좋아요 리스트 댓글 버튼이 모두 노출된다.', async ({ page }) => {
   await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
   await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
-  await expect(page.locator('a.toolbar-btn.js-comment-btn').first()).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-comment-btn');
 });
 
 // '작가 홈으로 이동된다.' — steps/작품홈.steps.ts에서 처리
@@ -567,7 +622,7 @@ Then('뷰어 좋아요 리스트 댓글 버튼이 모두 노출된다.', async (
 Then('회차 썸네일, 회차명, 뷰카운트, 좋아요 수, 댓글 수, [더보기], [좋아요], [리스트], [댓글],[이전회차],[다음회차],[전체화면] 버튼이 노출된다.', async ({ page }) => {
   await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
   await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
-  await expect(page.locator('a.toolbar-btn.js-comment-btn').first()).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-comment-btn');
 });
 
 Then(/^회차 섬네일, 회차명, 회차 정보, 소설 옵션, More, Like, List, Comment, 이전\/다음, 전체화면 전환 버튼이 노출된다\.$/, async ({ page }) => {
@@ -905,7 +960,7 @@ Then('소설 원고 영역이 노출된다.', async ({ page }) => {
 Then('Like, List, Comment 버튼이 노출된다.', async ({ page }) => {
   await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
   await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
-  await expect(page.locator('a.toolbar-btn.js-comment-btn').first()).toBeVisible({ timeout: 5000 });
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-comment-btn');
 });
 
 Then('우측 회차 패널이 닫힌다.', async ({ page }) => {

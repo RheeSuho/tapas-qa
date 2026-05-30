@@ -49,7 +49,7 @@ setup('미인증 계정 세션 저장', async ({ page }) => {
 
     const loginLink = page.getByRole('link', { name: /log ?in/i });
     if ((await loginLink.count()) > 0) {
-      await loginLink.first().click();
+      await loginLink.first().click({ timeout: 5000 }).catch(() => {});
     } else {
       await page.goto('/account/signin', { waitUntil: 'domcontentloaded' });
     }
@@ -68,9 +68,9 @@ setup('미인증 계정 세션 저장', async ({ page }) => {
     }
     await loginBtn.click();
 
-    // reCAPTCHA가 뜨면 headed 모드에서 수동으로 해결해야 함 — 최대 90초 대기
+    // reCAPTCHA가 뜨면 headed 모드에서 수동으로 해결해야 함 — 최대 50초 대기 (전체 타임아웃 120s 초과 방지)
     console.log('[unverified-setup] 로그인 완료 대기 중... (reCAPTCHA가 있으면 수동으로 해결하세요)');
-    const loginSuccess = await page.waitForURL(/^(?!.*signin).*$/, { timeout: 90000 }).then(() => true).catch(() => false);
+    const loginSuccess = await page.waitForURL(/^(?!.*signin).*$/, { timeout: 50000 }).then(() => true).catch(() => false);
     if (!loginSuccess) {
       console.warn('[unverified-setup] 로그인 실패 (reCAPTCHA 등). TPS-064는 skip 처리됩니다.');
       console.warn('[unverified-setup] headed 모드에서 재실행: npm run test:setup:unverified');
