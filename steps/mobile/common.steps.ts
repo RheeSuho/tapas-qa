@@ -4,6 +4,8 @@ import { MobileGnbPage } from '../../pages/MobileGnbPage';
 
 const { Given, When, Then, Before } = createBdd();
 
+const MWEB = process.env.TAPAS_MWEB_BASE_URL ?? 'https://m.tapas.io';
+
 // @skip / @qa 태그 처리
 Before(async ({ $tags }) => {
   if ($tags.includes('@skip')) {
@@ -17,7 +19,7 @@ Before(async ({ $tags }) => {
 
 // 모든 시나리오 시작 전 모바일 홈으로 이동
 Before(async ({ page }) => {
-  await page.goto('https://m.tapas.io', { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
+  await page.goto(MWEB, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
 });
 
 // ──── 서비스 접속 ────
@@ -27,7 +29,7 @@ When('타파스 모바일 홈에 접속한다', async ({ page }) => {
 });
 
 Then('모바일 GNB와 홈 화면이 정상 노출된다', async ({ page }) => {
-  await expect(page).toHaveURL(/m\.tapas\.io/);
+  await expect(page).toHaveURL(/tapas\.io/);
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -35,7 +37,7 @@ Then('모바일 GNB와 홈 화면이 정상 노출된다', async ({ page }) => {
 
 Given('모바일 미로그인 상태다', async ({ page }) => {
   await page.context().clearCookies();
-  await page.goto('https://m.tapas.io', { waitUntil: 'domcontentloaded' });
+  await page.goto(MWEB, { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: /accept/i }).click({ timeout: 5000 }).catch(() => {});
 });
 
@@ -53,7 +55,7 @@ When(/^모바일 GNB > (.+) 클릭$/, async ({ page }, label: string) => {
 
 Then('로그인이 완료되고 모바일 홈 화면으로 이동된다', async ({ page }) => {
   await expect(page).not.toHaveURL(/signin/i);
-  await expect(page).toHaveURL(/m\.tapas\.io/);
+  await expect(page).toHaveURL(/tapas\.io/);
 });
 
 // ──── 공통 — PC web steps 재사용 가능한 것들 ────
@@ -112,7 +114,7 @@ When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({
 When('뒤로가기를 한다', async ({ page }) => {
   await page.goBack({ waitUntil: 'domcontentloaded' }).catch(() => {});
   if (page.url() === 'about:blank' || page.url() === '') {
-    await page.goto('https://m.tapas.io', { waitUntil: 'domcontentloaded' });
+    await page.goto(MWEB, { waitUntil: 'domcontentloaded' });
   }
 });
 
@@ -121,7 +123,7 @@ When('뒤로가기를 한다', async ({ page }) => {
 When('잘못된 이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
   // Direct navigation to signin — GNB Login on mweb goes to /account/signup, not /account/signin
   if (!page.url().includes('/account/signin')) {
-    await page.goto('https://m.tapas.io/account/signin', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(`${MWEB}/account/signin`, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForTimeout(800);
   }
 

@@ -1,0 +1,181 @@
+const http = require('http');
+const { spawn, execSync } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+
+const PORT = 3333;
+const ROOT = path.join(__dirname, '..');
+const ARCHIVE_DIR = path.join(ROOT, 'allure-report-archive');
+let currentProcess = null;
+let sseClients = [];
+
+const SCRIPTS = {
+  'pcweb-prod-smoke':       'test:smoke',
+  'pcweb-prod-regression':  'test:bdd',
+  'pcweb-qa-smoke':         'test:qa:smoke',
+  'pcweb-qa-regression':    'test:qa',
+  'mweb-prod-smoke':        'test:mweb:smoke',
+  'mweb-prod-regression':   'test:mweb',
+  'mweb-qa-smoke':          'test:mweb:qa:smoke',
+  'mweb-qa-regression':     'test:mweb:qa',
+};
+
+function broadcast(data) {
+  const msg = `data: ${JSON.stringify(data)}\n\n`;
+  sseClients = sseClients.filter(res => {
+    try { res.write(msg); return true; }
+    catch { return false; }
+  });
+}
+
+function serveStatic(res, filePath) {
+  if (!fs.existsSync(filePath)) {
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('리포트를 찾을 수 없습니다.');
+    return;
+  }
+  const ext = path.extname(filePath);
+  const mime = {
+    '.html': 'text/html; charset=utf-8',
+    '.js': 'application/javascript',
+    '.css': 'text/css',
+    '.png': 'image/png',
+    '.json': 'application/json',
+    '.woff2': 'font/woff2',
+    '.svg': 'image/svg+xml',
+    '.ico': 'image/x-icon',
+    '.csv': 'text/csv',
+    '.txt': 'text/plain',
+  }[ext] || 'application/octet-stream';
+  res.writeHead(200, { 'Content-Type': mime });
+  fs.createReadStream(filePath).pipe(res);
+}
+
+http.createServer((req, res) => {
+  const url = req.url.split('?')[0];
+
+  if (req.method === 'GET' && url === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(fs.readFileSync(path.join(__dirname, 'index.html')));
+    return;
+  }
+
+  if (req.method === 'GET' && url === '/events') {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    });
+    res.write('data: {"type":"connected"}\n\n');
+    sseClients.push(res);
+    req.on('close', () => { sseClients = sseClients.filter(c => c !== res); });
+    return;
+  }
+
+  // 최신 리포트로 리다이렉트
+  if (req.method === 'GET' && (url === '/results' || url === '/results/latest')) {
+    if (!fs.existsSync(ARCHIVE_DIR)) {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('아직 실행된 테스트가 없습니다.');
+      return;
+    }
+    const runs = fs.readdirSync(ARCHIVE_DIR)
+      .filter(d => fs.statSync(path.join(ARCHIVE_DIR, d)).isDirectory())
+      .sort().reverse();
+    if (!runs.length) { res.writeHead(404); res.end('리포트 없음'); return; }
+    res.writeHead(302, { Location: `/results/${runs[0]}/` });
+    res.end();
+    return;
+  }
+
+  // 아카이브 리포트 서빙
+  if (req.method === 'GET' && url.startsWith('/results/')) {
+    const after = url.slice('/results/'.length);
+    const parts = after.split('/');
+    const runId = parts[0];
+    const rest = parts.slice(1).join('/') || 'index.html';
+    const filePath = path.join(ARCHIVE_DIR, runId, rest);
+    serveStatic(res, filePath);
+    return;
+  }
+
+  // 테스트 실행
+  if (req.method === 'POST' && url === '/run') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      if (currentProcess) { res.writeHead(409); res.end('이미 실행 중'); return; }
+      let parsed;
+      try { parsed = JSON.parse(body); } catch { res.writeHead(400); res.end('Bad JSON'); return; }
+      const { platform, env, type, slack } = parsed;
+      const script = SCRIPTS[`${platform}-${env}-${type}`];
+      if (!script) { res.writeHead(400); res.end('Invalid params'); return; }
+
+      const runId = Date.now().toString();
+      console.log(`[run] ${platform}-${env}-${type} (runId: ${runId}, slack: ${!!slack})`);
+      broadcast({ type: 'start', platform, env, testType: type, runId });
+
+      currentProcess = spawn('npm', ['run', script], { cwd: ROOT, shell: true });
+      currentProcess.stdout.on('data', d => broadcast({ type: 'log', text: d.toString() }));
+      currentProcess.stderr.on('data', d => broadcast({ type: 'log', text: d.toString() }));
+      currentProcess.on('close', code => {
+        currentProcess = null;
+        console.log(`[done] exit code: ${code}`);
+
+        // Allure 리포트 생성
+        const reportDest = path.join(ARCHIVE_DIR, runId);
+        try {
+          fs.mkdirSync(ARCHIVE_DIR, { recursive: true });
+          execSync(`allure generate allure-results --clean -o "${reportDest}"`, { cwd: ROOT });
+          console.log(`[report] 생성 완료 → ${reportDest}`);
+        } catch (e) {
+          console.error('[report] Allure 생성 실패:', e.message);
+        }
+
+        broadcast({ type: 'done', code, runId });
+
+        // 슬랙 알림
+        if (slack) {
+          const suiteName = `${env.toUpperCase()} ${type === 'smoke' ? 'Smoke' : 'Regression'}`;
+          const reportUrl = `http://localhost:${PORT}/results/${runId}/`;
+          console.log(`[slack] 전송 중... (${suiteName})`);
+          const notifier = spawn('node', ['scripts/notify-slack.js', suiteName, reportUrl], { cwd: ROOT });
+          notifier.stdout.on('data', d => {
+            const msg = d.toString().trim();
+            console.log('[slack]', msg);
+            broadcast({ type: 'log', text: `[슬랙] ${msg}` });
+          });
+          notifier.stderr.on('data', d => {
+            const msg = d.toString().trim();
+            console.error('[slack error]', msg);
+            broadcast({ type: 'log', text: `[슬랙 오류] ${msg}` });
+          });
+        }
+      });
+
+      res.writeHead(200); res.end('OK');
+    });
+    return;
+  }
+
+  // 중단
+  if (req.method === 'POST' && url === '/stop') {
+    if (currentProcess) {
+      currentProcess.kill('SIGTERM');
+      currentProcess = null;
+      broadcast({ type: 'stopped' });
+    }
+    res.writeHead(200); res.end('OK');
+    return;
+  }
+
+  res.writeHead(404); res.end('Not found');
+}).listen(PORT, '0.0.0.0', () => {
+  const { networkInterfaces } = require('os');
+  const nets = networkInterfaces();
+  const localIp = Object.values(nets).flat().find(n => n.family === 'IPv4' && !n.internal)?.address;
+  console.log(`\n  Tapas QA Dashboard`);
+  console.log(`  로컬:    http://localhost:${PORT}`);
+  if (localIp) console.log(`  팀원:    http://${localIp}:${PORT}`);
+  console.log();
+});

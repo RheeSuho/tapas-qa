@@ -26,7 +26,9 @@
     "test:mweb:only": "bddgen && playwright test --project=mobile-safari",
     "test:mweb:common": "bddgen && playwright test --project=mobile-safari-common",
     "test:mweb:headed": "bddgen && playwright test --project=mobile-safari --project=mobile-safari-common --headed",
-    "test:mweb:smoke": "bddgen && playwright test --project=mobile-safari --project=mobile-safari-common --grep @smoke"
+    "test:mweb:smoke": "bddgen && playwright test --project=mobile-safari --project=mobile-safari-common --grep @smoke",
+    "test:mweb:qa": "TAPAS_MWEB_BASE_URL=https://qa-m.tapas.io TAPAS_BASE_URL=https://qa.tapas.io bddgen && TAPAS_MWEB_BASE_URL=https://qa-m.tapas.io TAPAS_BASE_URL=https://qa.tapas.io playwright test --project=mobile-safari --project=mobile-safari-common",
+    "test:mweb:qa:smoke": "TAPAS_MWEB_BASE_URL=https://qa-m.tapas.io TAPAS_BASE_URL=https://qa.tapas.io bddgen && TAPAS_MWEB_BASE_URL=https://qa-m.tapas.io TAPAS_BASE_URL=https://qa.tapas.io playwright test --project=mobile-safari --project=mobile-safari-common --grep @smoke"
   },
   "keywords": [],
   "author": "",

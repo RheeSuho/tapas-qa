@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 
 const { Given, When, Then } = createBdd();
 
-const MWEB = 'https://m.tapas.io';
+const MWEB = process.env.TAPAS_MWEB_BASE_URL ?? 'https://m.tapas.io';
 
 const LIBRARY_TABS: Record<string, string> = {
   'Recent': `${MWEB}/reading-list/recent`,

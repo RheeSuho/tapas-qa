@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tapas QA Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #13131f;
+  --card:         #1e1e2e;
+  --card-border:  #2a2a3e;
+  --input-bg:     #181825;
+  --text:         #cdd6f4;
+  --text-sub:     #6c7086;
+  --text-muted:   #45475a;
+  --accent:       #7c7fef;
+  --accent-hover: #9399f5;
+  --accent-bg:    #1e1e3e;
+  --accent-text:  #b4befe;
+  --btn-sec-bg:   #181825;
+  --btn-sec-border: #313244;
+  --btn-sec-text: #bac2de;
+  --log-bg:       #11111b;
+  --run-disabled-bg: #313244;
+  --run-disabled-text: #6c7086;
+  --stop-bg:      #2a1a1a;
+  --stop-border:  #3d1a1a;
+  --stop-text:    #f38ba8;
+  --history-bg:   #181825;
+}
+[data-theme="light"] {
+  --bg:           #f0f2f5;
+  --card:         #ffffff;
+  --card-border:  #e8eaf0;
+  --input-bg:     #f7f8fc;
+  --text:         #1a1a2e;
+  --text-sub:     #888;
+  --text-muted:   #bbb;
+  --accent:       #5c6bc0;
+  --accent-hover: #4a58ad;
+  --accent-bg:    #eef0fb;
+  --accent-text:  #3949ab;
+  --btn-sec-bg:   #f0f2f5;
+  --btn-sec-border: #e0e0e0;
+  --btn-sec-text: #555;
+  --log-bg:       #1e1e2e;
+  --run-disabled-bg: #c5cae9;
+  --run-disabled-text: #fff;
+  --stop-bg:      #ffebee;
+  --stop-border:  #ffcdd2;
+  --stop-text:    #c62828;
+  --history-bg:   #f7f8fc;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh;
+  transition: background 0.2s, color 0.2s;
+}
+.container { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+
+.top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+.subtitle { font-size: 13px; color: var(--text-sub); }
+
+.btn-theme {
+  padding: 7px 14px; border-radius: 20px;
+  border: 1px solid var(--card-border); background: var(--card);
+  color: var(--text-sub); font-size: 13px; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+}
+.btn-theme:hover { color: var(--text); border-color: var(--accent); }
+
+.card {
+  background: var(--card); border-radius: 12px; padding: 24px;
+  margin-bottom: 16px; border: 1px solid var(--card-border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+}
+.card-title {
+  font-size: 11px; font-weight: 600; color: var(--text-sub);
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px;
+}
+
+/* 선택 버튼 */
+.selector { display: flex; gap: 10px; }
+.sel-btn {
+  flex: 1; padding: 12px; border-radius: 10px;
+  border: 2px solid var(--card-border); background: var(--input-bg);
+  font-size: 14px; font-weight: 600; color: var(--text-sub);
+  cursor: pointer; transition: all 0.15s; text-align: center;
+}
+.sel-btn:hover:not(.active):not(:disabled) { border-color: var(--accent); color: var(--text); }
+.sel-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.sel-btn.active { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-text); }
+.sel-btn .label { font-size: 15px; display: block; margin-bottom: 3px; }
+.sel-btn .desc { font-size: 11px; font-weight: 400; color: var(--text-muted); }
+.sel-btn.active .desc { color: var(--accent); }
+
+/* 실행 버튼 */
+.run-area { display: flex; gap: 12px; align-items: center; }
+.btn-run {
+  flex: 1; padding: 14px; border-radius: 10px; border: none;
+  background: var(--accent); color: #fff;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-run:hover:not(:disabled) { background: var(--accent-hover); }
+.btn-run:active:not(:disabled) { transform: scale(0.98); }
+.btn-run:disabled { background: var(--run-disabled-bg); color: var(--run-disabled-text); cursor: not-allowed; }
+.btn-stop {
+  padding: 14px 20px; border-radius: 10px; border: 1px solid var(--stop-border);
+  background: var(--stop-bg); color: var(--stop-text);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: background 0.15s; display: none;
+}
+.btn-stop:hover { opacity: 0.85; }
+.btn-stop.visible { display: block; }
+
+/* 상태 */
+.status-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; min-height: 28px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+}
+[data-theme="dark"] .badge-idle    { background: #1e1e2e; color: #6c7086; border: 1px solid #313244; }
+[data-theme="dark"] .badge-running { background: #1e1e3e; color: #b4befe; border: 1px solid #45475a; }
+[data-theme="dark"] .badge-passed  { background: #1a2e1a; color: #a6e3a1; border: 1px solid #1e3e1e; }
+[data-theme="dark"] .badge-failed  { background: #2e1a1a; color: #f38ba8; border: 1px solid #3e1e1e; }
+[data-theme="dark"] .badge-stopped { background: #2e2a1a; color: #f9e2af; border: 1px solid #3e3a1e; }
+[data-theme="light"] .badge-idle    { background: #f5f5f5;  color: #888;    border: 1px solid #e0e0e0; }
+[data-theme="light"] .badge-running { background: #eef0fb;  color: #3949ab; border: 1px solid #c5cae9; }
+[data-theme="light"] .badge-passed  { background: #e8f5e9;  color: #2e7d32; border: 1px solid #c8e6c9; }
+[data-theme="light"] .badge-failed  { background: #ffebee;  color: #c62828; border: 1px solid #ffcdd2; }
+[data-theme="light"] .badge-stopped { background: #fff8e1;  color: #e65100; border: 1px solid #ffe082; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.dot.spinning { animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.run-info { font-size: 12px; color: var(--text-sub); }
+
+/* 로그 */
+.log-wrap {
+  background: var(--log-bg); border-radius: 10px; border: 1px solid var(--card-border);
+  padding: 16px; min-height: 300px; max-height: 480px;
+  overflow-y: auto; font-family: 'Menlo', 'Monaco', monospace;
+  font-size: 12px; line-height: 1.7; color: #cdd6f4;
+}
+.log-wrap .placeholder { color: #45475a; }
+.log-line { white-space: pre-wrap; word-break: break-all; }
+
+.footer-btns { display: flex; gap: 10px; margin-top: 12px; }
+.btn-secondary {
+  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--btn-sec-border);
+  background: var(--btn-sec-bg); color: var(--btn-sec-text);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-secondary:hover { opacity: 0.8; }
+
+/* 히스토리 */
+.history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.history-header .card-title { margin-bottom: 0; }
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+.history-empty { font-size: 13px; color: var(--text-muted); text-align: center; padding: 20px 0; }
+.history-item {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--history-bg); border-radius: 8px; padding: 10px 14px;
+  border: 1px solid var(--card-border); font-size: 12px;
+}
+.history-time { color: var(--text-sub); white-space: nowrap; min-width: 80px; }
+.history-tags { display: flex; gap: 6px; flex: 1; }
+.htag { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+[data-theme="dark"] .htag-prod { background: #1e2a3e; color: #89b4fa; }
+[data-theme="dark"] .htag-qa   { background: #2e1e3e; color: #cba6f7; }
+[data-theme="dark"] .htag-mweb { background: #1e2e1a; color: #a6e3a1; }
+[data-theme="dark"] .htag-smoke      { background: #1e2e2e; color: #94e2d5; }
+[data-theme="dark"] .htag-regression { background: #2e2e1e; color: #f9e2af; }
+[data-theme="light"] .htag-prod { background: #e3f2fd; color: #1565c0; }
+[data-theme="light"] .htag-qa   { background: #f3e5f5; color: #6a1b9a; }
+[data-theme="light"] .htag-mweb { background: #e8f5e9; color: #2e7d32; }
+[data-theme="light"] .htag-smoke      { background: #e0f7fa; color: #00695c; }
+[data-theme="light"] .htag-regression { background: #fff8e1; color: #e65100; }
+.history-result { margin-left: auto; }
+.hbadge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+[data-theme="dark"] .hbadge-passed  { background: #1a2e1a; color: #a6e3a1; }
+[data-theme="dark"] .hbadge-failed  { background: #2e1a1a; color: #f38ba8; }
+[data-theme="dark"] .hbadge-stopped { background: #2e2a1a; color: #f9e2af; }
+[data-theme="light"] .hbadge-passed  { background: #e8f5e9; color: #2e7d32; }
+[data-theme="light"] .hbadge-failed  { background: #ffebee; color: #c62828; }
+[data-theme="light"] .hbadge-stopped { background: #fff8e1; color: #e65100; }
+.history-duration { font-size: 11px; color: var(--text-sub); white-space: nowrap; margin-left: 8px; }
+/* 슬랙 토글 */
+.slack-toggle { margin-top: 14px; }
+.toggle-label { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.toggle-track {
+  width: 36px; height: 20px; border-radius: 20px;
+  background: var(--card-border); position: relative;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.toggle-thumb {
+  width: 14px; height: 14px; border-radius: 50%; background: #fff;
+  position: absolute; top: 3px; left: 3px; transition: left 0.2s;
+}
+#slackToggle { display: none; }
+#slackToggle:checked + .toggle-track { background: #4caf50; }
+#slackToggle:checked + .toggle-track .toggle-thumb { left: 19px; }
+.toggle-text { font-size: 13px; color: var(--text-sub); }
+
+.btn-report-link {
+  margin-left: 8px; padding: 3px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 600; text-decoration: none;
+  background: var(--accent-bg); color: var(--accent);
+  border: 1px solid var(--card-border); white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.btn-report-link:hover { opacity: 0.75; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top-bar">
+    <div>
+      <h1>🧪 Tapas QA Dashboard</h1>
+      <p class="subtitle">환경과 TC 유형을 선택하고 실행하세요.</p>
+    </div>
+    <button class="btn-theme" id="btnTheme">☀️ 라이트 모드</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">플랫폼</div>
+    <div class="selector" id="platformSelector">
+      <button class="sel-btn active" data-val="pcweb">
+        <span class="label">PC 웹</span>
+        <span class="desc">tapas.io · Chromium</span>
+      </button>
+      <button class="sel-btn" data-val="mweb">
+        <span class="label">모바일 웹</span>
+        <span class="desc">m.tapas.io · iPhone 13</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">환경</div>
+    <div class="selector" id="envSelector">
+      <button class="sel-btn active" data-val="prod">
+        <span class="label">Prod</span>
+        <span class="desc">운영 서버</span>
+      </button>
+      <button class="sel-btn" data-val="qa" id="btnQa">
+        <span class="label">QA</span>
+        <span class="desc">내부 QA 서버</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">TC 유형</div>
+    <div class="selector" id="typeSelector">
+      <button class="sel-btn active" data-val="smoke">
+        <span class="label">Smoke</span>
+        <span class="desc">핵심 기능 빠른 검증 · @smoke 태그</span>
+      </button>
+      <button class="sel-btn" data-val="regression">
+        <span class="label">Regression</span>
+        <span class="desc">전체 시나리오 실행</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="run-area">
+      <button class="btn-run" id="btnRun">▶ 실행</button>
+      <button class="btn-stop" id="btnStop">■ 중단</button>
+    </div>
+    <div class="slack-toggle">
+      <label class="toggle-label">
+        <input type="checkbox" id="slackToggle" checked>
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-text">슬랙 알림</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="status-bar">
+      <span class="badge badge-idle" id="badge"><span class="dot"></span> 대기 중</span>
+      <span class="run-info" id="runInfo"></span>
+    </div>
+    <div class="log-wrap" id="log">
+      <span class="placeholder">실행 결과가 여기에 표시됩니다.</span>
+    </div>
+    <div class="footer-btns">
+      <button class="btn-secondary" id="btnReport">📊 리포트 열기</button>
+      <button class="btn-secondary" id="btnClear">🗑 로그 지우기</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="history-header">
+      <div class="card-title">실행 히스토리</div>
+      <button class="btn-secondary" id="btnClearHistory" style="font-size:11px;padding:4px 10px;">전체 삭제</button>
+    </div>
+    <div class="history-list" id="historyList">
+      <div class="history-empty">아직 실행 기록이 없습니다.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedPlatform = 'pcweb';
+let selectedEnv = 'prod';
+let selectedType = 'smoke';
+let runStartTime = null;
+let currentRunId = null;
+
+// 테마
+const html = document.documentElement;
+const btnTheme = document.getElementById('btnTheme');
+const savedTheme = localStorage.getItem('qaDashTheme') || 'dark';
+setTheme(savedTheme);
+
+btnTheme.addEventListener('click', () => {
+  setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+
+function setTheme(theme) {
+  html.dataset.theme = theme;
+  btnTheme.textContent = theme === 'dark' ? '☀️ 라이트 모드' : '🌙 다크 모드';
+  localStorage.setItem('qaDashTheme', theme);
+}
+
+// 플랫폼 선택
+document.getElementById('platformSelector').addEventListener('click', e => {
+  const btn = e.target.closest('.sel-btn');
+  if (!btn) return;
+  document.querySelectorAll('#platformSelector .sel-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedPlatform = btn.dataset.val;
+});
+
+// 환경 선택
+document.getElementById('envSelector').addEventListener('click', e => {
+  const btn = e.target.closest('.sel-btn');
+  if (!btn || btn.disabled) return;
+  document.querySelectorAll('#envSelector .sel-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedEnv = btn.dataset.val;
+});
+
+// TC 유형 선택
+document.getElementById('typeSelector').addEventListener('click', e => {
+  const btn = e.target.closest('.sel-btn');
+  if (!btn) return;
+  document.querySelectorAll('#typeSelector .sel-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedType = btn.dataset.val;
+});
+
+// SSE
+function connectSSE() {
+  const es = new EventSource('/events');
+  es.onmessage = e => {
+    const data = JSON.parse(e.data);
+    if (data.type === 'start')        onStart(data);
+    else if (data.type === 'log')     appendLog(data.text);
+    else if (data.type === 'done')    onDone(data);
+    else if (data.type === 'stopped') onStopped();
+  };
+  es.onerror = () => { es.close(); setTimeout(connectSSE, 2000); };
+}
+connectSSE();
+
+document.getElementById('btnRun').addEventListener('click', async () => {
+  clearLog();
+  const slack = document.getElementById('slackToggle').checked;
+  await fetch('/run', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ platform: selectedPlatform, env: selectedEnv, type: selectedType, slack }),
+  });
+});
+document.getElementById('btnStop').addEventListener('click', () => fetch('/stop', { method: 'POST' }));
+document.getElementById('btnReport').addEventListener('click', () => {
+  window.open('/results/latest', '_blank');
+});
+document.getElementById('btnClear').addEventListener('click', clearLog);
+document.getElementById('btnClearHistory').addEventListener('click', () => {
+  localStorage.removeItem('qaHistory');
+  renderHistory();
+});
+
+function onStart({ platform, env, testType, runId }) {
+  runStartTime = Date.now();
+  currentRunId = runId;
+  setBadge('running', '실행 중');
+  const platformLabel = platform === 'mweb' ? '모바일웹' : 'PC웹';
+  document.getElementById('runInfo').textContent =
+    `${platformLabel} · ${env.toUpperCase()} · ${testType === 'smoke' ? 'Smoke' : 'Regression'}`;
+  document.getElementById('btnRun').disabled = true;
+  document.getElementById('btnStop').classList.add('visible');
+}
+function onDone({ code, runId }) {
+  setBadge(code === 0 ? 'passed' : 'failed', code === 0 ? '통과' : '실패');
+  document.getElementById('btnRun').disabled = false;
+  document.getElementById('btnStop').classList.remove('visible');
+  addHistory(code === 0 ? 'passed' : 'failed', runId);
+}
+function onStopped() {
+  setBadge('stopped', '중단됨');
+  document.getElementById('btnRun').disabled = false;
+  document.getElementById('btnStop').classList.remove('visible');
+  addHistory('stopped', currentRunId);
+}
+function setBadge(type, label) {
+  const badge = document.getElementById('badge');
+  badge.className = `badge badge-${type}`;
+  badge.innerHTML = `<span class="dot${type === 'running' ? ' spinning' : ''}"></span> ${label}`;
+}
+function appendLog(text) {
+  const log = document.getElementById('log');
+  const ph = log.querySelector('.placeholder');
+  if (ph) ph.remove();
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.textContent = text;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+function clearLog() {
+  document.getElementById('log').innerHTML = '<span class="placeholder">실행 결과가 여기에 표시됩니다.</span>';
+  setBadge('idle', '대기 중');
+  document.getElementById('runInfo').textContent = '';
+}
+
+// 히스토리
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem('qaHistory') || '[]'); } catch { return []; }
+}
+function saveHistory(list) { localStorage.setItem('qaHistory', JSON.stringify(list.slice(0, 50))); }
+function addHistory(result, runId) {
+  const duration = runStartTime ? Math.round((Date.now() - runStartTime) / 1000) : null;
+  const list = loadHistory();
+  list.unshift({
+    time: new Date().toLocaleString('ko-KR', { month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: false }),
+    platform: selectedPlatform, env: selectedEnv, type: selectedType, result, duration, runId,
+  });
+  saveHistory(list);
+  renderHistory();
+}
+function renderHistory() {
+  const list = loadHistory();
+  const el = document.getElementById('historyList');
+  if (!list.length) { el.innerHTML = '<div class="history-empty">아직 실행 기록이 없습니다.</div>'; return; }
+  const resultLabel = { passed: '통과', failed: '실패', stopped: '중단' };
+  el.innerHTML = list.map(h => `
+    <div class="history-item">
+      <span class="history-time">${h.time}</span>
+      <div class="history-tags">
+        <span class="htag htag-${h.platform || 'pcweb'}">${h.platform === 'mweb' ? '모바일웹' : 'PC웹'}</span>
+        <span class="htag htag-${h.env}">${h.env.toUpperCase()}</span>
+        <span class="htag htag-${h.type}">${h.type === 'smoke' ? 'Smoke' : 'Regression'}</span>
+      </div>
+      <span class="hbadge hbadge-${h.result}">${resultLabel[h.result]}</span>
+      ${h.duration ? `<span class="history-duration">${fmt(h.duration)}</span>` : ''}
+      ${h.runId ? `<a class="btn-report-link" href="/results/${h.runId}/" target="_blank">📊 리포트</a>` : ''}
+    </div>`).join('');
+}
+function fmt(s) { return s < 60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60}s`; }
+
+renderHistory();
+</script>
+</body>
+</html>

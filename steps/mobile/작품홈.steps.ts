@@ -4,7 +4,7 @@ import { TEST_DATA } from '../../data/testData';
 
 const { Given, When, Then } = createBdd();
 
-const MWEB = 'https://m.tapas.io';
+const MWEB = process.env.TAPAS_MWEB_BASE_URL ?? 'https://m.tapas.io';
 
 // ──── 작품홈 진입 ────
 
