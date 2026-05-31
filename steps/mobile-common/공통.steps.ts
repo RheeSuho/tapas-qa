@@ -2,10 +2,14 @@ import { createBdd } from 'playwright-bdd';
 import { test, expect } from '@playwright/test';
 import { MobileGnbPage } from '../../pages/MobileGnbPage';
 import { TEST_DATA } from '../../data/testData';
+import { dismissBrazePopup } from './utils';
 
 const { Given, When, Then, Before } = createBdd();
 
 const MWEB = process.env.TAPAS_MWEB_BASE_URL ?? 'https://m.tapas.io';
+const IS_QA_ENV =
+  (process.env.TAPAS_BASE_URL || '').includes('qa.') ||
+  (process.env.TAPAS_MWEB_BASE_URL || '').includes('qa-m.');
 
 // ──── Before 훅 ────
 
@@ -13,8 +17,7 @@ Before(async ({ $tags }) => {
   if ($tags.includes('@skip')) {
     test.skip(true, '@skip — 자동화 제외 케이스');
   }
-  const IS_QA = (process.env.TAPAS_BASE_URL || '').includes('qa.');
-  if ($tags.includes('@qa') && !IS_QA) {
+  if ($tags.includes('@qa') && !IS_QA_ENV) {
     test.skip(true, '@qa — QA 환경에서만 실행');
   }
 });
@@ -22,6 +25,7 @@ Before(async ({ $tags }) => {
 Before(async ({ page }) => {
   await page.goto(MWEB, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
   await page.getByRole('button', { name: /accept/i }).click({ timeout: 3000 }).catch(() => {});
+  await dismissBrazePopup(page);
 });
 
 // ──── 인증 상태 ────
@@ -34,6 +38,7 @@ Given('로그인하지 않은 상태다', async ({ page }) => {
   await page.context().clearCookies();
   await page.goto(MWEB, { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: /accept/i }).click({ timeout: 5000 }).catch(() => {});
+  await dismissBrazePopup(page);
 });
 
 Given(/^미로그인 \/ 미인증 상태$/, async ({ page }) => {
@@ -193,9 +198,13 @@ When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({
   if (!(await emailInput.isVisible({ timeout: 2000 }).catch(() => false))) {
     const emailTrigger = page.locator('button, a, p').filter({ hasText: /email/i }).first();
     if ((await emailTrigger.count()) > 0) {
-      await emailTrigger.click().catch(() => {});
-      await emailInput.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+      await emailTrigger.click({ timeout: 3000 }).catch(() => {});
+      await emailInput.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
     }
+  }
+  // 여전히 폼 안 보이면 email signin URL로 직접 이동
+  if (!(await emailInput.isVisible({ timeout: 1000 }).catch(() => false))) {
+    await page.goto(`${MWEB}/account/signin/email`, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
   }
   if (!(await emailInput.isVisible({ timeout: 3000 }).catch(() => false))) {
     test.skip(true, '이메일 폼 노출 안됨');
@@ -224,9 +233,12 @@ When('미가입 이메일과 비밀번호를 입력하고 Login을 클릭한다'
   if (!(await emailInput.isVisible({ timeout: 2000 }).catch(() => false))) {
     const emailTrigger = page.locator('button, a, p').filter({ hasText: /email/i }).first();
     if ((await emailTrigger.count()) > 0) {
-      await emailTrigger.click().catch(() => {});
-      await emailInput.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+      await emailTrigger.click({ timeout: 3000 }).catch(() => {});
+      await emailInput.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
     }
+  }
+  if (!(await emailInput.isVisible({ timeout: 1000 }).catch(() => false))) {
+    await page.goto(`${MWEB}/account/signin/email`, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
   }
   if (!(await emailInput.isVisible({ timeout: 3000 }).catch(() => false))) {
     test.skip(true, '이메일 폼 노출 안됨');

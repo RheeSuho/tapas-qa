@@ -12,6 +12,15 @@ const IS_QA =
   (process.env.TAPAS_MWEB_BASE_URL || '').includes('qa-m.');
 const authFile = path.join(__dirname, IS_QA ? '../.auth/user.qa.json' : '../.auth/user.json');
 
+// QA 환경 로그인 URL:
+// - TAPAS_BASE_URL이 qa. 포함 → 그대로 사용
+// - IS_QA이지만 TAPAS_BASE_URL이 prod → qa-m URL에서 qa URL 유도
+// - prod → TAPAS_BASE_URL 또는 tapas.io 기본값
+const LOGIN_BASE_URL =
+  IS_QA && !(process.env.TAPAS_BASE_URL || '').includes('qa.')
+    ? (process.env.TAPAS_MWEB_BASE_URL || '').replace('qa-m.tapas.io', 'qa.tapas.io')
+    : (process.env.TAPAS_BASE_URL || 'https://tapas.io');
+
 setup('이메일 계정으로 로그인하고 세션 저장', async ({ page }) => {
   const authDir = path.dirname(authFile);
   if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
@@ -43,8 +52,8 @@ setup('이메일 계정으로 로그인하고 세션 저장', async ({ page }) =
   }
   console.log(`[setup] 로그인 시도 — ${email}`);
 
-  // 1. 홈으로 이동
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  // 1. 홈으로 이동 (QA는 절대 URL로 직접 이동 — setup project baseURL은 prod 고정)
+  await page.goto(LOGIN_BASE_URL, { waitUntil: 'domcontentloaded' });
   console.log(`[setup] 현재 URL: ${page.url()}`);
 
   // 2. 쿠키 배너가 있으면 Accept (최대 5초 대기)
@@ -60,7 +69,7 @@ setup('이메일 계정으로 로그인하고 세션 저장', async ({ page }) =
   if ((await loginLink.count()) > 0) {
     await loginLink.first().click();
   } else {
-    await page.goto('/account/signin', { waitUntil: 'domcontentloaded' });
+    await page.goto(`${LOGIN_BASE_URL}/account/signin`, { waitUntil: 'domcontentloaded' });
   }
   console.log(`[setup] signin 이동 후 URL: ${page.url()}`);
 

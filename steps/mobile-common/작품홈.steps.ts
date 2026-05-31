@@ -165,14 +165,14 @@ When(/^다음 회차 \(기다무\) 클릭$/, async ({ page }) => {
 
 When('회차 영역 스크롤 > 기다무 회차 클릭', async ({ page }) => {
   await ensureOnSeries(page);
-  const wuf = page.locator('a.episode-item[data-is-wuf="true"]').first();
-  if ((await wuf.count()) > 0) {
-    await wuf.scrollIntoViewIfNeeded().catch(() => {});
-    await wuf.click();
-    await page.waitForTimeout(1000);
-    return;
-  }
-  await expect(page.locator('body')).toBeVisible();
+  // JS evaluate 사용 — Braze popup iframe이 pointer events를 막을 때 우회
+  const clicked = await page.evaluate(() => {
+    const wuf = document.querySelector('a.episode-item[data-is-wuf="true"]') as HTMLElement | null;
+    if (wuf) { wuf.scrollIntoView(); wuf.click(); return true; }
+    return false;
+  });
+  if (clicked) await page.waitForTimeout(1000);
+  else await expect(page.locator('body')).toBeVisible();
 });
 
 When('회차 영역 스크롤 > 유료 회차 클릭', async ({ page }) => {
