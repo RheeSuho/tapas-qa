@@ -134,17 +134,34 @@ When('Login 버튼을 클릭한다', async ({ page }) => {
 
 When(/^GNB > (.+) 클릭$/, async ({ page }, label: string) => {
   const labelLower = label.toLowerCase();
+
+  async function clickNavLink(selector: string, fallbackUrl: string) {
+    const el = page.locator(selector).first();
+    if ((await el.count()) > 0) {
+      await el.click();
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
+      return;
+    }
+    await page.goto(fallbackUrl, { waitUntil: 'domcontentloaded' });
+  }
+
   if (labelLower === 'comics' || labelLower === 'comic') {
-    await page.goto(`${MWEB}/menu/2/subtab/7`, { waitUntil: 'domcontentloaded' });
+    await clickNavLink('a[href^="/menu/2"]', `${MWEB}/menu/2/subtab/7`);
   } else if (labelLower === 'novels' || labelLower === 'novel') {
-    await page.goto(`${MWEB}/menu/3/subtab/16`, { waitUntil: 'domcontentloaded' });
+    await clickNavLink('a[href^="/menu/3"][href*="/subtab/"]', `${MWEB}/menu/3/subtab/16`);
   } else if (labelLower === 'community') {
-    await page.goto(`${MWEB}/menu/4/subtab/30`, { waitUntil: 'domcontentloaded' });
+    await clickNavLink('a[href^="/menu/4"]', `${MWEB}/menu/4/subtab/30`);
   } else if (labelLower === 'mature') {
-    await page.goto(`${MWEB}/menu/5/subtab/45`, { waitUntil: 'domcontentloaded' });
+    await clickNavLink('a[href^="/menu/5"]', `${MWEB}/menu/5/subtab/45`);
   } else if (label === '라이브러리 메뉴' || label === '라이브러리') {
-    await page.goto(`${MWEB}/reading-list`, { waitUntil: 'domcontentloaded' });
+    await clickNavLink('a[href*="/reading-list"]', `${MWEB}/reading-list`);
   } else if (labelLower === 'more') {
+    const moreBtn = page.locator('button').filter({ hasText: /^more$/i }).first();
+    if ((await moreBtn.count()) > 0) {
+      await moreBtn.click();
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
+      return;
+    }
     await page.goto(`${MWEB}/more`, { waitUntil: 'domcontentloaded' }).catch(async () => {
       await page.goto(MWEB, { waitUntil: 'domcontentloaded' });
     });
@@ -152,7 +169,7 @@ When(/^GNB > (.+) 클릭$/, async ({ page }, label: string) => {
     const profileBtn = page.locator('button').filter({ has: page.locator('img[alt="profile image"]') }).first();
     if ((await profileBtn.count()) > 0) await profileBtn.click();
   } else if (labelLower === 'home') {
-    await page.goto(`${MWEB}/menu/1/subtab/1`, { waitUntil: 'domcontentloaded' });
+    await clickNavLink('a[href^="/menu/1"]', `${MWEB}/menu/1/subtab/1`);
   } else if (label === 'Home > 임의의 작품') {
     await page.goto(MWEB, { waitUntil: 'domcontentloaded' });
     const seriesLink = page.locator('a[href*="/series/"]').first();
@@ -165,6 +182,12 @@ When(/^GNB > (.+) 클릭$/, async ({ page }, label: string) => {
 
 
 When('GNB > Home > Novels > Daily 서브탭 진입', async ({ page }) => {
+  const link = page.locator('a[href^="/menu/3"][href*="/subtab/"]').first();
+  if ((await link.count()) > 0) {
+    await link.click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    return;
+  }
   await page.goto(`${MWEB}/menu/3/subtab/16`, { waitUntil: 'domcontentloaded' });
 });
 
@@ -173,6 +196,12 @@ When('GNB > Home > Novels > Daily 서브탭 진입', async ({ page }) => {
 // 아래 When 핸들러에서 label === 'Home > 임의의 작품' 분기로 처리됨
 
 When('GNB 보관함 아이콘 클릭 > Recent 클릭', async ({ page }) => {
+  const libLink = page.locator('a[href*="/reading-list"]').first();
+  if ((await libLink.count()) > 0) {
+    await libLink.click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    return;
+  }
   await page.goto(`${MWEB}/reading-list?tab=recent`, { waitUntil: 'domcontentloaded' });
 });
 
@@ -219,7 +248,7 @@ When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({
   }
   const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
   if ((await loginBtn.count()) > 0) await loginBtn.last().click();
-  await page.waitForURL(url => !url.includes('/signin'), { timeout: 20000 }).catch(() => {});
+  await page.waitForURL(url => !url.toString().includes('/signin'), { timeout: 20000 }).catch(() => {});
 });
 
 When('미가입 이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
