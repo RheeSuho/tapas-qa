@@ -83,7 +83,10 @@ function walk(suites) {
       for (const test of spec.tests || []) {
         const lastResult = test.results?.[test.results.length - 1];
         const match = spec.title.match(/\[TPS-[\w-]+\]/i);
-        const title = match ? `${match[0]} ${spec.title.replace(match[0], '').trim()}` : spec.title;
+        const tpsLabel = match
+          ? (PLATFORM === 'mweb' ? match[0].replace(']', '(M)]') : match[0])
+          : null;
+        const title = tpsLabel ? `${tpsLabel} ${spec.title.replace(match[0], '').trim()}` : spec.title;
 
         if (lastResult?.status === 'failed' || lastResult?.status === 'timedOut') {
           const steps = extractBddSteps(lastResult.steps || []);
@@ -158,7 +161,7 @@ if (failedTests.length > 0) {
   // 실패 항목별 Jira 등록 버튼 (최대 5개)
   const jiraButtons = failedTests.slice(0, 5).map(t => ({
     type: 'button',
-    text: { type: 'plain_text', text: `🐛 ${t.title.match(/\[TPS-[\w-]+\]/i)?.[0] ?? t.title.slice(0, 20)}` },
+    text: { type: 'plain_text', text: `🐛 ${t.title.match(/\[TPS-[^\]]+\]/i)?.[0] ?? t.title.slice(0, 20)}` },
     url: makeJiraUrl(t, REPORT_URL),
     style: 'danger',
   }));

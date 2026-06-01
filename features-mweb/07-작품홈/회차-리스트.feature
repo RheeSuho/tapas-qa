@@ -1,7 +1,7 @@
 Feature: 작품홈 회차 리스트 (Mweb)
 
   @TC-201M @smoke
-  Scenario: [TPS-201M] 모바일 유료 회차 클릭 — 잉크샵 페이지로 이동
+  Scenario: [TPS-201] 모바일 유료 회차 클릭 — 잉크샵 페이지로 이동
     # Pre: 유료 회차, 보유 잉크 < 회차 금액
     Given 모바일 유료 작품홈에 진입한다
     When 유료 회차를 클릭한다
