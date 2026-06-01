@@ -137,7 +137,7 @@ http.createServer((req, res) => {
         // 슬랙 알림
         if (slack) {
           const platformLabel = platform === 'mweb' ? 'MWeb' : 'PC Web';
-          const suiteName = `${platformLabel} ${env.toUpperCase()} ${type === 'smoke' ? 'Smoke' : 'Regression'}`;
+          const suiteName = `${platformLabel} / ${env.toUpperCase()} / ${type === 'smoke' ? 'Smoke' : 'Regression'}`;
           const reportUrl = `http://localhost:${PORT}/results/${runId}/`;
           console.log(`[slack] 전송 중... (${suiteName})`);
           const notifier = spawn('node', ['scripts/notify-slack.js', suiteName, reportUrl, platform, env], { cwd: ROOT });
