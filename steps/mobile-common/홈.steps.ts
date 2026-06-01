@@ -17,26 +17,36 @@ const SUBTAB: Record<string, string> = {
 
 // ──── 서브탭 진입 ────
 
+async function clickSubtab(page: any, href: string) {
+  const link = page.locator(`a[href="${href}"]`).first();
+  if ((await link.count()) > 0) {
+    await link.click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    return;
+  }
+  await page.goto(`${MWEB}${href}`, { waitUntil: 'domcontentloaded' });
+}
+
 When('홈 > Spotlight 서브탭을 클릭한다', async ({ page }) => {
-  await page.goto(`${MWEB}${SUBTAB.spotlight}`, { waitUntil: 'domcontentloaded' });
+  await clickSubtab(page, SUBTAB.spotlight);
 });
 When('홈 > Popular 서브탭을 클릭한다', async ({ page }) => {
-  await page.goto(`${MWEB}${SUBTAB.popular}`, { waitUntil: 'domcontentloaded' });
+  await clickSubtab(page, SUBTAB.popular);
 });
 When('홈 > Daily 서브탭을 클릭한다', async ({ page }) => {
-  await page.goto(`${MWEB}${SUBTAB.daily}`, { waitUntil: 'domcontentloaded' });
+  await clickSubtab(page, SUBTAB.daily);
 });
 When('홈 > New 서브탭을 클릭한다', async ({ page }) => {
-  await page.goto(`${MWEB}${SUBTAB.new}`, { waitUntil: 'domcontentloaded' });
+  await clickSubtab(page, SUBTAB.new);
 });
 When('홈 > Completed 서브탭을 클릭한다', async ({ page }) => {
-  await page.goto(`${MWEB}${SUBTAB.completed}`, { waitUntil: 'domcontentloaded' });
+  await clickSubtab(page, SUBTAB.completed);
 });
 When('홈 > WUF 서브탭을 클릭한다', async ({ page }) => {
-  await page.goto(`${MWEB}${SUBTAB.wuf}`, { waitUntil: 'domcontentloaded' });
+  await clickSubtab(page, SUBTAB.wuf);
 });
 When('홈 > Free Access 서브탭을 클릭한다', async ({ page }) => {
-  await page.goto(`${MWEB}${SUBTAB['free access']}`, { waitUntil: 'domcontentloaded' });
+  await clickSubtab(page, SUBTAB['free access']);
 });
 When('Spotlight 서브탭에 접속한다', async ({ page }) => {
   await page.goto(`${MWEB}${SUBTAB.spotlight}`, { waitUntil: 'domcontentloaded' });

@@ -8,9 +8,13 @@ const MWEB = process.env.TAPAS_MWEB_BASE_URL ?? 'https://m.tapas.io';
 // ──── 카테고리 메인 진입 ────
 
 When('대메뉴 > Comics 카테고리 클릭', async ({ page }) => {
+  const link = page.locator('a[href^="/menu/2"]').first();
+  if ((await link.count()) > 0) { await link.click(); await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
   await page.goto(`${MWEB}/menu/2/subtab/7`, { waitUntil: 'domcontentloaded' });
 });
 When('대메뉴 > Novels 카테고리 클릭', async ({ page }) => {
+  const link = page.locator('a[href^="/menu/3"][href*="/subtab/"]').first();
+  if ((await link.count()) > 0) { await link.click(); await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
   await page.goto(`${MWEB}/menu/3/subtab/16`, { waitUntil: 'domcontentloaded' });
 });
 
