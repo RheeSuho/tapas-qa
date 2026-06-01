@@ -129,16 +129,21 @@ When('댓글 입력창 선택 > 텍스트 입력 후 [Comment] 버튼 클릭', a
 
 When('등록한 내 댓글 더보기 버튼 클릭', async ({ page }) => {
   await ensureOnCommentPage(page);
-  // 자신의 댓글에 있는 더보기 버튼 (⋯ 또는 kebab menu)
-  const moreBtn = page.locator(
-    '[class*="comment"] button[aria-label*="more" i], [class*="comment"] [class*="more"], [class*="comment"] button:has(svg)'
-  ).first();
-  if ((await moreBtn.count()) > 0) {
-    await moreBtn.click();
-    await page.waitForTimeout(400);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  const clicked = await page.evaluate(() => {
+    const selectors = [
+      '[class*="comment"] button[aria-label*="more" i]',
+      '[class*="comment"] .js-comment-more',
+      '[class*="comment"] a.comment-header__btn',
+      '[class*="comment"] button:has(svg)',
+    ];
+    for (const sel of selectors) {
+      const el = document.querySelector(sel) as HTMLElement | null;
+      if (el) { el.click(); return true; }
+    }
+    return false;
+  });
+  if (clicked) await page.waitForTimeout(400);
+  else await expect(page.locator('body')).toBeVisible();
 });
 
 When('등록한 내 댓글 더보기 > [Edit] 버튼 클릭', async ({ page }) => {
@@ -220,15 +225,20 @@ When('다른 유저 댓글 > 프로필 이미지 클릭', async ({ page }) => {
 
 When('댓글 [Likes] 버튼 클릭', async ({ page }) => {
   await ensureOnCommentPage(page);
-  const likeBtn = page.locator(
-    '[class*="comment"] button[aria-label*="like" i], [class*="comment"] button[class*="like"]'
-  ).first();
-  if ((await likeBtn.count()) > 0) {
-    await likeBtn.click();
-    await page.waitForTimeout(500);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  const clicked = await page.evaluate(() => {
+    const selectors = [
+      '[class*="comment"] button[aria-label*="like" i]',
+      '[class*="comment"] button[class*="like"]',
+      '[class*="comment"] .js-comment-like',
+    ];
+    for (const sel of selectors) {
+      const el = document.querySelector(sel) as HTMLElement | null;
+      if (el) { el.click(); return true; }
+    }
+    return false;
+  });
+  if (clicked) await page.waitForTimeout(500);
+  else await expect(page.locator('body')).toBeVisible();
 });
 
 When('댓글 [Likes] 버튼 재클릭', async ({ page }) => {

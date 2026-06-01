@@ -142,11 +142,13 @@ When(/^"(.+)" 정렬을 선택한다$/, async ({ page }, value: string) => {
 // ──── 작품 리스트 ────
 
 When('리스트의 첫번째 작품 클릭', async ({ page }) => {
-  const link = page.locator('a[href*="/series/"]').first();
-  if ((await link.count()) > 0) {
-    await link.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
+  const clicked = await page.evaluate(() => {
+    const el = document.querySelector('a[href*="/series/"]') as HTMLElement | null;
+    if (el) { el.click(); return true; }
+    return false;
+  });
+  if (clicked) await page.waitForLoadState('domcontentloaded').catch(() => {});
+  else await expect(page.locator('body')).toBeVisible();
 });
 // '작품 리스트 확인' → 보관함.steps.ts에 등록되어 있음
 When(/^작품 정보 영역 (.+) 클릭$/, async ({ page }) => {

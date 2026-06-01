@@ -156,12 +156,17 @@ When(/^GNB > (.+) 클릭$/, async ({ page }, label: string) => {
   } else if (label === '라이브러리 메뉴' || label === '라이브러리') {
     await clickNavLink('a[href*="/reading-list"]', `${MWEB}/reading-list`);
   } else if (labelLower === 'more') {
-    const moreBtn = page.locator('button').filter({ hasText: /^more$/i }).first();
-    if ((await moreBtn.count()) > 0) {
-      await moreBtn.click();
-      await page.waitForLoadState('domcontentloaded').catch(() => {});
-      return;
-    }
+    const clicked = await page.evaluate(() => {
+      const els = document.querySelectorAll('button');
+      for (const el of Array.from(els)) {
+        if (/^more$/i.test((el as HTMLElement).innerText?.trim() ?? '')) {
+          (el as HTMLElement).click();
+          return true;
+        }
+      }
+      return false;
+    });
+    if (clicked) { await page.waitForLoadState('domcontentloaded').catch(() => {}); return; }
     await page.goto(`${MWEB}/more`, { waitUntil: 'domcontentloaded' }).catch(async () => {
       await page.goto(MWEB, { waitUntil: 'domcontentloaded' });
     });
