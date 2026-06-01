@@ -392,3 +392,8 @@ When('첫 번째 작품을 클릭한다', async ({ page }) => {
     await page.waitForLoadState('domcontentloaded').catch(() => {});
   }
 });
+
+When('작품 썸네일을 클릭한다', async ({ page }) => {
+  // MWeb은 카드 클릭 시 바로 시리즈 페이지 진입 — side-section 썸네일 버튼 없음
+  await expect(page.locator('body')).toBeVisible();
+});

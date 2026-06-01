@@ -664,6 +664,19 @@ When('Comics Popular 서브탭에 접속한다', async ({ page }) => {
   }
 });
 
+When('작품 썸네일을 클릭한다', async ({ page }) => {
+  // 이미 /info 페이지면 스킵 (Spotlight 등 직접 진입 케이스)
+  if (page.url().includes('/info')) return;
+  // side-section 썸네일 버튼 클릭 → /series/xxx/info 진입
+  const thumbBtn = page.locator('a.thumb.js-series-btn').first();
+  if ((await thumbBtn.count()) > 0) {
+    await thumbBtn.click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    return;
+  }
+  await expect(page.locator('body')).toBeVisible();
+});
+
 When('첫 번째 작품을 클릭한다', async ({ page }) => {
   // series 링크가 있는 첫 번째 작품 클릭
   const seriesLink = page.locator('a[href*="/series/"]').filter({ has: page.locator('img') });
@@ -680,14 +693,12 @@ When('첫 번째 작품을 클릭한다', async ({ page }) => {
 });
 
 Then('작품홈으로 진입된다', async ({ page }) => {
-  // 시리즈 페이지 또는 뷰어로 진입될 수 있음 (Popular 클릭 시 뷰어 직접 진입 케이스 존재)
+  // 진짜 작품홈 = /series/xxx/info URL + 회차 목록
+  await expect(page).toHaveURL(/\/series\/.+\/info/, { timeout: 8000 });
   const epItem = page.locator('a.episode-item').first();
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const hasEp = await epItem.isVisible({ timeout: 5000 }).catch(() => false);
-  if (hasEp) { await expect(epItem).toBeVisible(); return; }
-  const hasLike = await likeBtn.isVisible({ timeout: 5000 }).catch(() => false);
-  if (hasLike) { await expect(likeBtn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  if (await epItem.isVisible({ timeout: 5000 }).catch(() => false)) {
+    await expect(epItem).toBeVisible();
+  }
 });
 
 Then('작품홈 페이지가 노출된다', async ({ page }) => {
