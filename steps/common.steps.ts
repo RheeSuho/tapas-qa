@@ -21,6 +21,12 @@ Before(async ({ $tags }) => {
 // 모든 시나리오 시작 전 홈으로 이동 (Given 없는 시나리오 포함)
 Before(async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
+  // QA 환경에서 Braze in-app popup이 클릭을 차단할 수 있음
+  const root = page.locator('[class*="ab-iam-root"]').first();
+  if (await root.isVisible({ timeout: 1500 }).catch(() => false)) {
+    await page.keyboard.press('Escape').catch(() => {});
+    await page.waitForTimeout(300);
+  }
 });
 
 // ──── 서비스 접속 ────
@@ -459,41 +465,35 @@ When('미가입 이메일과 비밀번호를 입력하고 Login을 클릭한다'
     await pwInput.click();
     await pwInput.pressSequentially('WrongPassword123!', { delay: 30 });
   }
-  const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
-  if ((await loginBtn.count()) > 0) await loginBtn.last().click();
+  await page.evaluate(() => {
+    const btns = Array.from(document.querySelectorAll('button'));
+    const loginBtn = btns.find(b => /^log ?in$/i.test(b.textContent?.trim() ?? ''));
+    if (loginBtn) (loginBtn as HTMLElement).click();
+  });
 });
 
 When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
-  const email = process.env.TAPAS_EMAIL ?? '';
-  const password = process.env.TAPAS_PASSWORD ?? '';
-  // 쿠키 배너가 이메일 폼을 가릴 수 있으므로 waitFor 전에 먼저 처리
+  const IS_QA = (process.env.TAPAS_BASE_URL || '').includes('qa.');
+  const email = IS_QA ? (process.env.TAPAS_QA_EMAIL ?? process.env.TAPAS_EMAIL ?? '') : (process.env.TAPAS_EMAIL ?? '');
+  const password = IS_QA ? (process.env.TAPAS_QA_PASSWORD ?? process.env.TAPAS_PASSWORD ?? '') : (process.env.TAPAS_PASSWORD ?? '');
   await page.getByRole('button', { name: /accept/i }).click({ timeout: 3000 }).catch(() => {});
-  // mobile-safari: 폼이 숨겨진 경우 "Continue with email" 버튼 또는 단락 클릭 후 표시
-  await page.getByPlaceholder(/email/i).waitFor({ state: 'visible', timeout: 8000 }).catch(async () => {
-    const emailTrigger = page.locator('button, a, p').filter({ hasText: /email/i }).first();
-    if ((await emailTrigger.count()) > 0) {
-      await emailTrigger.click().catch(() => {});
-      await page.getByPlaceholder(/email/i).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
-    }
-  });
   const emailInput = page.getByPlaceholder(/email/i).first();
   const pwInput = page.getByPlaceholder(/password/i).first();
-  // email input이 여전히 hidden이면 건너뜀 (retry가 처리)
-  if (!(await emailInput.isVisible({ timeout: 3000 }).catch(() => false))) return;
-  // fill() 은 React input 이벤트를 트리거하지 않아 Login 버튼이 disabled 유지됨
-  // pressSequentially() 로 실제 타이핑 이벤트 발생시켜 버튼 활성화
-  if ((await emailInput.count()) > 0) {
-    await emailInput.click();
-    await emailInput.pressSequentially(email, { delay: 30 });
-  }
-  if ((await pwInput.count()) > 0) {
+  if (!(await emailInput.isVisible({ timeout: 8000 }).catch(() => false))) return;
+  // pressSequentially: React onChange 이벤트 발생 → 버튼 활성화
+  await emailInput.click();
+  await emailInput.pressSequentially(email, { delay: 30 });
+  if (await pwInput.isVisible({ timeout: 3000 }).catch(() => false)) {
     await pwInput.click();
     await pwInput.pressSequentially(password, { delay: 30 });
   }
+  // 버튼 클릭 전 Braze popup DOM 완전 제거 (pointer-events 차단 방지)
+  await page.evaluate(() => {
+    document.querySelectorAll('[class*="ab-iam-root"], [class*="ab-in-app"]').forEach(el => el.remove());
+  });
   const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
-  if ((await loginBtn.count()) > 0) await loginBtn.last().click();
-  // signin URL을 벗어날 때까지 대기 (auth.setup.ts 동일 패턴)
-  await page.waitForURL(url => !url.includes('/signin'), { timeout: 20000 }).catch(() => {});
+  if ((await loginBtn.count()) > 0) await loginBtn.last().click({ timeout: 10000 }).catch(() => {});
+  await page.waitForURL(url => !url.toString().includes('/signin'), { timeout: 20000 }).catch(() => {});
 });
 
 // 로그인 결과 검증
