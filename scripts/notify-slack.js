@@ -34,7 +34,7 @@ function extractBddSteps(steps) {
 }
 
 function makeJiraUrl(test, runUrl) {
-  let body = `확인 환경: https://tapas.io (PC Web)\nCI Run: ${runUrl || 'N/A'}\n\n상세내용:\n자동화 테스트 실패 — ${test.title}`;
+  let body = `확인 환경: ${ENV_URL}\nCI Run: ${runUrl || 'N/A'}\n\n상세내용:\n자동화 테스트 실패 — ${test.title}`;
   if (test.steps.procedure.length) body += '\n\n발생 경로:\n' + test.steps.procedure.join('\n');
   if (test.steps.expected.length)  body += '\n\n기대 결과:\n' + test.steps.expected.join('\n');
   return `https://${JIRA_DOMAIN}/secure/CreateIssueDetails!init.jspa` +
@@ -45,6 +45,12 @@ const RESULTS_FILE = path.join(__dirname, '../test-results/results.json');
 const WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 const SUITE_NAME  = process.argv[2] || 'BDD';
 const REPORT_URL  = process.argv[3] || null;
+const PLATFORM    = process.argv[4] || 'pcweb';  // 'pcweb' | 'mweb'
+const ENV         = process.argv[5] || 'prod';   // 'prod' | 'qa'
+
+const ENV_URL = PLATFORM === 'mweb'
+  ? (ENV === 'qa' ? 'https://qa-m.tapas.io (MWeb QA)' : 'https://m.tapas.io (MWeb Prod)')
+  : (ENV === 'qa' ? 'https://qa.tapas.io (PC Web QA)' : 'https://tapas.io (PC Web Prod)');
 
 if (!WEBHOOK_URL) {
   console.error('SLACK_WEBHOOK_URL이 .env에 없습니다.');
