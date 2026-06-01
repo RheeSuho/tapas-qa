@@ -320,8 +320,10 @@ Then('작품홈 페이지가 노출된다', async ({ page }) => {
 Then('작품홈으로 진입된다', async ({ page }) => {
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   const url = page.url();
-  if (/\/series\//i.test(url)) {
-    await expect(page).toHaveURL(/\/series\//i);
+  if (/\/series\/.+\/info/i.test(url)) {
+    await expect(page).toHaveURL(/\/series\/.+\/info/i);
+    const epItem = page.locator('a.episode-item').first();
+    if (await epItem.isVisible({ timeout: 3000 }).catch(() => false)) await expect(epItem).toBeVisible();
   } else {
     await expect(page.locator('body')).toBeVisible();
   }

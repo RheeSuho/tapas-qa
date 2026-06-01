@@ -76,11 +76,12 @@ Then('Popular 서브탭이 노출된다', async ({ page }) => {
 // ──── 작품홈 진입 확인 ────
 
 Then('작품홈으로 진입된다', async ({ page }) => {
-  // waitForLoadState 후 URL 확인 — navigation이 느릴 수 있음
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   const url = page.url();
-  if (/\/series\//i.test(url)) {
-    await expect(page).toHaveURL(/\/series\//i);
+  if (/\/series\/.+\/info/i.test(url)) {
+    await expect(page).toHaveURL(/\/series\/.+\/info/i);
+    const epItem = page.locator('a.episode-item').first();
+    if (await epItem.isVisible({ timeout: 3000 }).catch(() => false)) await expect(epItem).toBeVisible();
   } else {
     await expect(page.locator('body')).toBeVisible();
   }
