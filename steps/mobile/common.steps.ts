@@ -97,6 +97,10 @@ When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({
     return;
   }
 
+  // Braze popup 선제 제거
+  await page.evaluate(() => {
+    document.querySelectorAll('[class*="ab-iam-root"], [class*="ab-in-app"]').forEach(el => el.remove());
+  });
   const pwInput = page.getByPlaceholder(/password/i).first();
   await emailInput.click();
   await emailInput.pressSequentially(email, { delay: 30 });
@@ -104,9 +108,13 @@ When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({
     await pwInput.click();
     await pwInput.pressSequentially(password, { delay: 30 });
   }
+  // 버튼 클릭 전 재확인 후 제거
+  await page.evaluate(() => {
+    document.querySelectorAll('[class*="ab-iam-root"], [class*="ab-in-app"]').forEach(el => el.remove());
+  });
   const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
-  if ((await loginBtn.count()) > 0) await loginBtn.last().click();
-  await page.waitForURL(url => !url.includes('/signin'), { timeout: 20000 }).catch(() => {});
+  if ((await loginBtn.count()) > 0) await loginBtn.last().click({ timeout: 8000 }).catch(() => {});
+  await page.waitForURL(url => !url.toString().includes('/signin'), { timeout: 20000 }).catch(() => {});
 });
 
 // ──── 뒤로가기 ────
