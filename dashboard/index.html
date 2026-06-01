@@ -30,6 +30,7 @@
   --stop-border:  #3d1a1a;
   --stop-text:    #f38ba8;
   --history-bg:   #181825;
+  --left-w:       300px;
 }
 [data-theme="light"] {
   --bg:           #f0f2f5;
@@ -57,73 +58,182 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg); color: var(--text); min-height: 100vh;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh;
   transition: background 0.2s, color 0.2s;
 }
-.container { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
 
-.top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
-h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
-.subtitle { font-size: 13px; color: var(--text-sub); }
+/* ── 전체 레이아웃: 좌/우 2단 ── */
+.layout-wrap {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  background: var(--bg);
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── 왼쪽: 컨트롤 패널 ── */
+.left-panel {
+  width: var(--left-w);
+  min-width: var(--left-w);
+  background: var(--card);
+  border-right: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.left-header {
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+h1 { font-size: 15px; font-weight: 700; }
+.subtitle { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
 
 .btn-theme {
-  padding: 7px 14px; border-radius: 20px;
-  border: 1px solid var(--card-border); background: var(--card);
-  color: var(--text-sub); font-size: 13px; cursor: pointer;
-  transition: all 0.15s; white-space: nowrap;
+  padding: 5px 10px; border-radius: 16px;
+  border: 1px solid var(--card-border); background: var(--input-bg);
+  color: var(--text-sub); font-size: 11px; cursor: pointer;
+  white-space: nowrap; flex-shrink: 0;
+  transition: all 0.15s;
 }
 .btn-theme:hover { color: var(--text); border-color: var(--accent); }
 
-.card {
-  background: var(--card); border-radius: 12px; padding: 24px;
-  margin-bottom: 16px; border: 1px solid var(--card-border);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-}
-.card-title {
-  font-size: 11px; font-weight: 600; color: var(--text-sub);
-  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px;
+.left-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+
+.section-title {
+  font-size: 12px; font-weight: 700; color: var(--text);
+  letter-spacing: 0.02em; margin-bottom: 8px;
 }
 
-/* 선택 버튼 */
-.selector { display: flex; gap: 10px; }
+/* 세로 sel-btn (왼쪽 패널) */
+.selector { display: flex; flex-direction: column; gap: 6px; }
 .sel-btn {
-  flex: 1; padding: 12px; border-radius: 10px;
+  width: 100%; padding: 11px 14px; border-radius: 8px;
   border: 2px solid var(--card-border); background: var(--input-bg);
   font-size: 14px; font-weight: 600; color: var(--text-sub);
-  cursor: pointer; transition: all 0.15s; text-align: center;
+  cursor: pointer; transition: all 0.15s; text-align: left;
+  display: flex; align-items: center; gap: 10px;
 }
 .sel-btn:hover:not(.active):not(:disabled) { border-color: var(--accent); color: var(--text); }
 .sel-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .sel-btn.active { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-text); }
-.sel-btn .label { font-size: 15px; display: block; margin-bottom: 3px; }
-.sel-btn .desc { font-size: 11px; font-weight: 400; color: var(--text-muted); }
-.sel-btn.active .desc { color: var(--accent); }
+.sel-btn .label { font-size: 14px; }
+.sel-btn .desc { font-size: 11px; font-weight: 400; color: var(--text-muted); margin-left: auto; }
+.sel-btn.active .desc { color: var(--accent); opacity: 0.8; }
 
 /* 실행 버튼 */
-.run-area { display: flex; gap: 12px; align-items: center; }
 .btn-run {
-  flex: 1; padding: 14px; border-radius: 10px; border: none;
+  width: 100%; padding: 12px; border-radius: 8px; border: none;
   background: var(--accent); color: #fff;
-  font-size: 15px; font-weight: 700; cursor: pointer;
+  font-size: 14px; font-weight: 700; cursor: pointer;
   transition: background 0.15s, transform 0.1s;
 }
 .btn-run:hover:not(:disabled) { background: var(--accent-hover); }
 .btn-run:active:not(:disabled) { transform: scale(0.98); }
 .btn-run:disabled { background: var(--run-disabled-bg); color: var(--run-disabled-text); cursor: not-allowed; }
 .btn-stop {
-  padding: 14px 20px; border-radius: 10px; border: 1px solid var(--stop-border);
+  width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--stop-border);
   background: var(--stop-bg); color: var(--stop-text);
-  font-size: 14px; font-weight: 700; cursor: pointer;
-  transition: background 0.15s; display: none;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: background 0.15s; display: none; margin-top: 6px;
 }
 .btn-stop:hover { opacity: 0.85; }
 .btn-stop.visible { display: block; }
 
-/* 상태 */
-.status-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; min-height: 28px; }
+/* 슬랙 토글 */
+.slack-toggle { padding-top: 2px; }
+.toggle-label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.toggle-track {
+  width: 32px; height: 18px; border-radius: 18px;
+  background: var(--card-border); position: relative;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.toggle-thumb {
+  width: 12px; height: 12px; border-radius: 50%; background: #fff;
+  position: absolute; top: 3px; left: 3px; transition: left 0.2s;
+}
+#slackToggle { display: none; }
+#slackToggle:checked + .toggle-track { background: #4caf50; }
+#slackToggle:checked + .toggle-track .toggle-thumb { left: 17px; }
+.toggle-text { font-size: 12px; color: var(--text-sub); }
+
+/* 히스토리 (왼쪽 하단) */
+.history-section { border-top: 1px solid var(--card-border); padding: 14px 16px; flex-shrink: 0; }
+.history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.history-list { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+.history-empty { font-size: 12px; color: var(--text-muted); text-align: center; padding: 12px 0; }
+.history-item {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--history-bg); border-radius: 6px; padding: 8px 10px;
+  border: 1px solid var(--card-border); font-size: 11px;
+}
+.history-time { color: var(--text-sub); white-space: nowrap; min-width: 60px; font-size: 10px; }
+.history-tags { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+.htag { padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+[data-theme="dark"] .htag-prod { background: #1e2a3e; color: #89b4fa; }
+[data-theme="dark"] .htag-qa   { background: #2e1e3e; color: #cba6f7; }
+[data-theme="dark"] .htag-mweb { background: #1e2e1a; color: #a6e3a1; }
+[data-theme="dark"] .htag-smoke      { background: #1e2e2e; color: #94e2d5; }
+[data-theme="dark"] .htag-regression { background: #2e2e1e; color: #f9e2af; }
+[data-theme="light"] .htag-prod { background: #e3f2fd; color: #1565c0; }
+[data-theme="light"] .htag-qa   { background: #f3e5f5; color: #6a1b9a; }
+[data-theme="light"] .htag-mweb { background: #e8f5e9; color: #2e7d32; }
+[data-theme="light"] .htag-smoke      { background: #e0f7fa; color: #00695c; }
+[data-theme="light"] .htag-regression { background: #fff8e1; color: #e65100; }
+.history-result { margin-left: auto; flex-shrink: 0; }
+.hbadge { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; }
+[data-theme="dark"] .hbadge-passed  { background: #1a2e1a; color: #a6e3a1; }
+[data-theme="dark"] .hbadge-failed  { background: #2e1a1a; color: #f38ba8; }
+[data-theme="dark"] .hbadge-stopped { background: #2e2a1a; color: #f9e2af; }
+[data-theme="light"] .hbadge-passed  { background: #e8f5e9; color: #2e7d32; }
+[data-theme="light"] .hbadge-failed  { background: #ffebee; color: #c62828; }
+[data-theme="light"] .hbadge-stopped { background: #fff8e1; color: #e65100; }
+.history-duration { font-size: 10px; color: var(--text-sub); white-space: nowrap; }
+
+/* ── 오른쪽: 로그 패널 ── */
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px;
+  gap: 12px;
+  background: var(--bg);
+}
+
+.right-section {
+  background: var(--card);
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.right-section-title {
+  font-size: 11px; font-weight: 600; color: var(--text-sub);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.status-bar {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 12px; border-radius: 20px;
+  padding: 5px 14px; border-radius: 20px;
   font-size: 12px; font-weight: 600;
 }
 [data-theme="dark"] .badge-idle    { background: #1e1e2e; color: #6c7086; border: 1px solid #313244; }
@@ -141,17 +251,19 @@ h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; color: var(--text); 
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 .run-info { font-size: 12px; color: var(--text-sub); }
 
-/* 로그 */
 .log-wrap {
-  background: var(--log-bg); border-radius: 10px; border: 1px solid var(--card-border);
-  padding: 16px; min-height: 300px; max-height: 480px;
-  overflow-y: auto; font-family: 'Menlo', 'Monaco', monospace;
+  flex: 0 0 200px;
+  background: var(--log-bg); border-radius: 8px;
+  padding: 14px;
+  overflow-y: auto;
+  font-family: 'Menlo', 'Monaco', monospace;
   font-size: 12px; line-height: 1.7; color: #cdd6f4;
 }
+[data-theme="light"] .log-wrap { color: #cdd6f4; }
 .log-wrap .placeholder { color: #45475a; }
 .log-line { white-space: pre-wrap; word-break: break-all; }
 
-.footer-btns { display: flex; gap: 10px; margin-top: 12px; }
+.footer-btns { display: flex; gap: 8px; flex-shrink: 0; }
 .btn-secondary {
   padding: 7px 14px; border-radius: 8px; border: 1px solid var(--btn-sec-border);
   background: var(--btn-sec-bg); color: var(--btn-sec-text);
@@ -160,154 +272,122 @@ h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; color: var(--text); 
 }
 .btn-secondary:hover { opacity: 0.8; }
 
-/* 히스토리 */
-.history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-.history-header .card-title { margin-bottom: 0; }
-.history-list { display: flex; flex-direction: column; gap: 8px; }
-.history-empty { font-size: 13px; color: var(--text-muted); text-align: center; padding: 20px 0; }
-.history-item {
-  display: flex; align-items: center; gap: 12px;
-  background: var(--history-bg); border-radius: 8px; padding: 10px 14px;
-  border: 1px solid var(--card-border); font-size: 12px;
-}
-.history-time { color: var(--text-sub); white-space: nowrap; min-width: 80px; }
-.history-tags { display: flex; gap: 6px; flex: 1; }
-.htag { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-[data-theme="dark"] .htag-prod { background: #1e2a3e; color: #89b4fa; }
-[data-theme="dark"] .htag-qa   { background: #2e1e3e; color: #cba6f7; }
-[data-theme="dark"] .htag-mweb { background: #1e2e1a; color: #a6e3a1; }
-[data-theme="dark"] .htag-smoke      { background: #1e2e2e; color: #94e2d5; }
-[data-theme="dark"] .htag-regression { background: #2e2e1e; color: #f9e2af; }
-[data-theme="light"] .htag-prod { background: #e3f2fd; color: #1565c0; }
-[data-theme="light"] .htag-qa   { background: #f3e5f5; color: #6a1b9a; }
-[data-theme="light"] .htag-mweb { background: #e8f5e9; color: #2e7d32; }
-[data-theme="light"] .htag-smoke      { background: #e0f7fa; color: #00695c; }
-[data-theme="light"] .htag-regression { background: #fff8e1; color: #e65100; }
-.history-result { margin-left: auto; }
-.hbadge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-[data-theme="dark"] .hbadge-passed  { background: #1a2e1a; color: #a6e3a1; }
-[data-theme="dark"] .hbadge-failed  { background: #2e1a1a; color: #f38ba8; }
-[data-theme="dark"] .hbadge-stopped { background: #2e2a1a; color: #f9e2af; }
-[data-theme="light"] .hbadge-passed  { background: #e8f5e9; color: #2e7d32; }
-[data-theme="light"] .hbadge-failed  { background: #ffebee; color: #c62828; }
-[data-theme="light"] .hbadge-stopped { background: #fff8e1; color: #e65100; }
-.history-duration { font-size: 11px; color: var(--text-sub); white-space: nowrap; margin-left: 8px; }
-/* 슬랙 토글 */
-.slack-toggle { margin-top: 14px; }
-.toggle-label { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-.toggle-track {
-  width: 36px; height: 20px; border-radius: 20px;
-  background: var(--card-border); position: relative;
-  transition: background 0.2s; flex-shrink: 0;
-}
-.toggle-thumb {
-  width: 14px; height: 14px; border-radius: 50%; background: #fff;
-  position: absolute; top: 3px; left: 3px; transition: left 0.2s;
-}
-#slackToggle { display: none; }
-#slackToggle:checked + .toggle-track { background: #4caf50; }
-#slackToggle:checked + .toggle-track .toggle-thumb { left: 19px; }
-.toggle-text { font-size: 13px; color: var(--text-sub); }
-
 .btn-report-link {
-  margin-left: 8px; padding: 3px 10px; border-radius: 6px;
+  padding: 3px 10px; border-radius: 6px;
   font-size: 11px; font-weight: 600; text-decoration: none;
   background: var(--accent-bg); color: var(--accent);
   border: 1px solid var(--card-border); white-space: nowrap;
   transition: opacity 0.15s;
 }
 .btn-report-link:hover { opacity: 0.75; }
+
+.divider { width: 1px; background: var(--card-border); flex-shrink: 0; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="top-bar">
-    <div>
-      <h1>🧪 Tapas QA Dashboard</h1>
-      <p class="subtitle">환경과 TC 유형을 선택하고 실행하세요.</p>
+<div class="layout-wrap"><div class="layout">
+
+  <!-- ── 왼쪽 패널 ── -->
+  <div class="left-panel">
+    <div class="left-header">
+      <div>
+        <h1>🧪 Tapas QA</h1>
+        <p class="subtitle">환경 선택 후 실행하세요.</p>
+      </div>
+      <button class="btn-theme" id="btnTheme">☀️</button>
     </div>
-    <button class="btn-theme" id="btnTheme">☀️ 라이트 모드</button>
+
+    <div class="left-body">
+      <div>
+        <div class="section-title">플랫폼</div>
+        <div class="selector" id="platformSelector">
+          <button class="sel-btn active" data-val="pcweb">
+            <span class="label">PC 웹</span>
+            <span class="desc">tapas.io</span>
+          </button>
+          <button class="sel-btn" data-val="mweb">
+            <span class="label">모바일 웹</span>
+            <span class="desc">m.tapas.io</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">환경</div>
+        <div class="selector" id="envSelector">
+          <button class="sel-btn active" data-val="prod">
+            <span class="label">Prod</span>
+            <span class="desc">운영</span>
+          </button>
+          <button class="sel-btn" data-val="qa" id="btnQa">
+            <span class="label">QA</span>
+            <span class="desc">내부망</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">TC 유형</div>
+        <div class="selector" id="typeSelector">
+          <button class="sel-btn active" data-val="smoke">
+            <span class="label">Smoke</span>
+            <span class="desc">@smoke</span>
+          </button>
+          <button class="sel-btn" data-val="regression">
+            <span class="label">Regression</span>
+            <span class="desc">전체</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <button class="btn-run" id="btnRun">▶ 실행</button>
+        <button class="btn-stop" id="btnStop">■ 중단</button>
+        <div class="slack-toggle" style="margin-top:12px;">
+          <label class="toggle-label">
+            <input type="checkbox" id="slackToggle" checked>
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-text">슬랙 알림</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="card">
-    <div class="card-title">플랫폼</div>
-    <div class="selector" id="platformSelector">
-      <button class="sel-btn active" data-val="pcweb">
-        <span class="label">PC 웹</span>
-        <span class="desc">tapas.io · Chromium</span>
-      </button>
-      <button class="sel-btn" data-val="mweb">
-        <span class="label">모바일 웹</span>
-        <span class="desc">m.tapas.io · iPhone 13</span>
-      </button>
-    </div>
-  </div>
+  <!-- ── 오른쪽 패널 ── -->
+  <div class="right-panel">
 
-  <div class="card">
-    <div class="card-title">환경</div>
-    <div class="selector" id="envSelector">
-      <button class="sel-btn active" data-val="prod">
-        <span class="label">Prod</span>
-        <span class="desc">운영 서버</span>
-      </button>
-      <button class="sel-btn" data-val="qa" id="btnQa">
-        <span class="label">QA</span>
-        <span class="desc">내부 QA 서버</span>
-      </button>
+    <!-- 로그 섹션 -->
+    <div class="right-section" style="flex-shrink:0;">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+        <div class="status-bar" style="margin:0;">
+          <span class="badge badge-idle" id="badge"><span class="dot"></span> 대기 중</span>
+          <span class="run-info" id="runInfo"></span>
+        </div>
+        <div class="footer-btns" style="margin:0;">
+          <button class="btn-secondary" id="btnReport">📊 리포트</button>
+          <button class="btn-secondary" id="btnClear">🗑 지우기</button>
+        </div>
+      </div>
+      <div class="log-wrap" id="log">
+        <span class="placeholder">실행 결과가 여기에 표시됩니다.</span>
+      </div>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="card-title">TC 유형</div>
-    <div class="selector" id="typeSelector">
-      <button class="sel-btn active" data-val="smoke">
-        <span class="label">Smoke</span>
-        <span class="desc">핵심 기능 빠른 검증 · @smoke 태그</span>
-      </button>
-      <button class="sel-btn" data-val="regression">
-        <span class="label">Regression</span>
-        <span class="desc">전체 시나리오 실행</span>
-      </button>
+    <!-- 히스토리 섹션 -->
+    <div class="right-section" style="flex:1; min-height:0;">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+        <span class="right-section-title">실행 히스토리</span>
+        <button class="btn-secondary" id="btnClearHistory" style="font-size:10px;padding:3px 8px;">전체 삭제</button>
+      </div>
+      <div class="history-list" id="historyList" style="flex:1; overflow-y:auto; min-height:0;">
+        <div class="history-empty">아직 실행 기록이 없습니다.</div>
+      </div>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="run-area">
-      <button class="btn-run" id="btnRun">▶ 실행</button>
-      <button class="btn-stop" id="btnStop">■ 중단</button>
-    </div>
-    <div class="slack-toggle">
-      <label class="toggle-label">
-        <input type="checkbox" id="slackToggle" checked>
-        <span class="toggle-track"><span class="toggle-thumb"></span></span>
-        <span class="toggle-text">슬랙 알림</span>
-      </label>
-    </div>
   </div>
-
-  <div class="card">
-    <div class="status-bar">
-      <span class="badge badge-idle" id="badge"><span class="dot"></span> 대기 중</span>
-      <span class="run-info" id="runInfo"></span>
-    </div>
-    <div class="log-wrap" id="log">
-      <span class="placeholder">실행 결과가 여기에 표시됩니다.</span>
-    </div>
-    <div class="footer-btns">
-      <button class="btn-secondary" id="btnReport">📊 리포트 열기</button>
-      <button class="btn-secondary" id="btnClear">🗑 로그 지우기</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="history-header">
-      <div class="card-title">실행 히스토리</div>
-      <button class="btn-secondary" id="btnClearHistory" style="font-size:11px;padding:4px 10px;">전체 삭제</button>
-    </div>
-    <div class="history-list" id="historyList">
-      <div class="history-empty">아직 실행 기록이 없습니다.</div>
-    </div>
-  </div>
+</div>
 </div>
 
 <script>
@@ -317,7 +397,6 @@ let selectedType = 'smoke';
 let runStartTime = null;
 let currentRunId = null;
 
-// 테마
 const html = document.documentElement;
 const btnTheme = document.getElementById('btnTheme');
 const savedTheme = localStorage.getItem('qaDashTheme') || 'dark';
@@ -329,11 +408,10 @@ btnTheme.addEventListener('click', () => {
 
 function setTheme(theme) {
   html.dataset.theme = theme;
-  btnTheme.textContent = theme === 'dark' ? '☀️ 라이트 모드' : '🌙 다크 모드';
+  btnTheme.textContent = theme === 'dark' ? '☀️' : '🌙';
   localStorage.setItem('qaDashTheme', theme);
 }
 
-// 플랫폼 선택
 document.getElementById('platformSelector').addEventListener('click', e => {
   const btn = e.target.closest('.sel-btn');
   if (!btn) return;
@@ -342,7 +420,6 @@ document.getElementById('platformSelector').addEventListener('click', e => {
   selectedPlatform = btn.dataset.val;
 });
 
-// 환경 선택
 document.getElementById('envSelector').addEventListener('click', e => {
   const btn = e.target.closest('.sel-btn');
   if (!btn || btn.disabled) return;
@@ -351,7 +428,6 @@ document.getElementById('envSelector').addEventListener('click', e => {
   selectedEnv = btn.dataset.val;
 });
 
-// TC 유형 선택
 document.getElementById('typeSelector').addEventListener('click', e => {
   const btn = e.target.closest('.sel-btn');
   if (!btn) return;
@@ -360,7 +436,6 @@ document.getElementById('typeSelector').addEventListener('click', e => {
   selectedType = btn.dataset.val;
 });
 
-// SSE
 function connectSSE() {
   const es = new EventSource('/events');
   es.onmessage = e => {
@@ -384,9 +459,7 @@ document.getElementById('btnRun').addEventListener('click', async () => {
   });
 });
 document.getElementById('btnStop').addEventListener('click', () => fetch('/stop', { method: 'POST' }));
-document.getElementById('btnReport').addEventListener('click', () => {
-  window.open('/results/latest', '_blank');
-});
+document.getElementById('btnReport').addEventListener('click', () => window.open('/results/latest', '_blank'));
 document.getElementById('btnClear').addEventListener('click', clearLog);
 document.getElementById('btnClearHistory').addEventListener('click', () => {
   localStorage.removeItem('qaHistory');
@@ -397,9 +470,9 @@ function onStart({ platform, env, testType, runId }) {
   runStartTime = Date.now();
   currentRunId = runId;
   setBadge('running', '실행 중');
-  const platformLabel = platform === 'mweb' ? '모바일웹' : 'PC웹';
+  const platformLabel = platform === 'mweb' ? 'MWeb' : 'PC Web';
   document.getElementById('runInfo').textContent =
-    `${platformLabel} · ${env.toUpperCase()} · ${testType === 'smoke' ? 'Smoke' : 'Regression'}`;
+    `${platformLabel} / ${env.toUpperCase()} / ${testType === 'smoke' ? 'Smoke' : 'Regression'}`;
   document.getElementById('btnRun').disabled = true;
   document.getElementById('btnStop').classList.add('visible');
 }
@@ -436,7 +509,6 @@ function clearLog() {
   document.getElementById('runInfo').textContent = '';
 }
 
-// 히스토리
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem('qaHistory') || '[]'); } catch { return []; }
 }
@@ -467,7 +539,7 @@ function renderHistory() {
       </div>
       <span class="hbadge hbadge-${h.result}">${resultLabel[h.result]}</span>
       ${h.duration ? `<span class="history-duration">${fmt(h.duration)}</span>` : ''}
-      ${h.runId ? `<a class="btn-report-link" href="/results/${h.runId}/" target="_blank">📊 리포트</a>` : ''}
+      ${h.runId ? `<a class="btn-report-link" href="/results/${h.runId}/" target="_blank">📊</a>` : ''}
     </div>`).join('');
 }
 function fmt(s) { return s < 60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60}s`; }
