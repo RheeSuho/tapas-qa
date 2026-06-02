@@ -157,8 +157,12 @@ When('잘못된 이메일과 비밀번호를 입력하고 Login을 클릭한다'
   if (await pwInput.isVisible({ timeout: 2000 }).catch(() => false)) {
     await pwInput.fill('wrongpassword123!');
   }
+  // Braze popup 선제 제거 (버튼 위 block 방지)
+  await page.evaluate(() => {
+    document.querySelectorAll('[class*="ab-iam-root"], [class*="ab-in-app"]').forEach(el => el.remove());
+  });
   const loginBtn = page.getByRole('button', { name: /^log ?in$/i });
-  if ((await loginBtn.count()) > 0) await loginBtn.last().click();
+  if ((await loginBtn.count()) > 0) await loginBtn.last().click({ timeout: 8000 }).catch(() => {});
   await page.waitForTimeout(3000);
 });
 

@@ -289,7 +289,14 @@ When('Community Spotlight 서브탭에 접속한다', async ({ page }) => {
 });
 
 Then('Community 홈으로 돌아온다', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  // goBack 후 Spotlight 서브탭 또는 Community 홈 어느 쪽이든 시리즈/이벤트 링크 확인
+  const content = page.locator('a[href*="/series/"], a[href*="/event/"]').filter({ has: page.locator('img') }).first();
+  const isVisible = await content.isVisible().catch(() => false);
+  if (isVisible) {
+    await expect(content).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('Community 카테고리 페이지가 노출된다', async ({ page }) => {

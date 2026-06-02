@@ -195,8 +195,12 @@ When('이용권 사용 가능한 유료회차 클릭', async ({ page }) => {
 When('기다무 회차 클릭', async ({ page }) => {
   await ensureOnSeries(page);
   const wuf = page.locator('a.episode-item[data-is-wuf="true"]');
-  await wuf.first().waitFor({ state: 'attached', timeout: 8000 }).catch(() => {});
-  if ((await wuf.count()) > 0) { await wuf.first().click(); return; }
+  await wuf.first().waitFor({ state: 'visible', timeout: 8000 }).catch(() => {});
+  if ((await wuf.count()) > 0) {
+    await wuf.first().scrollIntoViewIfNeeded().catch(() => {});
+    await wuf.first().click();
+    return;
+  }
   await expect(page.locator('body')).toBeVisible();
 });
 

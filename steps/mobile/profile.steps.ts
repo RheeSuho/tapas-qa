@@ -101,17 +101,9 @@ Then('Edit profile 탭으로 이동된다', async ({ page }) => {
 // ──── 댓글 화면 ────
 
 Given('모바일 댓글 화면에 진입한다', async ({ page }) => {
-  // 에피소드 페이지로 이동 후 댓글 링크 클릭
-  await page.goto(`${MWEB}${TEST_DATA.episode.comicEp2}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  await page.waitForTimeout(1000);
-  const commentBtn = page.locator('a[href*="/comments"], a[href*="/comment"]').first();
-  if ((await commentBtn.count()) > 0) {
-    await page.evaluate((el: HTMLElement) => el.click(), await commentBtn.elementHandle() as any);
-  } else {
-    const btn = page.locator('button, a').filter({ hasText: /comment/i }).first();
-    if ((await btn.count()) > 0) await btn.click();
-  }
-  await page.waitForTimeout(1000);
+  // 시리즈 comments 페이지로 직접 이동
+  const seriesPath = TEST_DATA.series.comic.replace('/info', '');
+  await page.goto(`${MWEB}${seriesPath}/comments`, { waitUntil: 'domcontentloaded', timeout: 30000 });
 });
 
 When('댓글 입력창을 선택한다', async ({ page }) => {
