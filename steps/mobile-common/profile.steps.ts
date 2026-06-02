@@ -75,10 +75,11 @@ When('Ink shop 클릭', async ({ page }) => {
 });
 
 When('임의의 잉크 티어 클릭', async ({ page }) => {
-  // Ink shop 페이지에서 잉크 티어 버튼 클릭
-  const tierBtn = page.locator('[class*="ink"] button, [class*="tier"] button, [class*="package"] button').first();
+  // a.item.js-tier-btn — PC/MWeb 동일 구조, 비동기 렌더링이므로 waitFor 필수
+  const tierBtn = page.locator('a.item.js-tier-btn');
+  await tierBtn.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   if ((await tierBtn.count()) > 0) {
-    await tierBtn.click();
+    await tierBtn.first().click();
     await page.waitForTimeout(600);
   } else {
     test.skip(true, '잉크 티어 버튼 없음 — Ink shop 페이지 구조 확인 필요');
