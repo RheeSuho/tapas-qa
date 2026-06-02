@@ -1,8 +1,6 @@
 # 자동 생성됨 - 원본: Tapas Smoke TC CSV
 # 1 Depth: 인박스
 Feature: Activity
-
-  @TC-0213
   Scenario: [TPS-188] 수신된 내역 있는 경우 > Inbox > Activity 탭 클릭 + Settings 버튼 클릭
     Given 수신된 내역 있는 경우
     When Inbox > Activity 탭 클릭
@@ -17,8 +15,6 @@ Feature: Activity
     Then Settings로 진입된다.
     When [<] 백버튼 클릭
     Then Activity 화면으로 복귀된다.
-
-  @TC-0214
   Scenario: [TPS-189] 수신된 내역 없는 경우 > Inbox > Activity 탭 클릭 + Supporters 필터 클릭
     Given 수신된 내역 없는 경우
     When Inbox > Activity 탭 클릭

@@ -1,6 +1,4 @@
 Feature: Daily (요일연재 랜딩 서브탭)
-
-  @TC-0054
   Scenario: [TPS-046] Daily 서브탭 클릭 + 요일별 클릭
     When 대메뉴 > Novels 카테고리 클릭
     And Daily 서브탭 클릭

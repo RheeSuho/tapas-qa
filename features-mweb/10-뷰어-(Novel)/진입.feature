@@ -1,6 +1,6 @@
 Feature: 소설 뷰어 진입 (Mweb)
 
-  @TC-126M @smoke
+  @smoke
   Scenario: [TPS-126] 모바일 소설 뷰어 진입 — Popular → 작품홈 경유
     Given 타파스 모바일 홈에 접속한다
     When 모바일 홈 Novels Popular 서브탭으로 이동한다

@@ -1,6 +1,6 @@
 Feature: 인박스 Activity (Mweb)
 
-  @TC-180M @smoke
+  @smoke
   Scenario: [TPS-180] 모바일 인박스 Activity 탭 — 필터 및 내역 노출
     # Pre: 수신된 Activity 내역 있는 경우
     Given 모바일 인박스 Activity로 이동한다

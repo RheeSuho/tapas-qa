@@ -2,7 +2,7 @@
 # 1 Depth: Profile
 Feature: Publish
 
-  @TC-0229 @skip
+  @skip
   Scenario: [TPS-204] Mweb only > Profile 클릭 + Publish 클릭
     # @skip: Mweb only — PCW에서 미노출
     Given Mweb only

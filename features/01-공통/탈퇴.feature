@@ -1,6 +1,6 @@
 Feature: 탈퇴
 
-  @TC-0007 @skip
+  @skip
   Scenario: [TPS-007] 계정 탈퇴
     # @skip: 파괴적 작업 — 실제 계정 탈퇴 자동화 범위 외
     When Profile 메뉴에서 Settings로 진입한다

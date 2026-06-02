@@ -2,7 +2,7 @@
 # 1 Depth: 보관함
 Feature: Recent
 
-  @TC-0200 @smoke
+  @smoke
   Scenario: [TPS-174] Recent 클릭 + GNB 보관함 아이콘 클릭 > Recent 클릭
     When Recent 클릭
     Then Recent 메뉴 진입된다.
@@ -13,8 +13,6 @@ Feature: Recent
     When GNB > Home > 임의의 작품 클릭
     And GNB 보관함 아이콘 클릭 > Recent 클릭
     Then Recent로 진입된다.
-
-  @TC-0201
   Scenario: [TPS-175] Recent 작품 목록 없는 경우 > Recent 클릭
     Given Recent 작품 목록 없는 경우
     When Recent 클릭

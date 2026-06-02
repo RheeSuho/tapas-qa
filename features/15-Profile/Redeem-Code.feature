@@ -2,7 +2,7 @@
 # 1 Depth: Profile
 Feature: Redeem Code
 
-  @TC-0230 @skip
+  @skip
   Scenario: [TPS-205] 리딤코드 정상 입력 > Profile 클릭 + Redeem 버튼 클릭
     Given 리딤코드 정상 입력
     When GNB > Profile 클릭
@@ -15,8 +15,6 @@ Feature: Redeem Code
     Then 입력한 리딤코드가 등록되며 리딤코드 화면은 유지된다.
     When 뒤로가기 [<] 버튼 클릭
     Then 홈 화면으로 이동된다.
-
-  @TC-0231
   Scenario: [TPS-206] 리딤코드 오입력 > Profile 클릭 + Redeem 버튼 클릭
     Given 리딤코드 오입력
     When GNB > Profile 클릭
@@ -29,8 +27,6 @@ Feature: Redeem Code
     Then Invalid code 토스트 팝업이 노출된다.
     When 뒤로가기 [<] 버튼 클릭
     Then 홈 화면으로 이동된다.
-
-  @TC-0232
   Scenario: [TPS-207] Profile 클릭 + 닫기 버튼 클릭
     When GNB > Profile 클릭
     And Redeem Code 클릭

@@ -1,6 +1,4 @@
 Feature: 장르 랭킹 (랜딩 서브탭)
-
-  @TC-0042
   Scenario: [TPS-041] 장르명 서브탭 클릭 - Romance
     When 대메뉴 > Comics 카테고리 클릭
     And "Romance" 서브탭 클릭

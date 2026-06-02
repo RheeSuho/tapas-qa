@@ -1,8 +1,6 @@
 # 자동 생성됨 - 원본: Tapas Smoke TC CSV
 # 1 Depth: 보관함
 Feature: Wait until Free
-
-  @TC-0209
   Scenario: [TPS-184] Wait until Free 메뉴 클릭 + 상단 < 버튼 클릭
     When Wait until Free 메뉴 클릭
     Then Wait until Free 탭으로 진입된다.
@@ -12,8 +10,6 @@ Feature: Wait until Free
     Then 뷰어 회차로 진입된다.
     When 상단 [<] 버튼 클릭
     Then Wait until Free 화면으로 복귀된다.
-
-  @TC-0210
   Scenario: [TPS-185] PCW + 필터 > All 버튼 클릭
     When [PCW]
     And 탭 하단 [Comics] 버튼 클릭
@@ -29,8 +25,6 @@ Feature: Wait until Free
     Then Novels 작품리스트만 노출된다.
     When 필터 > [All] 버튼 클릭
     Then 모든 작품 리스트가 노출된다.
-
-  @TC-0211
   Scenario: [TPS-186] Wait Until Free 작품 목록 없는 경우 > Comics 필터 클릭 + All 필터 클릭
     Given Wait Until Free 작품 목록 없는 경우
     When Comics 필터 클릭

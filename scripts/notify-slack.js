@@ -77,16 +77,31 @@ const durationStr = durationMin > 0 ? `${durationMin}분 ${durationRemSec}초` :
 const failedTests = [];
 const dynamicSkips = [];  // test.skip(true, '사유') — 런타임 skip만 (사유 있는 것)
 
-function walk(suites) {
+function extractSection(suiteTitle) {
+  // 파일 경로에서 섹션 폴더명 추출: "features/04-홈-(Novels)/..." → "홈(Novels)"
+  const match = suiteTitle?.match(/features(?:-mweb)?\/([^/]+)\//);
+  if (!match) return null;
+  return match[1]
+    .replace(/^\d+-/, '')   // 앞 숫자 제거: "04-홈-(Novels)" → "홈-(Novels)"
+    .replace(/-\(/g, '(');  // 괄호 앞 대시 제거: "홈-(Novels)" → "홈(Novels)"
+}
+
+function walk(suites, section) {
   for (const suite of suites || []) {
+    // 최상위 suite는 파일 경로를 포함 — 여기서 섹션명 추출
+    const currentSection = section || extractSection(suite.title) || null;
     for (const spec of suite.specs || []) {
       for (const test of spec.tests || []) {
         const lastResult = test.results?.[test.results.length - 1];
-        const match = spec.title.match(/\[TPS-[\w-]+\]/i);
+        const match = spec.title.match(/\[TPS-[^\]]+\]/i);
         const tpsLabel = match
           ? (PLATFORM === 'mweb' ? match[0].replace(']', '(M)]') : match[0])
           : null;
-        const title = tpsLabel ? `${tpsLabel} ${spec.title.replace(match[0], '').trim()}` : spec.title;
+        const rawTitle = spec.title.replace(match?.[0] || '', '').trim();
+        const sectionPrefix = currentSection ? `${currentSection} > ` : '';
+        const title = tpsLabel
+          ? `${tpsLabel} ${sectionPrefix}${rawTitle}`
+          : spec.title;
 
         if (lastResult?.status === 'failed' || lastResult?.status === 'timedOut') {
           const steps = extractBddSteps(lastResult.steps || []);
@@ -94,7 +109,6 @@ function walk(suites) {
           failedTests.push({ title, steps, retryCount });
         }
 
-        // 동적 skip: annotations에 type='skip' + description 있는 경우
         const skipAnnotation = (test.annotations || []).find(
           a => a.type === 'skip' && a.description
         );
@@ -103,7 +117,7 @@ function walk(suites) {
         }
       }
     }
-    walk(suite.suites);
+    walk(suite.suites, currentSection);
   }
 }
 walk(results.suites);

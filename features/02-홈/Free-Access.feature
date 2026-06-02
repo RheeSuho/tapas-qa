@@ -1,17 +1,11 @@
 Feature: Free Access
-
-  @TC-0016
   Scenario: [TPS-013] Free Access 서브탭 진입 확인
     When 홈 > Free Access 서브탭을 클릭한다
     Then Free Access 서브탭 화면이 노출된다
     And 작품 목록이 노출된다
-
-  @TC-0017
   Scenario: [TPS-226] Free Access 서브탭 > 빅배너 영역 노출 확인
     When 홈 > Free Access 서브탭을 클릭한다
     Then 빅배너가 노출된다
-
-  @TC-0018
   Scenario: [TPS-227] Free Access 서브탭 > 섹션 더보기 클릭 + 홈으로 복귀
     When 홈 > Free Access 서브탭을 클릭한다
     And 더보기 링크를 클릭한다
