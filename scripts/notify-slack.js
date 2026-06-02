@@ -182,22 +182,23 @@ if (failedTests.length > 0) {
   blocks.push({ type: 'actions', elements: jiraButtons });
 }
 
+const ALLURE_URL = 'https://rheesuho.github.io/tapas-qa';
+const btnStyle = allPassed ? 'primary' : 'danger';
+const actionBtns = [];
 if (REPORT_URL) {
-  blocks.push({
-    type: 'actions',
-    elements: [{
-      type: 'button',
-      text: { type: 'plain_text', text: '📊 대시보드 보기' },
-      url: REPORT_URL,
-      style: allPassed ? 'primary' : 'danger',
-    }]
-  });
-} else {
-  blocks.push({
-    type: 'context',
-    elements: [{ type: 'mrkdwn', text: '📋 상세 리포트: 터미널에서 `npm run allure`' }]
+  actionBtns.push({
+    type: 'button',
+    text: { type: 'plain_text', text: '결과 대시보드' },
+    url: REPORT_URL,
+    style: btnStyle,
   });
 }
+actionBtns.push({
+  type: 'button',
+  text: { type: 'plain_text', text: '결과 리포트' },
+  url: ALLURE_URL,
+});
+blocks.push({ type: 'actions', elements: actionBtns });
 
 const body = JSON.stringify({ blocks });
 const url = new URL(WEBHOOK_URL);
