@@ -2,6 +2,11 @@
 # 1 Depth: 보관함
 Feature: Subscribed
 
+  @TC-0201B @smoke
+  Scenario: [TPS-176] Subscribed 클릭 + 구독 작품 목록 노출 확인
+    When Subscribed 클릭
+    Then Subscribed 진입된다.
+
   @TC-0202
   Scenario: [TPS-177] 작품 클릭 + 상단 < 버튼 클릭
     When 작품 클릭
