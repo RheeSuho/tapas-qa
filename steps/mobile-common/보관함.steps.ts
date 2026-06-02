@@ -182,13 +182,14 @@ When('[All] 버튼 클릭', async ({ page }) => {
 // Subscribed > Mark All As Read / Setting
 
 When('[Mark All As Read] 버튼 클릭', async ({ page }) => {
+  // 구독 작품 업데이트가 있을 때만 버튼 노출 — 없으면 동적 skip
   const btn = page.locator('button').filter({ hasText: /mark all as read/i }).first();
   if ((await btn.count()) > 0) {
     await btn.click();
     await page.waitForTimeout(600);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
+    return;
   }
+  test.skip(true, '구독 작품 업데이트 없음 — Mark All As Read 버튼 미노출');
 });
 
 // ──── Then ────
