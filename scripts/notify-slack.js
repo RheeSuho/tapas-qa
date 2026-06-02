@@ -161,7 +161,7 @@ if (failedTests.length > 0) {
   // 실패 항목별 Jira 등록 버튼 (최대 5개)
   const jiraButtons = failedTests.slice(0, 5).map(t => ({
     type: 'button',
-    text: { type: 'plain_text', text: `🐛 ${t.title.match(/\[TPS-[^\]]+\]/i)?.[0] ?? t.title.slice(0, 20)}` },
+    text: { type: 'plain_text', text: `${t.title.match(/\[TPS-[^\]]+\]/i)?.[0] ?? t.title.slice(0, 20)} 결함 등록` },
     url: makeJiraUrl(t, REPORT_URL),
     style: 'danger',
   }));
