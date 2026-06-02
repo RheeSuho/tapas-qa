@@ -88,6 +88,81 @@ http.createServer((req, res) => {
     return;
   }
 
+  // API: 최신 test-results/results.json 파싱 반환
+  if (req.method === 'GET' && url === '/api/results/latest') {
+    const resultsFile = path.join(ROOT, 'test-results', 'results.json');
+    if (!fs.existsSync(resultsFile)) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'results.json 없음' }));
+      return;
+    }
+    const results = JSON.parse(fs.readFileSync(resultsFile, 'utf8'));
+    const stats = {
+      passed: results.stats?.expected ?? 0,
+      failed: results.stats?.unexpected ?? 0,
+      skipped: results.stats?.skipped ?? 0,
+      duration: results.stats?.duration ?? 0,
+    };
+    const failures = [];
+    const dynamicSkips = [];
+    function walkResults(suites) {
+      for (const suite of suites || []) {
+        for (const spec of suite.specs || []) {
+          for (const test of spec.tests || []) {
+            const last = test.results?.[test.results.length - 1];
+            const m = spec.title.match(/\[TPS-[^\]]+\]/i);
+            const title = m ? `${m[0]} ${spec.title.replace(m[0], '').trim()}` : spec.title;
+            if (last?.status === 'failed' || last?.status === 'timedOut') {
+              const toRel = p => p ? path.relative(ROOT, p) : null;
+              const screenshot = toRel(last.attachments?.find(a => a.contentType === 'image/png')?.path);
+              const video = toRel(last.attachments?.find(a => a.contentType === 'video/webm')?.path);
+              // 실패 스텝 추출: 에러 발생 스텝 또는 마지막 BDD 키워드 스텝
+              let failStep = null;
+              function findFailStep(steps) {
+                for (const s of steps || []) {
+                  if (s.error) failStep = s.title.replace(/^(Given|When|Then|And|But)\s+/i, '').trim();
+                  if (s.steps?.length) findFailStep(s.steps);
+                }
+              }
+              findFailStep(last.steps);
+              if (!failStep) {
+                // fallback: 마지막 When/Then 스텝
+                function findLastBdd(steps) {
+                  for (const s of [...(steps || [])].reverse()) {
+                    if (/^(When|Then|And)\s/i.test(s.title)) { failStep = s.title.replace(/^(Given|When|Then|And|But)\s+/i, '').trim(); return; }
+                    if (s.steps?.length) findLastBdd(s.steps);
+                  }
+                }
+                findLastBdd(last.steps);
+              }
+              failures.push({ title, screenshot, video, failStep });
+            }
+            const skipAnn = (test.annotations || []).find(a => a.type === 'skip' && a.description);
+            if (skipAnn) dynamicSkips.push({ title, reason: skipAnn.description });
+          }
+        }
+        walkResults(suite.suites);
+      }
+    }
+    walkResults(results.suites);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ stats, failures, dynamicSkips }));
+    return;
+  }
+
+  // 테스트 아티팩트 서빙 (스크린샷·영상)
+  if (req.method === 'GET' && url.startsWith('/artifacts/')) {
+    const rel = decodeURIComponent(url.slice('/artifacts/'.length));
+    const fullPath = path.join(ROOT, rel);
+    if (!fullPath.startsWith(ROOT)) { res.writeHead(403); res.end('Forbidden'); return; }
+    if (!fs.existsSync(fullPath)) { res.writeHead(404); res.end('Not found'); return; }
+    const ext = path.extname(fullPath);
+    const mime = { '.png': 'image/png', '.webm': 'video/webm', '.zip': 'application/zip' }[ext] || 'application/octet-stream';
+    res.writeHead(200, { 'Content-Type': mime });
+    fs.createReadStream(fullPath).pipe(res);
+    return;
+  }
+
   // 아카이브 리포트 서빙
   if (req.method === 'GET' && url.startsWith('/results/')) {
     const after = url.slice('/results/'.length);
@@ -138,7 +213,7 @@ http.createServer((req, res) => {
         if (slack) {
           const platformLabel = platform === 'mweb' ? 'MWeb' : 'PC Web';
           const suiteName = `${platformLabel} / ${env.toUpperCase()} / ${type === 'smoke' ? 'Smoke' : 'Regression'}`;
-          const reportUrl = `http://localhost:${PORT}/results/${runId}/`;
+          const reportUrl = `http://localhost:${PORT}/`;
           console.log(`[slack] 전송 중... (${suiteName})`);
           const notifier = spawn('node', ['scripts/notify-slack.js', suiteName, reportUrl, platform, env], { cwd: ROOT });
           notifier.stdout.on('data', d => {

@@ -7,343 +7,235 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg:           #13131f;
-  --card:         #1e1e2e;
-  --card-border:  #2a2a3e;
-  --input-bg:     #181825;
-  --text:         #cdd6f4;
-  --text-sub:     #6c7086;
-  --text-muted:   #45475a;
-  --accent:       #7c7fef;
-  --accent-hover: #9399f5;
-  --accent-bg:    #1e1e3e;
-  --accent-text:  #b4befe;
-  --btn-sec-bg:   #181825;
-  --btn-sec-border: #313244;
-  --btn-sec-text: #bac2de;
-  --log-bg:       #11111b;
-  --run-disabled-bg: #313244;
-  --run-disabled-text: #6c7086;
-  --stop-bg:      #2a1a1a;
-  --stop-border:  #3d1a1a;
-  --stop-text:    #f38ba8;
-  --history-bg:   #181825;
-  --left-w:       300px;
+  --bg: #13131f; --card: #1e1e2e; --card-border: #2a2a3e; --input-bg: #181825;
+  --text: #cdd6f4; --text-sub: #6c7086; --text-muted: #45475a;
+  --accent: #7c7fef; --accent-hover: #9399f5; --accent-bg: #1e1e3e; --accent-text: #b4befe;
+  --btn-sec-bg: #181825; --btn-sec-border: #313244; --btn-sec-text: #bac2de;
+  --log-bg: #11111b; --run-disabled-bg: #313244; --run-disabled-text: #6c7086;
+  --stop-bg: #2a1a1a; --stop-border: #3d1a1a; --stop-text: #f38ba8;
+  --left-w: 280px;
 }
 [data-theme="light"] {
-  --bg:           #f0f2f5;
-  --card:         #ffffff;
-  --card-border:  #e8eaf0;
-  --input-bg:     #f7f8fc;
-  --text:         #1a1a2e;
-  --text-sub:     #888;
-  --text-muted:   #bbb;
-  --accent:       #5c6bc0;
-  --accent-hover: #4a58ad;
-  --accent-bg:    #eef0fb;
-  --accent-text:  #3949ab;
-  --btn-sec-bg:   #f0f2f5;
-  --btn-sec-border: #e0e0e0;
-  --btn-sec-text: #555;
-  --log-bg:       #1e1e2e;
-  --run-disabled-bg: #c5cae9;
-  --run-disabled-text: #fff;
-  --stop-bg:      #ffebee;
-  --stop-border:  #ffcdd2;
-  --stop-text:    #c62828;
-  --history-bg:   #f7f8fc;
+  --bg: #f0f2f5; --card: #fff; --card-border: #e8eaf0; --input-bg: #f7f8fc;
+  --text: #1a1a2e; --text-sub: #888; --text-muted: #bbb;
+  --accent: #5c6bc0; --accent-hover: #4a58ad; --accent-bg: #eef0fb; --accent-text: #3949ab;
+  --btn-sec-bg: #f0f2f5; --btn-sec-border: #e0e0e0; --btn-sec-text: #555;
+  --log-bg: #1e1e2e; --run-disabled-bg: #c5cae9; --run-disabled-text: #fff;
+  --stop-bg: #ffebee; --stop-border: #ffcdd2; --stop-text: #c62828;
 }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background 0.2s, color 0.2s; }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg); color: var(--text);
-  min-height: 100vh;
-  transition: background 0.2s, color 0.2s;
-}
-
-/* ── 전체 레이아웃: 좌/우 2단 ── */
-.layout-wrap {
-  display: flex;
-  justify-content: center;
-  height: 100vh;
-  background: var(--bg);
-}
-.layout {
-  display: flex;
-  width: 100%;
-  max-width: 1000px;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* ── 왼쪽: 컨트롤 패널 ── */
-.left-panel {
-  width: var(--left-w);
-  min-width: var(--left-w);
-  background: var(--card);
-  border-right: 1px solid var(--card-border);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.left-header {
-  padding: 20px 20px 14px;
-  border-bottom: 1px solid var(--card-border);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-shrink: 0;
-}
-h1 { font-size: 15px; font-weight: 700; }
-.subtitle { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
-
-.btn-theme {
-  padding: 5px 10px; border-radius: 16px;
-  border: 1px solid var(--card-border); background: var(--input-bg);
-  color: var(--text-sub); font-size: 11px; cursor: pointer;
-  white-space: nowrap; flex-shrink: 0;
-  transition: all 0.15s;
-}
+/* ── 네비 ── */
+.main-nav { display: flex; align-items: center; background: var(--card); border-bottom: 1px solid var(--card-border); padding: 0 20px; height: 48px; flex-shrink: 0; }
+.main-nav-title { font-size: 14px; font-weight: 700; }
+.nav-spacer { flex: 1; }
+.btn-theme { padding: 5px 10px; border-radius: 16px; border: 1px solid var(--card-border); background: var(--input-bg); color: var(--text-sub); font-size: 11px; cursor: pointer; transition: all 0.15s; }
 .btn-theme:hover { color: var(--text); border-color: var(--accent); }
+#currentTime { font-size: 12px; font-weight: 600; color: var(--text-sub); margin-right: 12px; font-variant-numeric: tabular-nums; }
 
-.left-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+/* ── 레이아웃 ── */
+.layout { display: flex; width: 100%; flex: 1; overflow: hidden; padding: 0 350px; }
 
-.section-title {
-  font-size: 12px; font-weight: 700; color: var(--text);
-  letter-spacing: 0.02em; margin-bottom: 8px;
-}
-
-/* 세로 sel-btn (왼쪽 패널) */
-.selector { display: flex; flex-direction: column; gap: 6px; }
-.sel-btn {
-  width: 100%; padding: 11px 14px; border-radius: 8px;
-  border: 2px solid var(--card-border); background: var(--input-bg);
-  font-size: 14px; font-weight: 600; color: var(--text-sub);
-  cursor: pointer; transition: all 0.15s; text-align: left;
-  display: flex; align-items: center; gap: 10px;
-}
+/* 왼쪽: 컨트롤 */
+.left-panel { width: var(--left-w); min-width: var(--left-w); background: var(--card); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; overflow-y: auto; }
+.left-header { padding: 16px 16px 12px; border-bottom: 1px solid var(--card-border); flex-shrink: 0; }
+h1 { font-size: 14px; font-weight: 700; }
+.subtitle { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+.left-body { padding: 14px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.section-title { font-size: 11px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+.selector { display: flex; flex-direction: column; gap: 5px; }
+.sel-btn { width: 100%; padding: 9px 12px; border-radius: 8px; border: 2px solid var(--card-border); background: var(--input-bg); font-size: 13px; font-weight: 600; color: var(--text-sub); cursor: pointer; transition: all 0.15s; text-align: left; display: flex; align-items: center; gap: 8px; }
 .sel-btn:hover:not(.active):not(:disabled) { border-color: var(--accent); color: var(--text); }
 .sel-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .sel-btn.active { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-text); }
-.sel-btn .label { font-size: 14px; }
-.sel-btn .desc { font-size: 11px; font-weight: 400; color: var(--text-muted); margin-left: auto; }
+.sel-btn .label { font-size: 13px; }
+.sel-btn .desc { font-size: 10px; font-weight: 400; color: var(--text-muted); margin-left: auto; }
 .sel-btn.active .desc { color: var(--accent); opacity: 0.8; }
-
-/* 실행 버튼 */
-.btn-run {
-  width: 100%; padding: 12px; border-radius: 8px; border: none;
-  background: var(--accent); color: #fff;
-  font-size: 14px; font-weight: 700; cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
-}
+.btn-run { width: 100%; padding: 11px; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s, transform 0.1s; }
 .btn-run:hover:not(:disabled) { background: var(--accent-hover); }
 .btn-run:active:not(:disabled) { transform: scale(0.98); }
 .btn-run:disabled { background: var(--run-disabled-bg); color: var(--run-disabled-text); cursor: not-allowed; }
-.btn-stop {
-  width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--stop-border);
-  background: var(--stop-bg); color: var(--stop-text);
-  font-size: 13px; font-weight: 700; cursor: pointer;
-  transition: background 0.15s; display: none; margin-top: 6px;
-}
-.btn-stop:hover { opacity: 0.85; }
+.btn-stop { width: 100%; padding: 9px; border-radius: 8px; border: 1px solid var(--stop-border); background: var(--stop-bg); color: var(--stop-text); font-size: 12px; font-weight: 700; cursor: pointer; display: none; margin-top: 5px; }
 .btn-stop.visible { display: block; }
-
-/* 슬랙 토글 */
-.slack-toggle { padding-top: 2px; }
 .toggle-label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
-.toggle-track {
-  width: 32px; height: 18px; border-radius: 18px;
-  background: var(--card-border); position: relative;
-  transition: background 0.2s; flex-shrink: 0;
-}
-.toggle-thumb {
-  width: 12px; height: 12px; border-radius: 50%; background: #fff;
-  position: absolute; top: 3px; left: 3px; transition: left 0.2s;
-}
+.toggle-track { width: 30px; height: 17px; border-radius: 17px; background: var(--card-border); position: relative; transition: background 0.2s; flex-shrink: 0; }
+.toggle-thumb { width: 11px; height: 11px; border-radius: 50%; background: #fff; position: absolute; top: 3px; left: 3px; transition: left 0.2s; }
 #slackToggle { display: none; }
 #slackToggle:checked + .toggle-track { background: #4caf50; }
-#slackToggle:checked + .toggle-track .toggle-thumb { left: 17px; }
-.toggle-text { font-size: 12px; color: var(--text-sub); }
+#slackToggle:checked + .toggle-track .toggle-thumb { left: 16px; }
+.toggle-text { font-size: 11px; color: var(--text-sub); }
 
-/* 히스토리 (왼쪽 하단) */
-.history-section { border-top: 1px solid var(--card-border); padding: 14px 16px; flex-shrink: 0; }
-.history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.history-list { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
-.history-empty { font-size: 12px; color: var(--text-muted); text-align: center; padding: 12px 0; }
-.history-item {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--history-bg); border-radius: 6px; padding: 8px 10px;
-  border: 1px solid var(--card-border); font-size: 11px;
-}
-.history-time { color: var(--text-sub); white-space: nowrap; min-width: 60px; font-size: 10px; }
-.history-tags { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
-.htag { padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
-[data-theme="dark"] .htag-prod { background: #1e2a3e; color: #89b4fa; }
-[data-theme="dark"] .htag-qa   { background: #2e1e3e; color: #cba6f7; }
-[data-theme="dark"] .htag-mweb { background: #1e2e1a; color: #a6e3a1; }
-[data-theme="dark"] .htag-smoke      { background: #1e2e2e; color: #94e2d5; }
-[data-theme="dark"] .htag-regression { background: #2e2e1e; color: #f9e2af; }
-[data-theme="light"] .htag-prod { background: #e3f2fd; color: #1565c0; }
-[data-theme="light"] .htag-qa   { background: #f3e5f5; color: #6a1b9a; }
-[data-theme="light"] .htag-mweb { background: #e8f5e9; color: #2e7d32; }
-[data-theme="light"] .htag-smoke      { background: #e0f7fa; color: #00695c; }
-[data-theme="light"] .htag-regression { background: #fff8e1; color: #e65100; }
-.history-result { margin-left: auto; flex-shrink: 0; }
-.hbadge { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; }
-[data-theme="dark"] .hbadge-passed  { background: #1a2e1a; color: #a6e3a1; }
-[data-theme="dark"] .hbadge-failed  { background: #2e1a1a; color: #f38ba8; }
-[data-theme="dark"] .hbadge-stopped { background: #2e2a1a; color: #f9e2af; }
-[data-theme="light"] .hbadge-passed  { background: #e8f5e9; color: #2e7d32; }
-[data-theme="light"] .hbadge-failed  { background: #ffebee; color: #c62828; }
-[data-theme="light"] .hbadge-stopped { background: #fff8e1; color: #e65100; }
-.history-duration { font-size: 10px; color: var(--text-sub); white-space: nowrap; }
+/* 오른쪽 패널 */
+.right-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 16px; gap: 10px; background: var(--bg); }
+.right-section { background: var(--card); border-radius: 12px; border: 1px solid var(--card-border); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
 
-/* ── 오른쪽: 로그 패널 ── */
-.right-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 20px;
-  gap: 12px;
-  background: var(--bg);
-}
-
-.right-section {
-  background: var(--card);
-  border-radius: 12px;
-  border: 1px solid var(--card-border);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.right-section-title {
-  font-size: 11px; font-weight: 600; color: var(--text-sub);
-  text-transform: uppercase; letter-spacing: 0.06em;
-  flex-shrink: 0;
-}
-
-.status-bar {
-  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-}
-.badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 5px 14px; border-radius: 20px;
-  font-size: 12px; font-weight: 600;
-}
+/* 배지/상태 */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
 [data-theme="dark"] .badge-idle    { background: #1e1e2e; color: #6c7086; border: 1px solid #313244; }
 [data-theme="dark"] .badge-running { background: #1e1e3e; color: #b4befe; border: 1px solid #45475a; }
 [data-theme="dark"] .badge-passed  { background: #1a2e1a; color: #a6e3a1; border: 1px solid #1e3e1e; }
 [data-theme="dark"] .badge-failed  { background: #2e1a1a; color: #f38ba8; border: 1px solid #3e1e1e; }
 [data-theme="dark"] .badge-stopped { background: #2e2a1a; color: #f9e2af; border: 1px solid #3e3a1e; }
-[data-theme="light"] .badge-idle    { background: #f5f5f5;  color: #888;    border: 1px solid #e0e0e0; }
-[data-theme="light"] .badge-running { background: #eef0fb;  color: #3949ab; border: 1px solid #c5cae9; }
-[data-theme="light"] .badge-passed  { background: #e8f5e9;  color: #2e7d32; border: 1px solid #c8e6c9; }
-[data-theme="light"] .badge-failed  { background: #ffebee;  color: #c62828; border: 1px solid #ffcdd2; }
-[data-theme="light"] .badge-stopped { background: #fff8e1;  color: #e65100; border: 1px solid #ffe082; }
+[data-theme="light"] .badge-idle    { background: #f5f5f5; color: #888; border: 1px solid #e0e0e0; }
+[data-theme="light"] .badge-running { background: #eef0fb; color: #3949ab; border: 1px solid #c5cae9; }
+[data-theme="light"] .badge-passed  { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+[data-theme="light"] .badge-failed  { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+[data-theme="light"] .badge-stopped { background: #fff8e1; color: #e65100; border: 1px solid #ffe082; }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .dot.spinning { animation: pulse 1s ease-in-out infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-.run-info { font-size: 12px; color: var(--text-sub); }
-
-.log-wrap {
-  flex: 0 0 200px;
-  background: var(--log-bg); border-radius: 8px;
-  padding: 14px;
-  overflow-y: auto;
-  font-family: 'Menlo', 'Monaco', monospace;
-  font-size: 12px; line-height: 1.7; color: #cdd6f4;
-}
-[data-theme="light"] .log-wrap { color: #cdd6f4; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+.run-info { font-size: 11px; color: var(--text-sub); }
+.log-wrap { flex: 1; min-height: 100px; max-height: 160px; background: var(--log-bg); border-radius: 8px; padding: 12px; overflow-y: auto; font-family: 'Menlo','Monaco',monospace; font-size: 11px; line-height: 1.7; color: #cdd6f4; }
 .log-wrap .placeholder { color: #45475a; }
 .log-line { white-space: pre-wrap; word-break: break-all; }
-
-.footer-btns { display: flex; gap: 8px; flex-shrink: 0; }
-.btn-secondary {
-  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--btn-sec-border);
-  background: var(--btn-sec-bg); color: var(--btn-sec-text);
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  transition: background 0.15s;
-}
+.btn-secondary { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--btn-sec-border); background: var(--btn-sec-bg); color: var(--btn-sec-text); font-size: 11px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
 .btn-secondary:hover { opacity: 0.8; }
 
-.btn-report-link {
-  padding: 3px 10px; border-radius: 6px;
-  font-size: 11px; font-weight: 600; text-decoration: none;
-  background: var(--accent-bg); color: var(--accent);
-  border: 1px solid var(--card-border); white-space: nowrap;
-  transition: opacity 0.15s;
-}
-.btn-report-link:hover { opacity: 0.75; }
+/* 히스토리 태그 */
+.htag { padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+[data-theme="dark"] .htag-pcweb      { background: #1e2a3e; color: #89b4fa; }
+[data-theme="dark"] .htag-mweb       { background: #1e2e1a; color: #a6e3a1; }
+[data-theme="dark"] .htag-prod       { background: #1e2a3e; color: #89b4fa; }
+[data-theme="dark"] .htag-qa         { background: #2e1e3e; color: #cba6f7; }
+[data-theme="dark"] .htag-smoke      { background: #1e2e2e; color: #94e2d5; }
+[data-theme="dark"] .htag-regression { background: #2e2e1e; color: #f9e2af; }
+[data-theme="light"] .htag-pcweb     { background: #e3f2fd; color: #1565c0; }
+[data-theme="light"] .htag-mweb      { background: #e8f5e9; color: #2e7d32; }
+[data-theme="light"] .htag-prod      { background: #e3f2fd; color: #1565c0; }
+[data-theme="light"] .htag-qa        { background: #f3e5f5; color: #6a1b9a; }
+[data-theme="light"] .htag-smoke     { background: #e0f7fa; color: #00695c; }
+[data-theme="light"] .htag-regression{ background: #fff8e1; color: #e65100; }
+.hbadge { padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+[data-theme="dark"] .hbadge-passed  { background: #1a2e1a; color: #a6e3a1; }
+[data-theme="dark"] .hbadge-failed  { background: #2e1a1a; color: #f38ba8; }
+[data-theme="dark"] .hbadge-stopped { background: #2e2a1a; color: #f9e2af; }
+[data-theme="light"] .hbadge-passed { background: #e8f5e9; color: #2e7d32; }
+[data-theme="light"] .hbadge-failed { background: #ffebee; color: #c62828; }
+[data-theme="light"] .hbadge-stopped{ background: #fff8e1; color: #e65100; }
+.history-list { display: flex; flex-direction: column; gap: 5px; overflow-y: auto; }
+.history-empty { font-size: 11px; color: var(--text-muted); text-align: center; padding: 10px 0; }
+.history-item { display: flex; align-items: center; gap: 7px; background: var(--input-bg); border-radius: 6px; padding: 7px 9px; border: 1px solid var(--card-border); font-size: 10px; cursor: pointer; transition: border-color 0.15s; }
+.history-item:hover { border-color: var(--accent); }
+.history-item.active { border-color: var(--accent); background: var(--accent-bg); }
+.history-time { color: var(--text-sub); white-space: nowrap; font-size: 10px; }
+.history-tags { display: flex; gap: 3px; flex: 1; flex-wrap: wrap; }
+.history-duration { font-size: 10px; color: var(--text-sub); white-space: nowrap; }
 
-.divider { width: 1px; background: var(--card-border); flex-shrink: 0; }
+/* 결과 영역 */
+.result-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+.stat-sep { color: var(--text-muted); font-size: 12px; margin: 0 2px; }
+.stat-pass { font-size: 12px; font-weight: 700; }
+.stat-fail { font-size: 12px; font-weight: 700; }
+.stat-skip { font-size: 12px; font-weight: 700; }
+[data-theme="dark"]  .stat-pass { color: #a6e3a1; }
+[data-theme="dark"]  .stat-fail { color: #f38ba8; }
+[data-theme="dark"]  .stat-skip { color: #6c7086; }
+[data-theme="light"] .stat-pass { color: #2e7d32; }
+[data-theme="light"] .stat-fail { color: #c62828; }
+[data-theme="light"] .stat-skip { color: #888; }
+.result-time { font-size: 10px; color: var(--text-sub); }
+
+/* 필터 버튼 */
+.result-filter-bar { display: flex; gap: 7px; flex-wrap: wrap; flex-shrink: 0; }
+.filter-btn { display: inline-flex; align-items: center; gap: 4px; padding: 5px 13px; border-radius: 20px; border: 2px solid var(--card-border); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; background: var(--input-bg); color: var(--text-sub); }
+.filter-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--text); }
+.filter-btn:disabled { opacity: 0.35; cursor: default; }
+.filter-btn.active-all  { background: var(--input-bg); color: var(--text); border-color: var(--text-muted); }
+.filter-btn.active-fail { background: #2e1a1a; color: #f38ba8; border-color: #5e2a2a; }
+.filter-btn.active-skip { background: #2a2a1e; color: #f9e2af; border-color: #5a5a2e; }
+[data-theme="light"] .filter-btn.active-fail { background: #ffebee; color: #c62828; border-color: #ffcdd2; }
+[data-theme="light"] .filter-btn.active-skip { background: #fff8e1; color: #e65100; border-color: #ffe082; }
+[data-theme="dark"]  .filter-btn[data-filter="fail"]:not(.active-fail) { color: #f38ba8; }
+[data-theme="dark"]  .filter-btn[data-filter="skip"]:not(.active-skip) { color: #6c7086; }
+[data-theme="light"] .filter-btn[data-filter="fail"]:not(.active-fail) { color: #c62828; }
+[data-theme="light"] .filter-btn[data-filter="skip"]:not(.active-skip) { color: #888; }
+
+/* 결과 스크롤 영역 */
+.result-scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.result-empty { font-size: 12px; color: var(--text-muted); text-align: center; padding: 20px 0; }
+.result-all-pass { font-size: 13px; font-weight: 700; color: #a6e3a1; text-align: center; padding: 20px 0; }
+[data-theme="light"] .result-all-pass { color: #2e7d32; }
+.collapsible-label { font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 0; }
+
+/* 실패 TC */
+.failure-item { background: var(--input-bg); border: 1px solid #3e1e1e; border-radius: 8px; overflow: hidden; }
+[data-theme="light"] .failure-item { border-color: #ffcdd2; }
+.failure-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; cursor: pointer; user-select: none; gap: 8px; }
+.failure-header:hover { background: rgba(243,139,168,0.06); }
+.failure-title { font-size: 12px; font-weight: 700; color: #f38ba8; word-break: break-all; flex: 1; }
+[data-theme="light"] .failure-title { color: #c62828; }
+.failure-arrow { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0; }
+.failure-item.open .failure-arrow { transform: rotate(180deg); }
+.failure-body { display: none; padding: 0 12px 12px; flex-direction: column; gap: 10px; }
+.failure-item.open .failure-body { display: flex; }
+.fail-step-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.fail-step-text { font-size: 11px; color: var(--text-sub); background: var(--card); border-left: 3px solid #f38ba8; padding: 6px 10px; border-radius: 0 6px 6px 0; }
+[data-theme="light"] .fail-step-text { background: #fff8f8; }
+.failure-media { display: flex; gap: 10px; }
+.failure-col { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.media-label { font-size: 10px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.05em; }
+.failure-screenshot { width: 100%; max-height: 200px; object-fit: contain; border-radius: 6px; border: 1px solid var(--card-border); cursor: pointer; }
+.failure-video { width: 100%; max-height: 200px; border-radius: 6px; border: 1px solid var(--card-border); }
+
+/* Skip 카테고리 */
+.skip-categories { display: flex; flex-direction: column; gap: 5px; }
+.skip-cat { background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; }
+.skip-cat-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 11px; cursor: pointer; user-select: none; font-size: 12px; font-weight: 600; color: var(--text); }
+.skip-cat-header:hover { background: var(--accent-bg); }
+.skip-cat-count { font-size: 10px; font-weight: 700; background: var(--accent-bg); color: var(--accent); padding: 1px 7px; border-radius: 10px; }
+.skip-cat-body { display: none; padding: 0 11px 8px; }
+.skip-cat.open .skip-cat-body { display: block; }
+.skip-tc-item { font-size: 10px; color: var(--text-sub); padding: 3px 0; border-bottom: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1px; }
+.skip-tc-item:last-child { border-bottom: none; }
+.skip-tc-title { color: var(--text); font-weight: 600; font-size: 11px; }
+.skip-tc-reason { color: var(--text-muted); font-size: 10px; }
+.btn-report-link { padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; text-decoration: none; background: var(--accent-bg); color: var(--accent); border: 1px solid var(--card-border); white-space: nowrap; }
 </style>
 </head>
 <body>
-<div class="layout-wrap"><div class="layout">
 
-  <!-- ── 왼쪽 패널 ── -->
+<nav class="main-nav">
+  <span class="main-nav-title">🧪 Tapas QA</span>
+  <div class="nav-spacer"></div>
+  <span id="currentTime"></span>
+  <button class="btn-theme" id="btnTheme">☀️</button>
+</nav>
+
+<div class="layout">
+
+  <!-- 왼쪽: 컨트롤 -->
   <div class="left-panel">
     <div class="left-header">
-      <div>
-        <h1>🧪 Tapas QA</h1>
-        <p class="subtitle">환경 선택 후 실행하세요.</p>
-      </div>
-      <button class="btn-theme" id="btnTheme">☀️</button>
+      <h1>컨트롤</h1>
+      <p class="subtitle">환경 선택 후 실행하세요.</p>
     </div>
-
     <div class="left-body">
       <div>
         <div class="section-title">플랫폼</div>
         <div class="selector" id="platformSelector">
-          <button class="sel-btn active" data-val="pcweb">
-            <span class="label">PC 웹</span>
-            <span class="desc">tapas.io</span>
-          </button>
-          <button class="sel-btn" data-val="mweb">
-            <span class="label">모바일 웹</span>
-            <span class="desc">m.tapas.io</span>
-          </button>
+          <button class="sel-btn active" data-val="pcweb"><span class="label">PC 웹</span><span class="desc">tapas.io</span></button>
+          <button class="sel-btn" data-val="mweb"><span class="label">모바일 웹</span><span class="desc">m.tapas.io</span></button>
         </div>
       </div>
-
       <div>
         <div class="section-title">환경</div>
         <div class="selector" id="envSelector">
-          <button class="sel-btn active" data-val="prod">
-            <span class="label">Prod</span>
-            <span class="desc">운영</span>
-          </button>
-          <button class="sel-btn" data-val="qa" id="btnQa">
-            <span class="label">QA</span>
-            <span class="desc">내부망</span>
-          </button>
+          <button class="sel-btn active" data-val="prod"><span class="label">Prod</span><span class="desc">운영</span></button>
+          <button class="sel-btn" data-val="qa"><span class="label">QA</span><span class="desc">내부망</span></button>
         </div>
       </div>
-
       <div>
         <div class="section-title">TC 유형</div>
         <div class="selector" id="typeSelector">
-          <button class="sel-btn active" data-val="smoke">
-            <span class="label">Smoke</span>
-            <span class="desc">@smoke</span>
-          </button>
-          <button class="sel-btn" data-val="regression">
-            <span class="label">Regression</span>
-            <span class="desc">전체</span>
-          </button>
+          <button class="sel-btn active" data-val="smoke"><span class="label">Smoke</span><span class="desc">@smoke</span></button>
+          <button class="sel-btn" data-val="regression"><span class="label">Regression</span><span class="desc">전체</span></button>
         </div>
       </div>
-
       <div>
         <button class="btn-run" id="btnRun">▶ 실행</button>
         <button class="btn-stop" id="btnStop">■ 중단</button>
-        <div class="slack-toggle" style="margin-top:12px;">
+        <div style="margin-top:10px;">
           <label class="toggle-label">
             <input type="checkbox" id="slackToggle" checked>
             <span class="toggle-track"><span class="toggle-thumb"></span></span>
@@ -352,127 +244,108 @@ h1 { font-size: 15px; font-weight: 700; }
         </div>
       </div>
     </div>
-
   </div>
 
-  <!-- ── 오른쪽 패널 ── -->
+  <!-- 오른쪽: 로그 + 결과 + 히스토리 -->
   <div class="right-panel">
 
-    <!-- 로그 섹션 -->
+    <!-- 로그 -->
     <div class="right-section" style="flex-shrink:0;">
-      <div style="display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
-        <div class="status-bar" style="margin:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:10px;">
           <span class="badge badge-idle" id="badge"><span class="dot"></span> 대기 중</span>
           <span class="run-info" id="runInfo"></span>
         </div>
-        <div class="footer-btns" style="margin:0;">
-          <button class="btn-secondary" id="btnReport">📊 리포트</button>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-secondary" id="btnReport">📊 Allure</button>
           <button class="btn-secondary" id="btnClear">🗑 지우기</button>
         </div>
       </div>
-      <div class="log-wrap" id="log">
-        <span class="placeholder">실행 결과가 여기에 표시됩니다.</span>
-      </div>
+      <div class="log-wrap" id="log"><span class="placeholder">실행 결과가 여기에 표시됩니다.</span></div>
     </div>
 
-    <!-- 히스토리 섹션 -->
-    <div class="right-section" style="flex:1; min-height:0;">
-      <div style="display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
-        <span class="right-section-title">실행 히스토리</span>
+    <!-- 결과 (메인 영역) -->
+    <div class="right-section" id="resultSection" style="flex:1;min-height:0;display:none;">
+      <div class="result-header" id="resultHeader"></div>
+      <div class="result-filter-bar" id="resultFilterBar"></div>
+      <div class="result-scroll" id="resultScroll"></div>
+    </div>
+
+    <!-- 히스토리 (스크롤, 컴팩트) -->
+    <div class="right-section" style="flex-shrink:0;max-height:160px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+        <span style="font-size:11px;font-weight:700;color:var(--text-sub);text-transform:uppercase;letter-spacing:0.04em;">실행 히스토리</span>
         <button class="btn-secondary" id="btnClearHistory" style="font-size:10px;padding:3px 8px;">전체 삭제</button>
       </div>
-      <div class="history-list" id="historyList" style="flex:1; overflow-y:auto; min-height:0;">
+      <div class="history-list" id="historyList" style="overflow-y:auto;flex:1;">
         <div class="history-empty">아직 실행 기록이 없습니다.</div>
       </div>
     </div>
 
   </div>
 </div>
-</div>
 
 <script>
-let selectedPlatform = 'pcweb';
-let selectedEnv = 'prod';
-let selectedType = 'smoke';
-let runStartTime = null;
-let currentRunId = null;
+let selectedPlatform = 'pcweb', selectedEnv = 'prod', selectedType = 'smoke';
+let runStartTime = null, currentRunId = null;
 
-const html = document.documentElement;
-const btnTheme = document.getElementById('btnTheme');
-const savedTheme = localStorage.getItem('qaDashTheme') || 'dark';
-setTheme(savedTheme);
-
-btnTheme.addEventListener('click', () => {
-  setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
-});
-
-function setTheme(theme) {
-  html.dataset.theme = theme;
-  btnTheme.textContent = theme === 'dark' ? '☀️' : '🌙';
-  localStorage.setItem('qaDashTheme', theme);
+// ── KST 시계 ──
+function updateClock() {
+  const now = new Date();
+  const date = now.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul', month: 'long', day: 'numeric', weekday: 'short' });
+  const time = now.toLocaleTimeString('ko-KR', { timeZone: 'Asia/Seoul', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+  document.getElementById('currentTime').textContent = `${date} ${time}`;
 }
+updateClock(); setInterval(updateClock, 1000);
 
-document.getElementById('platformSelector').addEventListener('click', e => {
-  const btn = e.target.closest('.sel-btn');
-  if (!btn) return;
-  document.querySelectorAll('#platformSelector .sel-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedPlatform = btn.dataset.val;
+// ── 테마 ──
+const html = document.documentElement;
+setTheme(localStorage.getItem('qaDashTheme') || 'dark');
+document.getElementById('btnTheme').addEventListener('click', () => setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
+function setTheme(t) { html.dataset.theme = t; document.getElementById('btnTheme').textContent = t === 'dark' ? '☀️' : '🌙'; localStorage.setItem('qaDashTheme', t); }
+
+// ── 셀렉터 ──
+['platform','env','type'].forEach(id => {
+  document.getElementById(`${id}Selector`).addEventListener('click', e => {
+    const btn = e.target.closest('.sel-btn'); if (!btn || btn.disabled) return;
+    document.querySelectorAll(`#${id}Selector .sel-btn`).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (id === 'platform') selectedPlatform = btn.dataset.val;
+    if (id === 'env')      selectedEnv = btn.dataset.val;
+    if (id === 'type')     selectedType = btn.dataset.val;
+  });
 });
 
-document.getElementById('envSelector').addEventListener('click', e => {
-  const btn = e.target.closest('.sel-btn');
-  if (!btn || btn.disabled) return;
-  document.querySelectorAll('#envSelector .sel-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedEnv = btn.dataset.val;
-});
-
-document.getElementById('typeSelector').addEventListener('click', e => {
-  const btn = e.target.closest('.sel-btn');
-  if (!btn) return;
-  document.querySelectorAll('#typeSelector .sel-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedType = btn.dataset.val;
-});
-
+// ── SSE ──
 function connectSSE() {
   const es = new EventSource('/events');
   es.onmessage = e => {
-    const data = JSON.parse(e.data);
-    if (data.type === 'start')        onStart(data);
-    else if (data.type === 'log')     appendLog(data.text);
-    else if (data.type === 'done')    onDone(data);
-    else if (data.type === 'stopped') onStopped();
+    const d = JSON.parse(e.data);
+    if (d.type === 'start')   onStart(d);
+    if (d.type === 'log')     appendLog(d.text);
+    if (d.type === 'done')    onDone(d);
+    if (d.type === 'stopped') onStopped();
   };
   es.onerror = () => { es.close(); setTimeout(connectSSE, 2000); };
 }
 connectSSE();
 
+// ── 버튼 ──
 document.getElementById('btnRun').addEventListener('click', async () => {
   clearLog();
   const slack = document.getElementById('slackToggle').checked;
-  await fetch('/run', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ platform: selectedPlatform, env: selectedEnv, type: selectedType, slack }),
-  });
+  await fetch('/run', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ platform: selectedPlatform, env: selectedEnv, type: selectedType, slack }) });
 });
 document.getElementById('btnStop').addEventListener('click', () => fetch('/stop', { method: 'POST' }));
 document.getElementById('btnReport').addEventListener('click', () => window.open('/results/latest', '_blank'));
 document.getElementById('btnClear').addEventListener('click', clearLog);
-document.getElementById('btnClearHistory').addEventListener('click', () => {
-  localStorage.removeItem('qaHistory');
-  renderHistory();
-});
+document.getElementById('btnClearHistory').addEventListener('click', () => { localStorage.removeItem('qaHistory'); renderHistory(); });
 
+// ── 실행 이벤트 ──
 function onStart({ platform, env, testType, runId }) {
-  runStartTime = Date.now();
-  currentRunId = runId;
+  runStartTime = Date.now(); currentRunId = runId;
   setBadge('running', '실행 중');
-  const platformLabel = platform === 'mweb' ? 'MWeb' : 'PC Web';
-  document.getElementById('runInfo').textContent =
-    `${platformLabel} / ${env.toUpperCase()} / ${testType === 'smoke' ? 'Smoke' : 'Regression'}`;
+  document.getElementById('runInfo').textContent = `${platform === 'mweb' ? 'MWeb' : 'PC Web'} / ${env.toUpperCase()} / ${testType === 'smoke' ? 'Smoke' : 'Regression'}`;
   document.getElementById('btnRun').disabled = true;
   document.getElementById('btnStop').classList.add('visible');
 }
@@ -481,6 +354,7 @@ function onDone({ code, runId }) {
   document.getElementById('btnRun').disabled = false;
   document.getElementById('btnStop').classList.remove('visible');
   addHistory(code === 0 ? 'passed' : 'failed', runId);
+  saveAndShowResult(runId);
 }
 function onStopped() {
   setBadge('stopped', '중단됨');
@@ -489,62 +363,190 @@ function onStopped() {
   addHistory('stopped', currentRunId);
 }
 function setBadge(type, label) {
-  const badge = document.getElementById('badge');
-  badge.className = `badge badge-${type}`;
-  badge.innerHTML = `<span class="dot${type === 'running' ? ' spinning' : ''}"></span> ${label}`;
+  const b = document.getElementById('badge');
+  b.className = `badge badge-${type}`;
+  b.innerHTML = `<span class="dot${type==='running'?' spinning':''}"></span> ${label}`;
 }
 function appendLog(text) {
   const log = document.getElementById('log');
-  const ph = log.querySelector('.placeholder');
-  if (ph) ph.remove();
-  const line = document.createElement('div');
-  line.className = 'log-line';
-  line.textContent = text;
-  log.appendChild(line);
-  log.scrollTop = log.scrollHeight;
+  const ph = log.querySelector('.placeholder'); if (ph) ph.remove();
+  const line = document.createElement('div'); line.className = 'log-line'; line.textContent = text;
+  log.appendChild(line); log.scrollTop = log.scrollHeight;
 }
 function clearLog() {
   document.getElementById('log').innerHTML = '<span class="placeholder">실행 결과가 여기에 표시됩니다.</span>';
-  setBadge('idle', '대기 중');
-  document.getElementById('runInfo').textContent = '';
+  setBadge('idle', '대기 중'); document.getElementById('runInfo').textContent = '';
 }
 
-function loadHistory() {
-  try { return JSON.parse(localStorage.getItem('qaHistory') || '[]'); } catch { return []; }
-}
+// ── 히스토리 ──
+function loadHistory() { try { return JSON.parse(localStorage.getItem('qaHistory') || '[]'); } catch { return []; } }
 function saveHistory(list) { localStorage.setItem('qaHistory', JSON.stringify(list.slice(0, 50))); }
 function addHistory(result, runId) {
   const duration = runStartTime ? Math.round((Date.now() - runStartTime) / 1000) : null;
   const list = loadHistory();
-  list.unshift({
-    time: new Date().toLocaleString('ko-KR', { month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', hour12: false }),
-    platform: selectedPlatform, env: selectedEnv, type: selectedType, result, duration, runId,
-  });
-  saveHistory(list);
-  renderHistory();
+  list.unshift({ time: new Date().toLocaleString('ko-KR', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}), platform: selectedPlatform, env: selectedEnv, type: selectedType, result, duration, runId });
+  saveHistory(list); renderHistory();
 }
 function renderHistory() {
   const list = loadHistory();
   const el = document.getElementById('historyList');
   if (!list.length) { el.innerHTML = '<div class="history-empty">아직 실행 기록이 없습니다.</div>'; return; }
-  const resultLabel = { passed: '통과', failed: '실패', stopped: '중단' };
+  const rl = { passed:'통과', failed:'실패', stopped:'중단' };
   el.innerHTML = list.map(h => `
-    <div class="history-item">
+    <div class="history-item ${h.runId === currentResultRunId ? 'active' : ''}" onclick="loadResultByRunId('${h.runId}')">
       <span class="history-time">${h.time}</span>
       <div class="history-tags">
-        <span class="htag htag-${h.platform || 'pcweb'}">${h.platform === 'mweb' ? '모바일웹' : 'PC웹'}</span>
+        <span class="htag htag-${h.platform}">${h.platform==='mweb'?'MWeb':'PC웹'}</span>
         <span class="htag htag-${h.env}">${h.env.toUpperCase()}</span>
-        <span class="htag htag-${h.type}">${h.type === 'smoke' ? 'Smoke' : 'Regression'}</span>
+        <span class="htag htag-${h.type}">${h.type==='smoke'?'Smoke':'Regression'}</span>
       </div>
-      <span class="hbadge hbadge-${h.result}">${resultLabel[h.result]}</span>
+      <span class="hbadge hbadge-${h.result}">${rl[h.result]}</span>
       ${h.duration ? `<span class="history-duration">${fmt(h.duration)}</span>` : ''}
-      ${h.runId ? `<a class="btn-report-link" href="/results/${h.runId}/" target="_blank">📊</a>` : ''}
     </div>`).join('');
 }
 function fmt(s) { return s < 60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60}s`; }
 
+// ── 결과 저장/표시 ──
+function loadResultHistory() { try { return JSON.parse(localStorage.getItem('qaResultHistory') || '[]'); } catch { return []; } }
+function saveResultHistory(list) { localStorage.setItem('qaResultHistory', JSON.stringify(list.slice(0, 20))); }
+
+let currentResultRunId = null;
+
+async function saveAndShowResult(runId) {
+  try {
+    const resp = await fetch('/api/results/latest'); if (!resp.ok) return;
+    const { stats, failures, dynamicSkips } = await resp.json();
+    const history = loadResultHistory();
+    const duration = runStartTime ? Math.round((Date.now() - runStartTime) / 1000) : 0;
+    history.unshift({
+      runId: runId || Date.now().toString(),
+      time: new Date().toLocaleString('ko-KR', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}),
+      platform: selectedPlatform, env: selectedEnv, type: selectedType,
+      stats, failures, dynamicSkips, duration,
+    });
+    saveResultHistory(history);
+    showResult(history[0]);
+  } catch(e) { console.error(e); }
+}
+
+function loadResultByRunId(runId) {
+  const list = loadResultHistory();
+  const r = list.find(r => r.runId === runId);
+  if (r) showResult(r);
+}
+
+function showResult(r) {
+  currentResultRunId = r.runId;
+  renderHistory(); // 히스토리 active 갱신
+
+  const pl = p => p === 'mweb' ? 'MWeb' : 'PC웹';
+  const hasFail = r.failures && r.failures.length > 0;
+  const hasSkip = r.dynamicSkips && r.dynamicSkips.length > 0;
+
+  // 헤더
+  document.getElementById('resultHeader').innerHTML = `
+    <span class="result-time">${r.time}</span>
+    <span class="htag htag-${r.platform}">${pl(r.platform)}</span>
+    <span class="htag htag-${r.env}">${r.env.toUpperCase()}</span>
+    <span class="htag htag-${r.type}">${r.type === 'smoke' ? 'Smoke' : 'Regression'}</span>
+    <span class="stat-sep">|</span>
+    <span class="stat-pass">Pass ${r.stats.passed}</span>
+    <span class="stat-sep">|</span>
+    <span class="stat-fail">Fail ${r.stats.failed}</span>
+    <span class="stat-sep">|</span>
+    <span class="stat-skip">Skip ${r.stats.skipped}</span>
+    ${r.duration ? `<span class="result-time">· ${fmt(r.duration)}</span>` : ''}
+  `;
+
+  // 필터 버튼
+  document.getElementById('resultFilterBar').innerHTML = `
+    <button class="filter-btn active-all" data-filter="all" onclick="setResultFilter('all')">전체</button>
+    <button class="filter-btn" data-filter="fail" onclick="setResultFilter('fail')" ${!hasFail?'disabled':''}>Fail · ${r.stats.failed}</button>
+    <button class="filter-btn" data-filter="skip" onclick="setResultFilter('skip')" ${!hasSkip?'disabled':''}>Skip · ${r.stats.skipped}</button>
+  `;
+
+  // 결과 내용
+  document.getElementById('resultScroll').innerHTML = `
+    ${hasFail ? `
+    <div class="fail-section">
+      <div class="collapsible-label">❌ 실패 TC (${r.failures.length}건)</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+        ${r.failures.map(f => `
+          <div class="failure-item open">
+            <div class="failure-header" onclick="this.parentElement.classList.toggle('open')">
+              <span class="failure-title">${f.title}</span>
+              <span class="failure-arrow">▾</span>
+            </div>
+            <div class="failure-body">
+              ${f.failStep ? `<div><div class="fail-step-label">실패 스텝</div><div class="fail-step-text">${f.failStep}</div></div>` : ''}
+              <div class="failure-media">
+                ${f.screenshot ? `<div class="failure-col"><div class="media-label">스크린샷</div><img class="failure-screenshot" src="/artifacts/${f.screenshot}" alt="" onclick="window.open(this.src,'_blank')" onerror="this.parentElement.style.display='none'"></div>` : ''}
+                ${f.video ? `<div class="failure-col"><div class="media-label">영상 기록</div><video class="failure-video" controls src="/artifacts/${f.video}"></video></div>` : ''}
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
+    ${hasSkip ? `
+    <div class="skip-section">
+      <div class="collapsible-label">⏭ Skip 상세 (${r.dynamicSkips.length}건)</div>
+      <div class="skip-categories" style="margin-top:6px;">${renderSkipCategories(r.dynamicSkips)}</div>
+    </div>` : ''}
+    ${!hasFail && !hasSkip ? `<div class="result-all-pass">✅ 모든 TC 통과</div>` : ''}
+  `;
+
+  document.getElementById('resultSection').style.display = '';
+}
+
+function setResultFilter(filter) {
+  document.querySelectorAll('#resultFilterBar .filter-btn').forEach(b => b.className = 'filter-btn');
+  const active = document.querySelector(`#resultFilterBar .filter-btn[data-filter="${filter}"]`);
+  if (active) active.className = `filter-btn active-${filter}`;
+  const failSec = document.querySelector('#resultScroll .fail-section');
+  const skipSec = document.querySelector('#resultScroll .skip-section');
+  if (failSec) failSec.style.display = (filter === 'all' || filter === 'fail') ? '' : 'none';
+  if (skipSec) skipSec.style.display = (filter === 'all' || filter === 'skip') ? '' : 'none';
+}
+
+// ── Skip 카테고리 ──
+function categorizeskip(reason) {
+  if (!reason) return '기타';
+  if (/@skip|자동화 제외|OAuth|파괴적|탈퇴|신규 이메일/.test(reason)) return '자동화 제외';
+  if (/@qa|QA 환경/.test(reason)) return 'QA 전용';
+  if (/PCW|모바일웹 제외/.test(reason)) return 'PC 전용';
+  if (/미운영|클릭 불가|콘텐츠 미운영|배너|프로모션|없음.*동적/.test(reason)) return '미운영 콘텐츠';
+  if (/계정|이용권|업데이트 없음|티어|잉크|구독|미인증/.test(reason)) return '계정 상태 의존';
+  if (/구조 변경|존재하지 않음|폼 노출|페이지에 없음/.test(reason)) return '페이지 구조 변경';
+  return '기타';
+}
+function renderSkipCategories(dynamicSkips) {
+  const grouped = {};
+  for (const s of dynamicSkips) { const c = categorizeskip(s.reason); if (!grouped[c]) grouped[c]=[]; grouped[c].push(s); }
+  return Object.entries(grouped).sort((a,b)=>b[1].length-a[1].length).map(([cat,items]) => `
+    <div class="skip-cat">
+      <div class="skip-cat-header" onclick="this.parentElement.classList.toggle('open')">
+        <span>${cat}</span><span class="skip-cat-count">${items.length}건</span>
+      </div>
+      <div class="skip-cat-body">
+        ${items.map(s=>`<div class="skip-tc-item"><span class="skip-tc-title">${s.title}</span><span class="skip-tc-reason">${s.reason}</span></div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ── 초기 로드 ──
+async function loadLatestOnOpen() {
+  const list = loadResultHistory();
+  if (list.length) { showResult(list[0]); return; }
+  try {
+    const resp = await fetch('/api/results/latest'); if (!resp.ok) return;
+    const { stats, failures, dynamicSkips } = await resp.json();
+    const r = { runId: 'latest', time: '최근 실행', platform: 'pcweb', env: 'prod', type: 'regression', stats, failures, dynamicSkips, duration: 0 };
+    showResult(r);
+  } catch {}
+}
+
 renderHistory();
+loadLatestOnOpen();
 </script>
 </body>
 </html>

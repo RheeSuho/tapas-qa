@@ -132,18 +132,32 @@ const blocks = [
 ];
 
 if (dynamicSkips.length > 0) {
-  // reason 기준 그룹핑
-  const grouped = {};
-  for (const t of dynamicSkips) {
-    if (!grouped[t.reason]) grouped[t.reason] = [];
-    grouped[t.reason].push(t.title);
+  // 카테고리 분류 함수
+  function categorize(reason) {
+    if (!reason) return '기타';
+    if (/@skip|자동화 제외|OAuth|파괴적|탈퇴|신규 이메일/.test(reason)) return '자동화 제외';
+    if (/@qa|QA 환경/.test(reason)) return 'QA 전용';
+    if (/PCW|모바일웹 제외/.test(reason)) return 'PC 전용';
+    if (/미운영|클릭 불가|콘텐츠 미운영|배너|프로모션|없음.*동적/.test(reason)) return '미운영 콘텐츠';
+    if (/계정|이용권|업데이트 없음|티어|잉크|구독|미인증/.test(reason)) return '계정 상태 의존';
+    if (/구조 변경|존재하지 않음|폼 노출|페이지에 없음/.test(reason)) return '페이지 구조 변경';
+    return '기타';
   }
-  const skipList = Object.entries(grouped).map(([reason, titles]) =>
-    `*${reason}*\n` + titles.map(t => ` • ${t}`).join('\n')
-  ).join('\n\n');
+
+  // 카테고리별 건수 집계
+  const categorized = {};
+  for (const t of dynamicSkips) {
+    const cat = categorize(t.reason);
+    if (!categorized[cat]) categorized[cat] = 0;
+    categorized[cat]++;
+  }
+  const skipList = Object.entries(categorized)
+    .sort((a, b) => b[1] - a[1])
+    .map(([cat, count]) => ` • ${cat}: ${count}건`)
+    .join('\n');
   blocks.push({
     type: 'section',
-    text: { type: 'mrkdwn', text: `*Skip 사유 (${dynamicSkips.length}건)*\n${skipList}` }
+    text: { type: 'mrkdwn', text: `*Skip ${dynamicSkips.length}건* (상세: Allure 대시보드)\n${skipList}` }
   });
 }
 
