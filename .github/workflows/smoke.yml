@@ -70,3 +70,41 @@ jobs:
       - name: Fail if tests failed
         if: steps.smoke.outcome == 'failure'
         run: exit 1
+
+  mweb-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps webkit
+
+      - name: Run MWeb smoke tests
+        id: mweb_smoke
+        run: npm run test:mweb:smoke
+        env:
+          TAPAS_EMAIL: ${{ secrets.TAPAS_EMAIL }}
+          TAPAS_PASSWORD: ${{ secrets.TAPAS_PASSWORD }}
+          AUTH_STATE_B64: ${{ secrets.AUTH_STATE_B64 }}
+        continue-on-error: true
+
+      - name: Send Slack notification
+        if: always()
+        run: |
+          DASHBOARD_URL="https://rheesuho.github.io/tapas-qa"
+          node scripts/notify-slack.js "MWeb / PROD / Smoke" "$DASHBOARD_URL" mweb prod
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Fail if tests failed
+        if: steps.mweb_smoke.outcome == 'failure'
+        run: exit 1
