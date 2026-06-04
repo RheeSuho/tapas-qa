@@ -177,24 +177,38 @@ if (dynamicSkips.length > 0) {
 }
 
 if (failedTests.length > 0) {
-  const failList = failedTests.slice(0, 10).map(t => {
-    const retryLabel = t.retryCount > 0 ? ` _(재시도 ${t.retryCount}회 후 실패)_` : '';
-    return `• ${t.title}${retryLabel}`;
-  }).join('\n');
-  const more = failedTests.length > 10 ? `\n외 ${failedTests.length - 10}개 더...` : '';
-  blocks.push({
-    type: 'section',
-    text: { type: 'mrkdwn', text: `*실패 항목*\n${failList}${more}` }
-  });
+  // TPS 테스트 실패 vs setup/기타 실패 분리
+  const tpsFailures = failedTests.filter(t => /\[TPS-/i.test(t.title));
+  const setupFailures = failedTests.filter(t => !/\[TPS-/i.test(t.title));
 
-  // 실패 항목별 Jira 등록 버튼 (최대 5개)
-  const jiraButtons = failedTests.slice(0, 5).map(t => ({
-    type: 'button',
-    text: { type: 'plain_text', text: `${t.title.match(/\[TPS-[^\]]+\]/i)?.[0] ?? t.title.slice(0, 20)} 결함 등록` },
-    url: makeJiraUrl(t, REPORT_URL),
-    style: 'danger',
-  }));
-  blocks.push({ type: 'actions', elements: jiraButtons });
+  if (setupFailures.length > 0) {
+    const setupList = setupFailures.map(t => `• 🔧 ${t.title}`).join('\n');
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*Setup 실패 (세션 만료 또는 환경 오류)*\n${setupList}` }
+    });
+  }
+
+  if (tpsFailures.length > 0) {
+    const failList = tpsFailures.slice(0, 10).map(t => {
+      const retryLabel = t.retryCount > 0 ? ` _(재시도 ${t.retryCount}회 후 실패)_` : '';
+      return `• ${t.title}${retryLabel}`;
+    }).join('\n');
+    const more = tpsFailures.length > 10 ? `\n외 ${tpsFailures.length - 10}개 더...` : '';
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*실패 항목*\n${failList}${more}` }
+    });
+
+    // Jira 등록 버튼 — TPS 테스트만 (최대 5개)
+    const jiraButtons = tpsFailures.slice(0, 5).map(t => ({
+      type: 'button',
+      text: { type: 'plain_text', text: `${t.title.match(/\[TPS-[^\]]+\]/i)[0]} 결함 등록` },
+      url: makeJiraUrl(t, REPORT_URL),
+      style: 'danger',
+    }));
+    blocks.push({ type: 'actions', elements: jiraButtons });
+  }
 }
 
 const btnStyle = allPassed ? 'primary' : 'danger';
