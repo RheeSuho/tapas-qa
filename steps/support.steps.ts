@@ -9,7 +9,7 @@ When('잉크 수량 입력 후 서포트를 완료한다', async ({ page }) => {
     await expect(page.locator('body')).toBeVisible(); return;
   }
   await input.click();
-  await input.pressSequentially('1', { delay: 50 });
+  await input.pressSequentially('25', { delay: 50 });
   await page.waitForTimeout(500);
   await page.evaluate(() => {
     const btn = document.querySelector('a.js-post-support-btn');
