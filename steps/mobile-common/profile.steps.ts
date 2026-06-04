@@ -82,7 +82,7 @@ When('임의의 잉크 티어 클릭', async ({ page }) => {
     await tierBtn.first().click();
     await page.waitForTimeout(600);
   } else {
-    test.skip(true, '잉크 티어 버튼 없음 — Ink shop 페이지 구조 확인 필요');
+    test.skip(true, '잉크 티어 버튼 없음 — 미운영 상태');
   }
 });
 
