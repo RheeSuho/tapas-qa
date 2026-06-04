@@ -204,8 +204,11 @@ When('작품홈 Episode 탭 > 무료 회차 클릭', async ({ page }) => {
 // ──── 구독 / 버튼 ────
 
 When('구독 버튼 클릭', async ({ page }) => {
-  const btn = page.locator('button, a').filter({ hasText: /subscribe/i }).first();
-  if ((await btn.count()) > 0) { await btn.click(); return; }
+  // 미구독 작품으로 이동 후 a.js-subscribe-btn 클릭
+  await page.goto(`${MWEB}${TEST_DATA.series.subscribeTestMweb}`, { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(1000);
+  const btn = page.locator('a.js-subscribe-btn');
+  if ((await btn.count()) > 0) { await btn.first().click(); await page.waitForTimeout(800); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
