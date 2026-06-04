@@ -86,7 +86,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps webkit
+        run: npx playwright install --with-deps webkit chromium
 
       - name: Run MWeb smoke tests
         id: mweb_smoke
