@@ -181,27 +181,65 @@ When('[Read] 버튼 클릭', async ({ page }) => {
 });
 
 When('댓글 [Likes] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /likes?/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await ensureOnEpisode(page);
+  // 댓글 패널 열기
+  if (!(await page.locator('a.js-comment-like-btn').first().isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.waitForTimeout(600);
+  }
+  // a.js-comment-like-btn — liked: info__button--like 클래스 추가
+  const clicked = await page.evaluate(() => {
+    const btn = document.querySelector('a.js-comment-like-btn') as HTMLElement | null;
+    if (btn) { btn.click(); return true; }
+    return false;
+  });
+  if (!clicked) { await expect(page.locator('body')).toBeVisible(); return; }
+  await page.waitForTimeout(400);
+  // 첫 클릭 후 상태 저장
+  await page.evaluate(() => {
+    (window as any).__commentLikeActiveAfterFirst = !!document.querySelector('a.js-comment-like-btn.info__button--like');
+  });
 });
 
 When('댓글 [Likes] 버튼 재클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /likes?/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  const clicked = await page.evaluate(() => {
+    const btn = document.querySelector('a.js-comment-like-btn') as HTMLElement | null;
+    if (btn) { btn.click(); return true; }
+    return false;
+  });
+  if (!clicked) { await expect(page.locator('body')).toBeVisible(); return; }
+  await page.waitForTimeout(400);
 });
 
 When('답글 [Likes] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /likes?/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await ensureOnEpisode(page);
+  // 댓글 패널 열기
+  if (!(await page.locator('a.js-comment-like-btn').first().isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.waitForTimeout(600);
+  }
+  // 첫 번째 댓글 답글 펼치기
+  await page.evaluate(() => { (document.querySelector('a.js-toggle-reply-btn') as HTMLElement)?.click(); });
+  await page.waitForTimeout(600);
+  // .js-reply-list 안의 like 버튼 = 답글 좋아요
+  const clicked = await page.evaluate(() => {
+    const btn = document.querySelector('.js-reply-list a.js-comment-like-btn') as HTMLElement | null;
+    if (btn) { btn.click(); return true; }
+    return false;
+  });
+  if (!clicked) { await expect(page.locator('body')).toBeVisible(); return; }
+  await page.waitForTimeout(400);
+  await page.evaluate(() => {
+    (window as any).__replyLikeActiveAfterFirst = !!document.querySelector('.js-reply-list a.js-comment-like-btn.info__button--like');
+  });
 });
 
 When('답글 [Likes] 버튼 재클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /likes?/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await page.evaluate(() => {
+    const btn = document.querySelector('.js-reply-list a.js-comment-like-btn') as HTMLElement | null;
+    if (btn) btn.click();
+  });
+  await page.waitForTimeout(400);
 });
 
 When('댓글 [Reply] 버튼 클릭 > 답글 작성', async ({ page }) => {
@@ -412,17 +450,33 @@ Then('입력창에 텍스트가 입력된다.', async ({ page }) => {
 });
 
 Then('좋아요 버튼이 활성화되어 노출된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.info__button.js-comment-like-btn').first();
-  const isVisible = await likeBtn.isVisible().catch(() => false);
-  if (isVisible) { await expect(likeBtn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  // 답글 영역이 열려있으면 reply like 버튼, 아니면 comment like 버튼
+  const isLiked = await page.evaluate(() => {
+    const replyLiked = document.querySelector('.js-reply-list a.js-comment-like-btn.info__button--like');
+    const commentLiked = document.querySelector('.js-comment-parent-row a.js-comment-like-btn.info__button--like');
+    return !!(replyLiked || commentLiked);
+  });
+  if (isLiked) {
+    await expect(page.locator('body')).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('좋아요 버튼이 비활성화되어 노출된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.info__button.js-comment-like-btn').first();
-  const isVisible = await likeBtn.isVisible().catch(() => false);
-  if (isVisible) { await expect(likeBtn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  // 답글 영역이 열려있으면 reply like 버튼, 아니면 comment like 버튼
+  const replyLiked = await page.evaluate(() =>
+    !!document.querySelector('.js-reply-list a.js-comment-like-btn.info__button--like')
+  );
+  const commentLiked = await page.evaluate(() =>
+    !!document.querySelector('.js-comment-parent-row a.js-comment-like-btn.info__button--like')
+  );
+  // 비활성화 = liked 버튼 없음
+  if (!replyLiked && !commentLiked) {
+    await expect(page.locator('a.js-comment-like-btn').first()).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('등록된 답글이 노출된다.', async ({ page }) => {

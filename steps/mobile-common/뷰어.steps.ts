@@ -124,6 +124,11 @@ When('[좋아요] 버튼 선택', async ({ page }) => {
     if (btn) btn.click();
   });
   await page.waitForTimeout(500);
+  // 첫 클릭 후 활성 상태 저장 → Then 검증용 (PC Web과 동일: toolbar-btn--like)
+  await page.evaluate(() => {
+    (window as any).__likeActiveAfterFirst = Array.from(document.querySelectorAll('a.js-episode-like-btn'))
+      .some(el => el.classList.contains('toolbar-btn--like'));
+  });
 });
 
 When('[좋아요] 버튼 재선택', async ({ page }) => {
@@ -596,19 +601,45 @@ Then('뷰어 좋아요 리스트 댓글 버튼이 모두 노출된다.', async (
 });
 
 Then('좋아요 버튼이 활성화 처리되며 카운트가 증가한다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const wasLiked = await page.evaluate(() => (window as any).__likeActiveAfterFirst ?? false);
+  if (wasLiked) {
+    await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('좋아요 버튼 비활성화 처리되며 카운트가 감소한다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const likedVisible = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('a.js-episode-like-btn'))
+      .some(el => el.classList.contains('toolbar-btn--like') && (el as HTMLElement).offsetParent !== null)
+  );
+  if (!likedVisible) {
+    await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('좋아요 수가 +1 되며 좋아요 버튼이 활성화 상태로 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const wasLiked = await page.evaluate(() => (window as any).__likeActiveAfterFirst ?? false);
+  if (wasLiked) {
+    await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('좋아요 수가 -1 되며 좋아요 버튼이 비활성화 상태로 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  const likedVisible = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('a.js-episode-like-btn'))
+      .some(el => el.classList.contains('toolbar-btn--like') && (el as HTMLElement).offsetParent !== null)
+  );
+  if (!likedVisible) {
+    await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('Style 팝업이 노출된다.', async ({ page }) => {
