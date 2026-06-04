@@ -43,10 +43,11 @@ function makeJiraUrl(test, runUrl) {
 
 const RESULTS_FILE = path.join(__dirname, '../test-results/results.json');
 const WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
-const SUITE_NAME  = process.argv[2] || 'BDD';
-const REPORT_URL  = process.argv[3] || null;
-const PLATFORM    = process.argv[4] || 'pcweb';  // 'pcweb' | 'mweb'
-const ENV         = process.argv[5] || 'prod';   // 'prod' | 'qa'
+const SUITE_NAME      = process.argv[2] || 'BDD';
+const REPORT_URL      = process.argv[3] || null;   // 대시보드 메인 URL
+const PLATFORM        = process.argv[4] || 'pcweb';
+const ENV             = process.argv[5] || 'prod';
+const ALLURE_RUN_URL  = process.argv[6] || null;   // 이번 run 전용 Allure URL
 
 const ENV_URL = PLATFORM === 'mweb'
   ? (ENV === 'qa' ? 'https://qa-m.tapas.io (MWeb QA)' : 'https://m.tapas.io (MWeb Prod)')
@@ -196,7 +197,6 @@ if (failedTests.length > 0) {
   blocks.push({ type: 'actions', elements: jiraButtons });
 }
 
-const ALLURE_URL = 'https://rheesuho.github.io/tapas-qa';
 const btnStyle = allPassed ? 'primary' : 'danger';
 const actionBtns = [];
 if (REPORT_URL) {
@@ -207,11 +207,13 @@ if (REPORT_URL) {
     style: btnStyle,
   });
 }
-actionBtns.push({
-  type: 'button',
-  text: { type: 'plain_text', text: '결과 리포트' },
-  url: ALLURE_URL,
-});
+if (ALLURE_RUN_URL) {
+  actionBtns.push({
+    type: 'button',
+    text: { type: 'plain_text', text: '결과 리포트' },
+    url: ALLURE_RUN_URL,
+  });
+}
 blocks.push({ type: 'actions', elements: actionBtns });
 
 const body = JSON.stringify({ blocks });

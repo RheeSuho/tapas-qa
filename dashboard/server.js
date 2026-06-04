@@ -8,6 +8,11 @@ const ROOT = path.join(__dirname, '..');
 const ARCHIVE_DIR = path.join(ROOT, 'allure-report-archive');
 const MAX_ARCHIVES = 10;
 let currentProcess = null;
+
+const { networkInterfaces } = require('os');
+const localIp = Object.values(networkInterfaces()).flat()
+  .find(n => n.family === 'IPv4' && !n.internal)?.address || 'localhost';
+const BASE_URL = `http://${localIp}:${PORT}`;
 let sseClients = [];
 
 const SCRIPTS = {
@@ -236,9 +241,10 @@ http.createServer((req, res) => {
         if (slack) {
           const platformLabel = platform === 'mweb' ? 'MWeb' : 'PC Web';
           const suiteName = `${platformLabel} / ${env.toUpperCase()} / ${type === 'smoke' ? 'Smoke' : 'Regression'}`;
-          const reportUrl = `http://localhost:${PORT}/`;
+          const dashboardUrl = `${BASE_URL}/`;
+          const allureRunUrl = `${BASE_URL}/results/${runId}/`;
           console.log(`[slack] 전송 중... (${suiteName})`);
-          const notifier = spawn(process.execPath, ['scripts/notify-slack.js', suiteName, reportUrl, platform, env], { cwd: ROOT });
+          const notifier = spawn(process.execPath, ['scripts/notify-slack.js', suiteName, dashboardUrl, platform, env, allureRunUrl], { cwd: ROOT });
           notifier.stdout.on('data', d => {
             const msg = d.toString().trim();
             console.log('[slack]', msg);
@@ -270,11 +276,8 @@ http.createServer((req, res) => {
 
   res.writeHead(404); res.end('Not found');
 }).listen(PORT, '0.0.0.0', () => {
-  const { networkInterfaces } = require('os');
-  const nets = networkInterfaces();
-  const localIp = Object.values(nets).flat().find(n => n.family === 'IPv4' && !n.internal)?.address;
   console.log(`\n  Tapas QA Dashboard`);
   console.log(`  로컬:    http://localhost:${PORT}`);
-  if (localIp) console.log(`  팀원:    http://${localIp}:${PORT}`);
+  console.log(`  팀원:    ${BASE_URL}`);
   console.log();
 });
