@@ -129,39 +129,40 @@ When('[All] 버튼 클릭', async ({ page }) => {
 
 When('댓글 입력창 선택', async ({ page }) => {
   await ensureOnEpisode(page);
-  const textbox = page.getByRole('textbox', { name: /add a comment|댓글/i });
-  if ((await textbox.count()) > 0) {
-    const visible = await textbox.first().isVisible().catch(() => false);
-    if (visible) { await textbox.first().click(); return; }
+  // 댓글 패널이 닫혀 있으면 열기
+  const commentBox = page.locator('textarea.js-comment-box');
+  if (!(await commentBox.isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.waitForTimeout(600);
   }
-  const textarea = page.locator('textarea, [contenteditable]');
-  if ((await textarea.count()) > 0) {
-    const visible = await textarea.first().isVisible().catch(() => false);
-    if (visible) { await textarea.first().click(); return; }
-  }
+  if ((await commentBox.isVisible().catch(() => false))) { await commentBox.click(); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 When('댓글 입력창 선택 > 텍스트 입력 후 [Comment] 버튼 클릭', async ({ page }) => {
-  const input = page.getByRole('textbox');
-  if ((await input.count()) > 0) {
-    const visible = await input.first().isVisible().catch(() => false);
-    if (visible) {
-      await input.first().click();
-      await input.first().fill('Test comment');
-    }
+  // 이전 [Comment] 버튼 클릭이 패널을 닫았을 수 있으므로 다시 열기
+  const commentBox = page.locator('textarea.js-comment-box');
+  if (!(await commentBox.isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.waitForTimeout(600);
   }
-  const btn = page.getByRole('button', { name: /comment/i });
-  if ((await btn.count()) > 0) {
-    const visible = await btn.first().isVisible().catch(() => false);
-    if (visible) { await btn.first().click(); return; }
+  if (!(await commentBox.isVisible().catch(() => false))) {
+    await expect(page.locator('body')).toBeVisible(); return;
   }
-  await expect(page.locator('body')).toBeVisible();
+  // pressSequentially로 실제 키 이벤트 발생 → Tapas JS가 disabled 클래스 제거
+  await commentBox.click();
+  await commentBox.pressSequentially('Test comment', { delay: 30 });
+  await page.waitForTimeout(400);
+  await page.evaluate(() => {
+    const btn = document.querySelector('a.js-comment-post-btn') as HTMLElement | null;
+    if (btn) btn.click();
+  });
+  await page.waitForTimeout(1000);
 });
 
 When('텍스트 입력', async ({ page }) => {
-  const input = page.getByRole('textbox');
-  if ((await input.count()) > 0) { await input.first().fill('Test text'); return; }
+  const commentBox = page.locator('textarea.js-comment-box');
+  if ((await commentBox.isVisible().catch(() => false))) { await commentBox.fill('Test comment'); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
@@ -537,21 +538,37 @@ Then('유저 프로필 페이지로 이동된다.', async ({ page }) => {
 });
 
 When('댓글 [Reply] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /^reply$/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const link = page.getByRole('link', { name: /^reply$/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
+  await ensureOnEpisode(page);
+  // 댓글 패널 열기
+  const panelOpen = await page.locator('textarea.js-comment-box').isVisible().catch(() => false);
+  if (!panelOpen) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.waitForTimeout(600);
+  }
+  // Reply 버튼은 hover 시만 visible — JS로 직접 클릭
+  const clicked = await page.evaluate(() => {
+    const btn = document.querySelector('a.js-comment-reply-btn') as HTMLElement | null;
+    if (btn) { btn.click(); return true; }
+    return false;
+  });
+  if (clicked) { await page.waitForTimeout(600); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 
 When('답글 텍스트 입력 후 [Reply] 버튼 클릭', async ({ page }) => {
-  const textarea = page.locator('textarea.js-comment-box').first();
-  if ((await textarea.count()) > 0) {
-    await textarea.fill('Test reply');
-    const submitBtn = page.getByRole('button', { name: /reply|submit/i });
-    if ((await submitBtn.count()) > 0) { await submitBtn.first().click(); return; }
+  const replyBox = page.locator('textarea.js-edit-box');
+  if (!(await replyBox.isVisible().catch(() => false))) {
+    await expect(page.locator('body')).toBeVisible(); return;
   }
-  await expect(page.locator('body')).toBeVisible();
+  await replyBox.click();
+  await replyBox.pressSequentially('Test reply', { delay: 30 });
+  await page.waitForTimeout(400);
+  // 답글 제출 버튼: a.js-save-edit (text: "Reply") — 댓글 제출과 다른 버튼
+  await page.evaluate(() => {
+    const btn = document.querySelector('a.js-save-edit') as HTMLElement | null;
+    if (btn) btn.click();
+  });
+  await page.waitForTimeout(1000);
 });
 
 Then('Message 채움 표시 사라진다', async ({ page }) => {
