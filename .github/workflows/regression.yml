@@ -73,9 +73,10 @@ jobs:
       - name: Send Slack notification
         if: always()
         run: |
-          ENV_NAME=${{ github.event.inputs.environment == 'qa' && 'QA' || 'Prod' }}
-          DASHBOARD_URL="https://rheesuho.github.io/tapas-qa"
-          node scripts/notify-slack.js "Regression ($ENV_NAME)" "$DASHBOARD_URL"
+          ENV_LOWER="${{ github.event.inputs.environment == 'qa' && 'qa' || 'prod' }}"
+          ENV_UPPER="${{ github.event.inputs.environment == 'qa' && 'QA' || 'PROD' }}"
+          REPORT_URL="https://rheesuho.github.io/tapas-qa"
+          node scripts/notify-slack.js "PC Web / ${ENV_UPPER} / Regression" "$REPORT_URL" pcweb "$ENV_LOWER" "$REPORT_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
