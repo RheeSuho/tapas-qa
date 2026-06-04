@@ -119,13 +119,19 @@ http.createServer((req, res) => {
     };
     const failures = [];
     const dynamicSkips = [];
-    function walkResults(suites) {
+    function extractHomeCtx(suiteTitle) {
+      const m = suiteTitle.match(/features\/\d+-홈-\(([^)]+)\)\//);
+      return m ? `홈(${m[1]})` : null;
+    }
+    function walkResults(suites, homeCtx) {
       for (const suite of suites || []) {
+        const ctx = homeCtx ?? extractHomeCtx(suite.title);
         for (const spec of suite.specs || []) {
           for (const test of spec.tests || []) {
             const last = test.results?.[test.results.length - 1];
             const m = spec.title.match(/\[TPS-[^\]]+\]/i);
-            const title = m ? `${m[0]} ${spec.title.replace(m[0], '').trim()}` : spec.title;
+            const suffix = spec.title.replace(m?.[0] ?? '', '').trim();
+            const title = m ? `${m[0]}${ctx ? ` ${ctx} >` : ''} ${suffix}` : spec.title;
             if (last?.status === 'failed' || last?.status === 'timedOut') {
               const toRel = p => p ? path.relative(ROOT, p) : null;
               const screenshot = toRel(last.attachments?.find(a => a.contentType === 'image/png')?.path);
@@ -155,7 +161,7 @@ http.createServer((req, res) => {
             if (skipAnn) dynamicSkips.push({ title, reason: skipAnn.description });
           }
         }
-        walkResults(suite.suites);
+        walkResults(suite.suites, ctx);
       }
     }
     walkResults(results.suites);
