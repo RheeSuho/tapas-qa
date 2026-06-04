@@ -234,10 +234,12 @@ When('작품홈 Episode 탭 > 무료 회차 클릭', async ({ page }) => {
 // ──── 구독 / 좋아요 ────
 
 When('구독 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /subscribe/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const link = page.getByRole('link', { name: /subscribe/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
+  // 미구독 작품으로 이동 후 구독 버튼 클릭
+  await page.goto(`https://tapas.io${TEST_DATA.series.subscribeTest}`, { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(1000);
+  // a.js-subscribe-btn — 구독자 수 링크(js-subscribe-cnt)와 구분
+  const btn = page.locator('a.js-subscribe-btn');
+  if ((await btn.count()) > 0) { await btn.first().click(); await page.waitForTimeout(800); return; }
   await expect(page.locator('body')).toBeVisible();
 });
 

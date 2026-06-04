@@ -19,6 +19,7 @@ export const TEST_DATA = {
     novelPaid: IS_QA ? '/series/snakes-and-splinters/info' : '/series/overlord-novel/info',
     novelViewer: IS_QA ? '/series/DEATHLESSnovel/info' : '/series/the-necromancers-knight-novel',
     notice: IS_QA ? '/series/twin-or-lose/info' : '/series/i-was-the-real-head-of-the-house/info',
+    subscribeTest: '/series/dark-paradise/info',
   },
   episode: {
     // Episode 1 (no prev), next = 2386509
