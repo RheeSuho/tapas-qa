@@ -62,6 +62,12 @@ Feature: 하단 툴바
     And 우상단 [x] 버튼 클릭
     Then 작가 Support 팝업이 노출된다.
     And 뷰어로 이동된다.
+  @qa
+  Scenario: [TPS-155-QA] 작가 서포트 잉크 수량 입력 후 실제 서포트 완료
+    Given 첫 번째 작가 서포트 활성화
+    When [Support] 버튼 클릭
+    And 잉크 수량 입력 후 서포트를 완료한다
+    Then 작가 서포트 팝업이 닫히고 뷰어로 이동된다
   Scenario: [TPS-156] 이전 회차 이동 버튼 클릭 + 다음 회차 이동 버튼 클릭
     When 이전 회차 이동 버튼 클릭
     And 다음 회차 이동 버튼 클릭

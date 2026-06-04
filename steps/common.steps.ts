@@ -566,3 +566,4 @@ When('Delete account를 클릭하고 비밀번호를 입력한다', async ({ pag
 Then('계정이 탈퇴되고 홈 화면으로 이동된다', async ({ page }) => {
   await expect(page.locator('body')).toBeVisible();
 });
+
