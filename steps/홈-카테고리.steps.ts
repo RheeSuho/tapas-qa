@@ -40,8 +40,9 @@ When('{string} 서브탭 클릭', async ({ page }, tabName: string) => {
   const byAlt = page.locator(`a:has(img[alt="${altName}"])`);
   await byAlt.first().waitFor({ timeout: 5000 }).catch(() => {});
   if ((await byAlt.count()) > 0) { await byAlt.first().click(); return; }
-  // 2. role=link accessible name 매칭
+  // 2. role=link accessible name 매칭 (byAlt 실패 후 렌더 대기 포함)
   const tab = page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') });
+  await tab.first().waitFor({ timeout: 5000 }).catch(() => {});
   if ((await tab.count()) > 0) { await tab.first().click(); return; }
   // 3. role=button accessible name 매칭
   const btn = page.getByRole('button', { name: new RegExp(`^${tabName}$`, 'i') });
