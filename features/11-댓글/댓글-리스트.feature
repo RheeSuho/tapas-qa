@@ -13,13 +13,11 @@ Feature: 댓글 리스트
   Scenario: [TPS-165] 등록한 내 댓글 더보기 버튼 클릭
     When 등록한 내 댓글 더보기 버튼 클릭
     Then 댓글 설정 팝업이 노출된다.
-  @skip
   Scenario: [TPS-166] 등록한 내 댓글 더보기 > Edit 버튼 클릭 + 텍스트 수정 후 Save 버튼 클릭
     When 등록한 내 댓글 더보기 > [Edit] 버튼 클릭
     Then 팝업이 닫히고 텍스트 입력 가능 상태로 노출된다.
     When 텍스트 수정 후 [Save] 버튼 클릭
     Then 댓글 목록이 노출된다.
-  @skip
   Scenario: [TPS-167] 등록한 내 댓글 더보기 > Delete 버튼 클릭
     When 등록한 내 댓글 더보기 > [Delete] 버튼 클릭
     Then 팝업이 닫히고 댓글 목록에서 삭제된다.
