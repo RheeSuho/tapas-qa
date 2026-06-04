@@ -6,6 +6,7 @@ const fs = require('fs');
 const PORT = 3333;
 const ROOT = path.join(__dirname, '..');
 const ARCHIVE_DIR = path.join(ROOT, 'allure-report-archive');
+const MAX_ARCHIVES = 10;
 let currentProcess = null;
 let sseClients = [];
 
@@ -19,6 +20,19 @@ const SCRIPTS = {
   'mweb-qa-smoke':          'test:mweb:qa:smoke',
   'mweb-qa-regression':     'test:mweb:qa',
 };
+
+function pruneOldArchives(maxKeep) {
+  if (!fs.existsSync(ARCHIVE_DIR)) return;
+  const runs = fs.readdirSync(ARCHIVE_DIR)
+    .filter(d => fs.statSync(path.join(ARCHIVE_DIR, d)).isDirectory())
+    .sort();
+  const toDelete = runs.slice(0, Math.max(0, runs.length - maxKeep));
+  for (const dir of toDelete) {
+    const target = path.join(ARCHIVE_DIR, dir);
+    fs.rmSync(target, { recursive: true, force: true });
+    console.log(`[archive] 오래된 리포트 삭제: ${dir}`);
+  }
+}
 
 function broadcast(data) {
   const msg = `data: ${JSON.stringify(data)}\n\n`;
@@ -203,6 +217,7 @@ http.createServer((req, res) => {
           fs.mkdirSync(ARCHIVE_DIR, { recursive: true });
           execSync(`allure generate allure-results --clean -o "${reportDest}"`, { cwd: ROOT });
           console.log(`[report] 생성 완료 → ${reportDest}`);
+          pruneOldArchives(MAX_ARCHIVES);
         } catch (e) {
           console.error('[report] Allure 생성 실패:', e.message);
         }
@@ -215,7 +230,7 @@ http.createServer((req, res) => {
           const suiteName = `${platformLabel} / ${env.toUpperCase()} / ${type === 'smoke' ? 'Smoke' : 'Regression'}`;
           const reportUrl = `http://localhost:${PORT}/`;
           console.log(`[slack] 전송 중... (${suiteName})`);
-          const notifier = spawn('node', ['scripts/notify-slack.js', suiteName, reportUrl, platform, env], { cwd: ROOT });
+          const notifier = spawn(process.execPath, ['scripts/notify-slack.js', suiteName, reportUrl, platform, env], { cwd: ROOT });
           notifier.stdout.on('data', d => {
             const msg = d.toString().trim();
             console.log('[slack]', msg);

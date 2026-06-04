@@ -395,9 +395,10 @@ Then(/^목록 없을.?때 안내 문구$/, async ({ page }) => {
   await expect(page.locator('body')).toBeVisible();
 });
 
-// 노출되는 작품 목록 관련
-Then(/^노출되는 작품 목록.+$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+Then('노출되는 작품 목록의 New뱃지가 미노출된다.', async ({ page }) => {
+  // Mark All As Read 클릭 후 — New 뱃지 카운트가 0이면 통과
+  const newBadge = page.locator('.badge.is-new, .new-badge, [class*="badge-new"]');
+  await expect(newBadge).toHaveCount(0);
 });
 
 Then('연령 인증 화면이 노출된다.', async ({ page }) => {
