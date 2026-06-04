@@ -56,10 +56,6 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    /* Chrome의 "로컬 네트워크 액세스" 팝업 비활성화 */
-    launchOptions: {
-      args: ['--disable-features=LocalNetworkAccessChecks,PrivateNetworkAccessRespectPreflightResults'],
-    },
   },
 
   /* Configure projects for major browsers */
@@ -68,6 +64,11 @@ projects: [
     {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
+      use: {
+        launchOptions: {
+          args: ['--disable-features=LocalNetworkAccessChecks,PrivateNetworkAccessRespectPreflightResults'],
+        },
+      },
     },
 
     /* ② 실제 테스트 — setup 끝난 뒤 저장된 로그인 상태 사용 */
@@ -77,6 +78,9 @@ projects: [
       use: {
         ...devices['Desktop Chrome'],
         storageState: STORAGE_STATE,
+        launchOptions: {
+          args: ['--disable-features=LocalNetworkAccessChecks,PrivateNetworkAccessRespectPreflightResults'],
+        },
       },
       dependencies: ['setup'],
     },
