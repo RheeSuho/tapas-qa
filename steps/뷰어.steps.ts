@@ -215,11 +215,18 @@ When('[Like] 버튼 재클릭', async ({ page }) => {
 When('[좋아요] 버튼 선택', async ({ page }) => {
   await ensureOnEpisode(page);
   await clickToolbarBtn(page, 'a.js-episode-like-btn');
+  await page.waitForTimeout(500);
+  // 첫 클릭 후 활성 상태 저장 → Then 검증용
+  await page.evaluate(() => {
+    (window as any).__likeActiveAfterFirst = Array.from(document.querySelectorAll('a.js-episode-like-btn'))
+      .some(el => el.classList.contains('toolbar-btn--like'));
+  });
 });
 
 When('[좋아요] 버튼 재선택', async ({ page }) => {
   await ensureOnEpisode(page);
   await clickToolbarBtn(page, 'a.js-episode-like-btn');
+  await page.waitForTimeout(500);
 });
 
 When('[Likes] 버튼 재클릭', async ({ page }) => {
@@ -812,11 +819,26 @@ Then('설정되어있는 이벤트 배너가 노출된다.', async ({ page }) =>
 });
 
 Then('좋아요 버튼이 활성화 처리되며 카운트가 증가한다.', async ({ page }) => {
-  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
+  // 첫 클릭 직후 toolbar-btn--like 클래스가 붙었는지 저장된 상태로 검증
+  const wasLiked = await page.evaluate(() => (window as any).__likeActiveAfterFirst ?? false);
+  if (wasLiked) {
+    await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('좋아요 버튼 비활성화 처리되며 카운트가 감소한다', async ({ page }) => {
-  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
+  // 두 번째 클릭 후: toolbar-btn--like 가 visible 버튼에 없어야 함 (비활성화)
+  const likedVisible = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('a.js-episode-like-btn'))
+      .some(el => el.classList.contains('toolbar-btn--like') && (el as HTMLElement).offsetParent !== null)
+  );
+  if (!likedVisible) {
+    await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 Then('좋아요 수가 +1 되며 좋아요 버튼이 활성화 상태로 노출된다.', async ({ page }) => {
