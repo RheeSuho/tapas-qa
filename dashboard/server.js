@@ -121,7 +121,9 @@ http.createServer((req, res) => {
     const dynamicSkips = [];
     function extractHomeCtx(suiteTitle) {
       const m = suiteTitle.match(/features\/\d+-홈-\(([^)]+)\)\//);
-      return m ? `홈(${m[1]})` : null;
+      if (m) return `홈(${m[1]})`;
+      if (/features\/\d+-홈\//.test(suiteTitle)) return '홈';
+      return null;
     }
     function walkResults(suites, homeCtx) {
       for (const suite of suites || []) {
