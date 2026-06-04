@@ -49,7 +49,10 @@ When('{string} 서브탭 클릭', async ({ page }, tabName: string) => {
   // 4. text-is() 정확 매칭
   const byText = page.locator(`a:text-is("${tabName}"), button:text-is("${tabName}")`);
   if ((await byText.count()) > 0) { await byText.first().click(); return; }
-  test.skip(true, `"${tabName}" 서브탭이 현재 페이지에 존재하지 않음`);
+  const skipReason = /^popular$/i.test(tabName)
+    ? `Novels Popular 서브탭 미운영 상태`
+    : `"${tabName}" 서브탭이 현재 페이지에 존재하지 않음`;
+  test.skip(true, skipReason);
 });
 
 // ──── 장르/정렬 필터 ────
