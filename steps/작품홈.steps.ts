@@ -295,27 +295,23 @@ When(/^뒤로가기\/\[X\] 버튼 클릭$/, async ({ page }) => {
 });
 
 When('. [Close] 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /close/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /close/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /close/i }).first().click();
 });
 
 When('3, OK 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /ok/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /ok/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /ok/i }).first().click();
 });
 
 When('Don\'t show again 영역 클릭', async ({ page }) => {
-  const el = page.getByText(/don't show/i);
-  if ((await el.count()) > 0) { await el.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByText(/don't show/i).first()).toBeVisible({ timeout: 5000 });
+  await page.getByText(/don't show/i).first().click();
 });
 
 When('기다무 사용 확인 팝업 > [Yes] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /yes/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /yes/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /yes/i }).first().click();
 });
 
 When('기다무 띠배너 > ? 버튼 클릭', async ({ page }) => {
@@ -357,29 +353,25 @@ When('회차 구매 팝업 > [X] 버튼 클릭', async ({ page }) => {
 When('회차 구매 팝업 > 단건 구매 옵션 클릭', async ({ page }) => {
   const el = page.locator('[class*="purchase"] [class*="single"], [class*="buy-single"]');
   if ((await el.count()) > 0) { await el.first().click(); return; }
-  const btn = page.getByRole('button', { name: /buy|purchase/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /buy|purchase/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /buy|purchase/i }).first().click();
 });
 
 // 잉크샵으로 팝업이 노출된다. — 뷰어.steps.ts의 /^(팝업은 유지되며|잉크샵).+$/ 에서 처리
 
 When('[Continue Ep.2] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /continue ep/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /continue ep/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /continue ep/i }).first().click();
 });
 
 When('[Subscribe] 버튼 재클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /subscribe/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /subscribe/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /subscribe/i }).first().click();
 });
 
 When('[Yes] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /yes/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /yes/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /yes/i }).first().click();
 });
 
 When('장르 랜딩 리스트 확인', async ({ page }) => {

@@ -155,15 +155,13 @@ When('댓글 입력창 선택 > 텍스트 입력 후 [Comment] 버튼 클릭', a
 });
 
 When('텍스트 입력', async ({ page }) => {
-  const commentBox = page.locator('textarea.js-comment-box');
-  if ((await commentBox.isVisible().catch(() => false))) { await commentBox.fill('Test comment'); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('textarea.js-comment-box')).toBeVisible({ timeout: 5000 });
+  await page.locator('textarea.js-comment-box').fill('Test comment');
 });
 
 When('[Reply] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /reply/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /reply/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /reply/i }).first().click();
 });
 
 When('[Read] 버튼 클릭', async ({ page }) => {
@@ -238,21 +236,16 @@ When('답글 [Likes] 버튼 재클릭', async ({ page }) => {
 
 When('댓글 [Reply] 버튼 클릭 > 답글 작성', async ({ page }) => {
   await ensureOnEpisode(page);
-  const replyBtn = page.getByRole('button', { name: /reply/i });
-  if ((await replyBtn.count()) > 0) {
-    await replyBtn.first().click();
-    const input = page.getByRole('textbox');
-    if ((await input.count()) > 0) await input.first().fill('Test reply');
-    return;
-  }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /reply/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /reply/i }).first().click();
+  const input = page.getByRole('textbox');
+  if ((await input.count()) > 0) await input.first().fill('Test reply');
 });
 
 When('댓글 [View n reply] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  const btn = page.getByRole('button', { name: /view.+reply|replies/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /view.+reply|replies/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /view.+reply|replies/i }).first().click();
 });
 
 When('답글 리스트 노출 확인', async ({ page }) => {
@@ -260,9 +253,8 @@ When('답글 리스트 노출 확인', async ({ page }) => {
 });
 
 When('[Hide n reply] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /hide.+reply|collapse/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /hide.+reply|collapse/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /hide.+reply|collapse/i }).first().click();
 });
 
 When('우상단 정렬 필터 > Newest 값 클릭', async ({ page }) => {
@@ -298,72 +290,56 @@ When('우상단 정렬 필터 > Oldest 값 클릭', async ({ page }) => {
 });
 
 When('등록한 내 댓글 더보기 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /more|더보기/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /more|더보기/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /more|더보기/i }).first().click();
 });
 
 When('등록한 내 댓글 더보기 > [Edit] 버튼 클릭', async ({ page }) => {
-  const moreBtn = page.getByRole('button', { name: /more|더보기/i });
-  if ((await moreBtn.count()) > 0) {
-    await moreBtn.first().click();
-    const editBtn = page.getByRole('button', { name: /edit/i });
-    if ((await editBtn.count()) > 0) { await editBtn.first().click(); return; }
-  }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /more|더보기/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /more|더보기/i }).first().click();
+  await expect(page.getByRole('button', { name: /edit/i }).first()).toBeVisible({ timeout: 3000 });
+  await page.getByRole('button', { name: /edit/i }).first().click();
 });
 
 When('등록한 내 댓글 더보기 > [Delete] 버튼 클릭', async ({ page }) => {
-  const moreBtn = page.getByRole('button', { name: /more|더보기/i });
-  if ((await moreBtn.count()) > 0) {
-    await moreBtn.first().click();
-    const delBtn = page.getByRole('button', { name: /delete/i });
-    if ((await delBtn.count()) > 0) { await delBtn.first().click(); return; }
-  }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /more|더보기/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /more|더보기/i }).first().click();
+  await expect(page.getByRole('button', { name: /delete/i }).first()).toBeVisible({ timeout: 3000 });
+  await page.getByRole('button', { name: /delete/i }).first().click();
 });
 
 When('등록한 내 답글 더보기 > [Edit] 버튼 클릭', async ({ page }) => {
-  const moreBtn = page.getByRole('button', { name: /more|더보기/i });
-  if ((await moreBtn.count()) > 0) {
-    await moreBtn.first().click();
-    const editBtn = page.getByRole('button', { name: /edit/i });
-    if ((await editBtn.count()) > 0) { await editBtn.first().click(); return; }
-  }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /more|더보기/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /more|더보기/i }).first().click();
+  await expect(page.getByRole('button', { name: /edit/i }).first()).toBeVisible({ timeout: 3000 });
+  await page.getByRole('button', { name: /edit/i }).first().click();
 });
 
 When('등록한 내 답글 더보기 > [Delete] 버튼 클릭', async ({ page }) => {
-  const moreBtn = page.getByRole('button', { name: /more|더보기/i });
-  if ((await moreBtn.count()) > 0) {
-    await moreBtn.first().click();
-    const delBtn = page.getByRole('button', { name: /delete/i });
-    if ((await delBtn.count()) > 0) { await delBtn.first().click(); return; }
-  }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /more|더보기/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /more|더보기/i }).first().click();
+  await expect(page.getByRole('button', { name: /delete/i }).first()).toBeVisible({ timeout: 3000 });
+  await page.getByRole('button', { name: /delete/i }).first().click();
 });
 
 When('텍스트 수정 후 [Edit] 버튼 클릭', async ({ page }) => {
   const input = page.getByRole('textbox');
   if ((await input.count()) > 0) await input.first().fill('Edited text');
-  const btn = page.getByRole('button', { name: /edit|save/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /edit|save/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /edit|save/i }).first().click();
 });
 
 When('텍스트 수정 후 [Save] 버튼 클릭', async ({ page }) => {
   const input = page.getByRole('textbox');
   if ((await input.count()) > 0) await input.first().fill('Edited text');
-  const btn = page.getByRole('button', { name: /save/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /save/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /save/i }).first().click();
 });
 
 When('다른 유저 댓글 > 프로필 이미지 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  const img = page.locator('[class*="comment"] img, [class*="avatar"] img');
-  if ((await img.count()) > 0) { await img.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="comment"] img, [class*="avatar"] img').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="comment"] img, [class*="avatar"] img').first().click();
 });
 
 // ──── 결과 검증 ────

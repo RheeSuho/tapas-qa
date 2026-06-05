@@ -188,9 +188,8 @@ When('하단 [더보기] 버튼 클릭', async ({ page }) => {
 When('[더보기] 버튼 재클릭 > [Subscribe] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
   await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
-  const subBtn = page.getByRole('button', { name: /subscribe/i });
-  if ((await subBtn.count()) > 0) { await subBtn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /subscribe/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /subscribe/i }).first().click();
 });
 
 When('[Unsubscribe] 버튼 클릭', async ({ page }) => {
@@ -330,12 +329,10 @@ When('팝업 이외 영역 클릭', async ({ page }) => {
 });
 
 When('[Report] 버튼 클릭', async ({ page }) => {
-  // Report는 <a class="js-report-btn"> (link), button role 아님
   const reportLink = page.locator('a.js-report-btn');
   if ((await reportLink.count()) > 0) { await reportLink.first().click(); return; }
-  const btn = page.getByRole('link', { name: /report/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /report/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /report/i }).first().click();
 });
 
 When('[Share to Facebook] or [Share to Twiiter] 버튼 클릭', async ({ page }) => {
@@ -348,9 +345,8 @@ When('[Share to Facebook] or [Share to Twiiter] 버튼 클릭', async ({ page })
 When('[AA] 버튼 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: /aa|font|텍스트/i });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const option = page.locator('[class*="font-option"], [class*="reader-setting"]');
-  if ((await option.count()) > 0) { await option.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="font-option"], [class*="reader-setting"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="font-option"], [class*="reader-setting"]').first().click();
 });
 
 When('[See all] 버튼 클릭', async ({ page }) => {
@@ -367,39 +363,34 @@ When('[See all] 버튼 클릭', async ({ page }) => {
 When('폰트 크기 [+] 버튼 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: '+' });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const el = page.locator('[class*="font-up"], [class*="size-up"]');
-  if ((await el.count()) > 0) { await el.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="font-up"], [class*="size-up"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="font-up"], [class*="size-up"]').first().click();
 });
 
 When('폰트 크기 [-] 버튼 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: '-' });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const el = page.locator('[class*="font-down"], [class*="size-down"]');
-  if ((await el.count()) > 0) { await el.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="font-down"], [class*="size-down"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="font-down"], [class*="size-down"]').first().click();
 });
 
 When('행 간격 [+] 버튼 클릭', async ({ page }) => {
   const el = page.locator('[class*="line-height"] button');
   if ((await el.count()) > 0) { await el.last().click(); return; }
-  const btn = page.getByRole('button', { name: /line|간격/i });
-  if ((await btn.count()) > 0) { await btn.last().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /line|간격/i }).last()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /line|간격/i }).last().click();
 });
 
 When('행 간격 [-] 버튼 클릭', async ({ page }) => {
   const el = page.locator('[class*="line-height"] button');
   if ((await el.count()) > 0) { await el.first().click(); return; }
-  const btn = page.getByRole('button', { name: /line|간격/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /line|간격/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /line|간격/i }).first().click();
 });
 
 When('뷰어 화면 모드 클릭', async ({ page }) => {
-  const el = page.locator('[class*="theme"], [class*="mode"], [class*="background"]');
-  if ((await el.count()) > 0) { await el.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="theme"], [class*="mode"], [class*="background"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="theme"], [class*="mode"], [class*="background"]').first().click();
 });
 
 // ──── 스크롤 / 드래그 ────
@@ -457,15 +448,11 @@ When('우상단 [x] 버튼 클릭', async ({ page }) => {
 });
 
 When('우하단 [List] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /list/i });
-  if ((await btn.count()) > 0) { await btn.last().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await clickToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 When('좌하단 More 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /more/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
 });
 
 When('Recommendation for you 영역', async ({ page }) => {

@@ -31,6 +31,9 @@
       "Bash(bash *)",
       "Bash(sh *)",
       "Bash(zsh *)",
+      "Bash(awk *)",
+      "Bash(python3 -c *)",
+      "Bash(python3 - *)",
       "Agent(*)"
     ]
   }
