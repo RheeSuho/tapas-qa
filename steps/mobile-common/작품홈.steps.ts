@@ -312,62 +312,37 @@ When('회차 구매 팝업 > [X] 버튼 클릭', async ({ page }) => {
 
 Then('작품홈 페이지가 노출된다', async ({ page }) => {
   await page.waitForLoadState('domcontentloaded').catch(() => {});
-  const url = page.url();
-  if (/\/series\//i.test(url)) {
-    await expect(page).toHaveURL(/\/series\//i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/\/series\//i);
+  await expect(page.locator('a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작품홈으로 진입된다', async ({ page }) => {
   await page.waitForLoadState('domcontentloaded').catch(() => {});
-  const url = page.url();
-  if (/\/series\/.+\/info/i.test(url)) {
-    await expect(page).toHaveURL(/\/series\/.+\/info/i);
-    const epItem = page.locator('a.episode-item').first();
-    if (await epItem.isVisible({ timeout: 3000 }).catch(() => false)) await expect(epItem).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/\/series\//i);
+  await expect(page.locator('a.episode-item, a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('회차 리스트 영역이 노출된다', async ({ page }) => {
-  const epItem = page.locator('a.episode-item, a[href*="/episode/"]').first();
-  const isVisible = await epItem.isVisible({ timeout: 5000 }).catch(() => false);
-  if (isVisible) {
-    await expect(epItem).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a.episode-item, a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // NOTE: 팝업 관련 Then (뷰어로 진입된다, 회차 구매 팝업, 기다무 사용 팝업, 기다무 확인 팝업,
 //       기다무 안내 팝업, 공지사항 내용, 작가 홈으로 이동된다) — 뷰어.steps.ts 또는 다른 steps 파일에서 처리
 
 Then('공지사항 내용이 노출된다.', async ({ page }) => {
-  const dialog = page.locator('[role="dialog"]').first();
-  const isDialog = await dialog.isVisible().catch(() => false);
-  if (isDialog) { await expect(dialog).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^기다무 작품, 공지 사항 띠배너가 노출된다\.$/, async ({ page }) => {
-  const banner = page.locator('[class*="wuf-banner"], [class*="notice-banner"], [class*="strip"], [class*="info--top"]').first();
-  const isVisible = await banner.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isVisible) { await expect(banner).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('[class*="wuf-banner"], [class*="notice-banner"], [class*="strip"], [class*="info--top"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Details 영역이 노출된다', async ({ page }) => {
-  const desc = page.locator('[class*="description"], [class*="detail"]').first();
-  const isVisible = await desc.isVisible({ timeout: 5000 }).catch(() => false);
-  if (isVisible) { await expect(desc).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('[class*="description"], [class*="detail"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Fans also read 추천 작품이 노출된다', async ({ page }) => {
-  const section = page.locator('[class*="series-list"], [class*="recommend"]').first();
-  const isVisible = await section.isVisible({ timeout: 5000 }).catch(() => false);
-  if (isVisible) { await expect(section).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('[class*="series-list"], [class*="recommend"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // NOTE: '추천 작품이 노출된다.', '추천 작품 리스트이 노출된다.', '선택한 작품홈으로 이동된다.' — 뷰어.steps.ts에서 처리

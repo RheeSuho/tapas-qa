@@ -184,98 +184,50 @@ When('프로필 이미지 클릭', async ({ page }) => {
 // ──── Then ────
 
 Then('Settings 탭으로 이동된다.', async ({ page }) => {
-  const url = page.url();
-  if (/settings|account/i.test(url)) {
-    await expect(page).toHaveURL(/settings|account/i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/settings|account/i);
 });
 
 Then('Settings로 진입된다.', async ({ page }) => {
-  const url = page.url();
-  if (/settings|account/i.test(url)) {
-    await expect(page).toHaveURL(/settings|account/i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/settings|account/i);
 });
 
 Then(/^Reading option \/ Personal information \/ Block Users \/ Log out all other sessions \/ Delete account 영역 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/settings|account/i);
+  await expect(page.locator('a, button, [class*="setting"]').filter({ hasText: /reading|personal|block|delete/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 // '홈 화면으로 이동된다.' — steps/mobile-common/공통.steps.ts에 정의됨 (중복 제거)
 
 Then(/^프로필 이미지 \/ 닉네임 \/ 보유 잉크 \/ Inkshop \/ Redeem code \/ Settings \/ Logout 노출된다\.$/, async ({ page }) => {
-  const profileEl = page.locator('img[alt="profile image"], [class*="profile"], [class*="avatar"]').first();
-  if (await profileEl.isVisible({ timeout: 3000 }).catch(() => false)) {
-    await expect(profileEl).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('img[alt="profile image"], [class*="profile"], [class*="avatar"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Ink shop 화면 노출된다.', async ({ page }) => {
-  const url = page.url();
-  if (/ink|shop/i.test(url)) {
-    await expect(page).toHaveURL(/ink|shop/i);
-  } else {
-    const inkEl = page.locator('[class*="ink"], button').filter({ hasText: /buy ink|ink shop/i }).first();
-    if (await inkEl.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await expect(inkEl).toBeVisible();
-    } else {
-      await expect(page.locator('body')).toBeVisible();
-    }
-  }
+  await expect(page.locator('[class*="ink"], button').filter({ hasText: /buy ink|ink shop/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('잉크 구매 팝업이 노출된다.', async ({ page }) => {
-  const popup = page.locator('[role="dialog"], [class*="popup"], [class*="modal"]').first();
-  const isVisible = await popup.isVisible({ timeout: 5000 }).catch(() => false);
-  if (isVisible) {
-    await expect(popup).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('[role="dialog"], [class*="popup"], [class*="modal"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('구매 성공 메시지가 노출된다.', async ({ page }) => {
-  const successMsg = page.locator('[class*="success"], [class*="toast"], [class*="confirm"]').first();
-  const isVisible = await successMsg.isVisible({ timeout: 5000 }).catch(() => false);
-  if (isVisible) {
-    await expect(successMsg).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('[class*="success"], [class*="toast"], [class*="confirm"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Redeem Code 타이틀, 입력 필드, 안내문구, Contact CS, Redeem 버튼이 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('input[placeholder*="code" i], input[placeholder*="redeem" i]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('코드 입력이 가능하다', async ({ page }) => {
-  const input = page.locator('input[placeholder*="code" i], input[placeholder*="redeem" i], input[type="text"]').first();
-  const isVisible = await input.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isVisible) {
-    await expect(input).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('input[placeholder*="code" i], input[placeholder*="redeem" i], input[type="text"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Invalid code 토스트 팝업이 노출된다.', async ({ page }) => {
-  const toast = page.locator('[class*="toast"], [class*="alert"], [class*="error"]').first();
-  const isVisible = await toast.isVisible({ timeout: 5000 }).catch(() => false);
-  if (isVisible) {
-    await expect(toast).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('[class*="toast"], [class*="alert"], [class*="error"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('입력한 리딤코드가 등록되며 리딤코드 화면은 유지된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('input[placeholder*="code" i], input[placeholder*="redeem" i]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('디바이스 메일 앱이 열린다.', async ({ page }) => {
@@ -284,7 +236,7 @@ Then('디바이스 메일 앱이 열린다.', async ({ page }) => {
 });
 
 Then(/^Buy Ink 버튼 \/ 보유 잉크 \+ 보너스 잉크 \/ 잉크 내역 \/ 서포트 내역 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('button, a').filter({ hasText: /buy ink/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^"https:\/\/www\.creators\.tapas\.io" 새 창 노출된다\.$/, async ({ page }) => {
@@ -297,23 +249,11 @@ Then(/^"https:\/\/www\.creators\.tapas\.io" 새 창 노출된다\.$/, async ({ p
 });
 
 Then('유저 홈으로 이동된다.', async ({ page }) => {
-  const url = page.url();
-  // user profile page: /username or /user/...
-  const isUserPage = /\/((?!series|episode|inbox|reading-list|account|menu|more)[^/]+)\/?$/.test(url);
-  if (isUserPage) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('img[alt="profile image"], [class*="profile-img"], [class*="avatar"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작가 홈으로 이동된다', async ({ page }) => {
-  const url = page.url();
-  if (/\/([^/]+)\/?$/.test(url) && !/signin|inbox|reading-list|account|menu|more/.test(url)) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('img[alt="profile image"], [class*="profile-img"], [class*="avatar"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('[닫기] 버튼 클릭', async ({ page }) => {

@@ -27,13 +27,7 @@ Then('Recent 메뉴로 진입된다', async ({ page }) => {
 });
 
 Then('Recent로 복귀된다', async ({ page }) => {
-  // SPA history.replaceState() 이슈로 goBack 후 m.tapas.io/ 에 착지할 수 있음
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) {
-    await expect(page).toHaveURL(/reading-list|library/i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Wait until Free 탭으로 진입된다', async ({ page }) => {
@@ -41,30 +35,15 @@ Then('Wait until Free 탭으로 진입된다', async ({ page }) => {
 });
 
 Then('Subscribed 화면으로 복귀된다', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) {
-    await expect(page).toHaveURL(/reading-list|library/i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Free episodes 화면으로 복귀된다', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) {
-    await expect(page).toHaveURL(/reading-list|library/i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Wait until Free 화면으로 복귀된다', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) {
-    await expect(page).toHaveURL(/reading-list|library/i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 // ──── 클릭 ────

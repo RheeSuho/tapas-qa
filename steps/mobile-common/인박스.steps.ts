@@ -203,73 +203,55 @@ When('[Settings] 버튼 클릭', async ({ page }) => {
 
 Then(/^Inbox 화면의 첫 번째 탭으로 진입된다\. \(Gifts\)$/, async ({ page }) => {
   await expect(page).toHaveURL(/inbox/i);
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('li.item, [class*="inbox-item"], a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^Inbox 화면의 두 번째 탭으로 진입된다\. \(Messagess\)$/, async ({ page }) => {
   await expect(page).toHaveURL(/inbox/i);
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('li.item, [class*="inbox-item"], [class*="message"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('수신된 Activity가 노출된다.', async ({ page }) => {
   await expect(page).toHaveURL(/inbox|activit/i);
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('li.item.js-item, a.activity, [class*="activity-item"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('No recent activity 문구가 노출된다.', async ({ page }) => {
-  const msg = page.locator('text=/no recent activity/i').first();
-  const isVisible = await msg.isVisible({ timeout: 5000 }).catch(() => false);
-  if (isVisible) {
-    await expect(msg).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('text=/no recent activity/i').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('수신된 Messages가 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('li.item, [class*="message-item"], [class*="inbox-item"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Messages 목록없을때 안내문구 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="empty"], .page-empty, [class*="no-data"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Message New 표시 사라진다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/inbox/i);
 });
 
 Then('Message 채움 표시 사라진다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/inbox/i);
 });
 
 Then('신규 메세지가 있다면 메세지 썸네일 우측에 New 표시가 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/inbox/i);
 });
 
 Then('Activity 화면으로 복귀된다.', async ({ page }) => {
-  // SPA goBack() 후 m.tapas.io/ 착지 가능 → graceful
-  const url = page.url();
-  if (/inbox|activit/i.test(url)) {
-    await expect(page).toHaveURL(/inbox|activit/i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/inbox|activit/i);
 });
 
 Then('Inbox > gift 화면으로 복귀된다.', async ({ page }) => {
-  // SPA goBack() 후 m.tapas.io/ 착지 가능 → graceful
-  const url = page.url();
-  if (/inbox/i.test(url)) {
-    await expect(page).toHaveURL(/inbox/i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/inbox/i);
 });
 
 // ──── 필터별 안내문구 (없는 경우) ────
 
 Then('Tapas 목록없을때 안내문구 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="empty"], .page-empty, [class*="no-data"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // NOTE: 'Series 목록없을때 안내문구 노출된다.' — 보관함.steps.ts에서 처리
@@ -279,25 +261,26 @@ Then('Tapas 목록없을때 안내문구 노출된다.', async ({ page }) => {
 // NOTE: 'Subs 목록없을때 안내문구 노출된다.' — 보관함.steps.ts에서 처리
 
 Then('Supporters 목록없을때 안내문구 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="empty"], .page-empty, [class*="no-data"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── Gifts 시나리오 Then ────
 
 Then('설정된 랜딩페이지로 이동된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('해당 작품홈으로 이동된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/\/series\//);
+  await expect(page.locator('a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('[Get]버튼 > [Read]로 변경된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a, button').filter({ hasText: /read/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('[Read]로 노출된 작품 목록이 제거된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/inbox/i);
 });
 
 // NOTE: 'Settings로 진입된다.' — profile.steps.ts에서 처리

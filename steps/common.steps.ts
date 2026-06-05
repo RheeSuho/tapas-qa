@@ -41,7 +41,7 @@ When('타파스 홈 진입', async ({ page }) => {
 
 Then('타파스 웹 정상 진입된다.', async ({ page }) => {
   await expect(page).toHaveURL(/tapas\.io/);
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 // ──── 인증 상태 ────
@@ -202,64 +202,59 @@ Then(/^\(.*\)$/, async () => {
 // ──── 공통 결과 검증 ────
 
 Then('홈화면의 첫 번째 서브탭으로 진입된다.', async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page).not.toHaveURL(/signin/i);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('로그인 유도 창으로 이동된다.', async ({ page }) => {
-  // 이미 로그인된 상태이거나 signin 페이지로 리다이렉트될 수 있음 — body visible로 대체
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/signin/i);
 });
 
 Then('로그인 유도 화면이 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/signin/i);
 });
 
 Then('하위 메뉴 노출된다.', async ({ page }) => {
-  // Profile 또는 More 드롭다운 메뉴 링크 존재 확인 (visible 여부와 무관하게 DOM에 존재 시 통과)
-  const dropdownLink = page.locator('.gnb-dropdown a, .gnb-more-menu a, nav[class*="more"] a, a[href*="/account/"]');
-  const hasLink = await dropdownLink.first().isVisible({ timeout: 2000 }).catch(() => false);
-  if (hasLink) { return; }  // isVisible()으로 이미 확인됨 — 재검증하면 navigation race condition 발생
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.gnb-dropdown a, .gnb-more-menu a, nav[class*="more"] a, a[href*="/account/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('안내문구가 노출된다.', async ({ page }) => {
-  const empty = page.locator('.page-empty').first();
-  const isEmpty = await empty.isVisible().catch(() => false);
-  if (isEmpty) { await expect(empty).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.page-empty').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^설정된 랜딩타겟으로 이동된다\.$/, async ({ page }) => {
-  // 배너 클릭 후 페이지 이동 확인 — about:blank가 아닌 실제 페이지
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^홈화면으로 돌아온다\.$/, async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page).not.toHaveURL(/signin/i);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^이전 화면으로 돌아온다\. \(홈\)$/, async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page).not.toHaveURL(/signin/i);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^구글 \/ 페이스북 로그인 유도 창으로 이동된다\.$/, async ({ page }) => {
-  const socialBtn = page.getByRole('button', { name: /facebook|google/i });
-  const isVisible = await socialBtn.first().isVisible().catch(() => false);
-  if (isVisible) { await expect(socialBtn.first()).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.getByRole('button', { name: /facebook|google/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^(페이스북|구글) 로그인 팝업창이 열린다\.$/, async ({ page }) => {
+  // 소셜 로그인 팝업 — 새 탭 또는 현재 탭 이동
   const popup = page.context().pages().find(p => p !== page);
-  if (popup) { await expect(popup.locator('body')).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  if (popup) { await expect(popup.locator('input[type="email"], input[type="password"]').first()).toBeVisible({ timeout: 8000 }); }
+  else { await expect(page.locator('input[type="email"], input[type="password"]').first()).toBeVisible({ timeout: 8000 }); }
 });
 
 Then(/^로그인 완료되며 홈 화면으로 이동된다\.$/, async ({ page }) => {
   await expect(page).not.toHaveURL(/signin/i);
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^로그아웃되며 홈 화면으로 이동된다\.$/, async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page).not.toHaveURL(/signin/i);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 // ──── 공통 확인 스텝 (smoke) ────
@@ -269,11 +264,11 @@ When('숏컷 영역 노출 확인', async ({ page }) => {
 });
 
 Then('숏컷 영역에 Library, Inbox, Publish, 검색 아이콘 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/reading-list"], a[href*="/inbox"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^숏컷 영역에$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/reading-list"], a[href*="/inbox"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // [PCW] 검색 필드, 로그인, Publish 버튼이 노출된다. — /^\[PCW\](.*)$/ 에서 처리
@@ -359,19 +354,20 @@ When(/^신규 (페이스북|구글) 계정 입력$/, async () => {
 });
 
 Then(/^로그인되지 않으며 오류 메세지 노출되고 화면 유지된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/signin/i);
 });
 
 Then(/^Email 회원가입.+$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByPlaceholder(/email/i).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^세팅한 생년월일이 필드에 반영되어 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('input[type="date"], input[type="number"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^회원가입 완료되며.+화면으로 이동된다\.$/, async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page).not.toHaveURL(/signin/i);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 // ──── 기타 공통 ────
@@ -382,17 +378,15 @@ When(/^하위 영역 확인\.$/, async ({ page }) => {
 
 // 뷰어 진입 관련 — 공백 없이 "회차 뷰어 진입된다." 형태 처리
 Then('회차 뷰어 진입된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
-// 보관함 탭 복귀 결과
 Then(/^(Recent|Updated|Subscribed|Wait until Free|Free episodes)(로| 화면으로) 진입된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.item-title, .content-list-wrap, .filter-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
-// 목록 없을때 안내 문구 — 없을때/없을 때 두 가지 표기 모두 처리
 Then(/^목록 없을.?때 안내 문구$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.page-empty').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('노출되는 작품 목록의 New뱃지가 미노출된다.', async ({ page }) => {
@@ -402,7 +396,7 @@ Then('노출되는 작품 목록의 New뱃지가 미노출된다.', async ({ pag
 });
 
 Then('연령 인증 화면이 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('button[type="submit"], input[type="date"], input[type="number"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 01-공통 재작성 시나리오용 steps ────
@@ -414,7 +408,7 @@ When('타파스 홈에 접속한다', async ({ page }) => {
 
 Then('GNB 메뉴와 홈 화면이 정상 노출된다', async ({ page }) => {
   await expect(page).toHaveURL(/tapas\.io/);
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 // 인증 사전 조건
@@ -499,22 +493,16 @@ When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({
 
 // 로그인 결과 검증
 Then('이메일 로그인 폼이 노출된다', async ({ page }) => {
-  const emailInput = page.getByPlaceholder(/email/i);
-  const isVisible = await emailInput.first().isVisible().catch(() => false);
-  if (isVisible) {
-    await expect(emailInput.first()).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.getByPlaceholder(/email/i).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('로그인이 완료되고 홈 화면으로 이동된다', async ({ page }) => {
   await expect(page).not.toHaveURL(/signin/i);
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('오류 메시지가 노출되고 로그인 페이지가 유지된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="error"], [class*="alert"], .error-message').first()).toBeVisible({ timeout: 5000 });
 });
 
 // 회원가입
@@ -528,7 +516,7 @@ When('이메일로 회원가입을 시도한다', async ({ page }) => {
 });
 
 Then('회원가입 화면이 노출된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByPlaceholder(/email/i).first()).toBeVisible({ timeout: 5000 });
 });
 
 // 탈퇴
@@ -564,6 +552,8 @@ When('Delete account를 클릭하고 비밀번호를 입력한다', async ({ pag
 });
 
 Then('계정이 탈퇴되고 홈 화면으로 이동된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  // 탈퇴 후 홈으로 이동 (test.skip으로 실제 탈퇴는 미실행)
+  await expect(page).not.toHaveURL(/signin/i);
+  await expect(page).toHaveURL(/tapas\.io/);
 });
 

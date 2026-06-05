@@ -165,20 +165,10 @@ Then('Free Access 서브탭 화면이 노출된다', async ({ page }) => {
   await assertSeriesList(page);
 });
 Then(/^Comics\/Novels 필터가 노출된다$/, async ({ page }) => {
-  const filter = page.locator('button, a, [role="tab"]').filter({ hasText: /^comics$|^novels$/i }).first();
-  if (await filter.isVisible({ timeout: 3000 }).catch(() => false)) {
-    await expect(filter).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('button, a, [role="tab"]').filter({ hasText: /^comics$|^novels$/i }).first()).toBeVisible({ timeout: 5000 });
 });
 Then(/^Comics\/Novels 필터와 요일 탭이 노출된다$/, async ({ page }) => {
-  const filter = page.locator('button, a, [role="tab"]').filter({ hasText: /comics|novels|mon|tue|wed|thu|fri|sat|sun/i }).first();
-  if (await filter.isVisible({ timeout: 3000 }).catch(() => false)) {
-    await expect(filter).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('button, a, [role="tab"]').filter({ hasText: /comics|novels|mon|tue|wed|thu|fri|sat|sun/i }).first()).toBeVisible({ timeout: 5000 });
 });
 Then('Completed Comics 섹션이 노출된다', async ({ page }) => {
   await assertSeriesList(page);
@@ -190,27 +180,11 @@ Then('Novels 작품 목록으로 전환된다', async ({ page }) => {
   await assertSeriesList(page);
 });
 Then('다음 빅배너로 자동 전환된다', async ({ page }) => {
-  const banner = page.locator('a[href*="/series/"], a[href*="/event/"]').filter({ has: page.locator('img') }).first();
-  if (await banner.isVisible({ timeout: 5000 }).catch(() => false)) {
-    await expect(banner).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a[href*="/series/"], a[href*="/event/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 Then('빅배너가 노출된다', async ({ page }) => {
-  const banner = page.locator('a[href*="/series/"], a[href*="/event/"]').filter({ has: page.locator('img') }).first();
-  const visible = await banner.isVisible({ timeout: 3000 }).catch(() => false);
-  if (visible) {
-    await expect(banner).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a[href*="/series/"], a[href*="/event/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 Then('프로모션 배너가 노출된다', async ({ page }) => {
-  const banner = page.locator('a[href*="/series/"], a[href*="/event/"]').filter({ has: page.locator('img') }).first();
-  if (await banner.isVisible({ timeout: 3000 }).catch(() => false)) {
-    await expect(banner).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a[href*="/series/"], a[href*="/event/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });

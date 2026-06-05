@@ -215,163 +215,105 @@ Then('보관함으로 진입되며 아래 메뉴들이 노출된다.', async ({ 
 });
 
 Then('Updated 메뉴가 노출된다.', async ({ page }) => {
-  const tab = page.locator('a.item-title[href*="UPDATED"]');
-  const isVisible = await tab.isVisible().catch(() => false);
-  if (isVisible) { await expect(tab).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('a.item-title[href*="UPDATED"]')).toBeVisible({ timeout: 5000 });
 });
 
 Then('Recent 메뉴 진입된다.', async ({ page }) => {
-  // RECENT 탭 제거됨 — 보관함 페이지 접근 여부만 확인
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Subscribed 진입된다.', async ({ page }) => {
-  const tab = page.locator('a.item-title[href*="SUBSCRIBED"]');
-  const isVisible = await tab.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isVisible) { await expect(tab).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('a.item-title[href*="SUBSCRIBED"]')).toBeVisible({ timeout: 5000 });
 });
 
 Then('Free episodes 메뉴 진입된다.', async ({ page }) => {
-  const tab = page.locator('a.item-title[href*="FREE_EPISODES"]');
-  const isVisible = await tab.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isVisible) { await expect(tab).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('a.item-title[href*="FREE_EPISODES"]')).toBeVisible({ timeout: 5000 });
 });
 
 Then('Free episodes 작품 목록이 노출된다.', async ({ page }) => {
-  const contentWrap = page.locator('.content-list-wrap').first();
-  const isContent = await contentWrap.isVisible().catch(() => false);
-  if (isContent) { await expect(contentWrap).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.content-list-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Wait until Free 탭으로 진입된다.', async ({ page }) => {
-  const tab = page.locator('a.item-title[href*="WAIT_UNTIL_FREE"]');
-  const isVisible = await tab.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isVisible) { await expect(tab).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('a.item-title[href*="WAIT_UNTIL_FREE"]')).toBeVisible({ timeout: 5000 });
 });
 
 Then('Gift Pass가 있는 작품이 노출된다.', async ({ page }) => {
-  const giftItem = page.locator('.inbox-gift-item').first();
-  const isVisible = await giftItem.isVisible().catch(() => false);
-  if (isVisible) { await expect(giftItem).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.inbox-gift-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Gift 수령되어 버튼 비활성화로 변경된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.inbox-gift-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^Free episodes 화면.+$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.content-list-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^(Subscribed|Updated|Wait until Free|Recent) 화면.+$/, async ({ page }) => {
-  const filterWrap = page.locator('.filter-wrap').first();
-  const isFilter = await filterWrap.isVisible().catch(() => false);
-  if (isFilter) { await expect(filterWrap).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.filter-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^(Comics|Novels|모든) 작품.+노출된다\.$/, async ({ page }) => {
-  const contentWrap = page.locator('.content-list-wrap').first();
-  const isContent = await contentWrap.isVisible().catch(() => false);
-  if (isContent) { await expect(contentWrap).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.content-list-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 // (Comic|Novel) 작품.+노출된다. — 홈-카테고리.steps.ts의 /^(Comic|Novel|Mature|...) 작품.* 노출된다\.$/ 에서 처리
 // Comics/Novels 작품리스트만 노출된다. — /^(Comics|Novels|모든) 작품.+노출된다\.$/ 에서 처리
 
 Then('회차 뷰어로 진입된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const isVisible = await likeBtn.isVisible().catch(() => false);
-  if (isVisible) { await expect(likeBtn).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작품뷰어회차로 진입된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const isLike = await likeBtn.isVisible().catch(() => false);
-  if (isLike) { await expect(likeBtn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('뷰어 회차로 진입된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const isLike = await likeBtn.isVisible().catch(() => false);
-  if (isLike) { await expect(likeBtn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('회차뷰어 진입된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const isLike = await likeBtn.isVisible().catch(() => false);
-  if (isLike) { await expect(likeBtn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('해당 작품홈으로 이동된다.', async ({ page }) => {
-  const epItem = page.locator('a.episode-item').first();
-  const isEp = await epItem.isVisible().catch(() => false);
-  if (isEp) { await expect(epItem).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작품홈 으로 진입 된다.', async ({ page }) => {
-  const epItem = page.locator('a.episode-item').first();
-  const isEp = await epItem.isVisible().catch(() => false);
-  if (isEp) { await expect(epItem).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^(Comic|Novel) 작품홈으로 진입된다\.$/, async ({ page }) => {
-  const epItem = page.locator('a.episode-item').first();
-  const isEp = await epItem.isVisible().catch(() => false);
-  if (isEp) { await expect(epItem).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
-// 보관함 Subscribed 시나리오: 구독 후 상태 확인 (홈-카테고리 regex 충돌 방지)
 Then(/^(Comic|Novel) 작품홈 구독 버튼이 활성화되어 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.js-subscribe-btn').first()).toBeVisible({ timeout: 5000 });
 });
-
-// Subscribed 화면에 구독한 작품이 상단에 추가되어 노출된다. — /^(Subscribed|Updated|...) 화면.+$/ 에서 처리
-
-// 유저 홈으로 이동된다. — 프로필-more.steps.ts에서 처리
 
 Then(/^(뷰어로 이동된다\.|설정된 랜딩페이지로).+$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn, article a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^\[Get\]버튼 > \[Read\]로 변경된다\.$/, async ({ page }) => {
   const readBtn = page.locator('.inbox-gift-item__btn-read, button.js-inbox-gift-read').first();
   const isRead = await readBtn.isVisible().catch(() => false);
   if (isRead) { await expect(readBtn).toBeVisible(); return; }
-  const readByText = page.locator('.inbox-gift-item').filter({ has: page.getByRole('button', { name: /^read$/i }) }).first();
-  const isReadText = await readByText.isVisible().catch(() => false);
-  if (isReadText) { await expect(readByText).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.inbox-gift-item').filter({ has: page.getByRole('button', { name: /^read$/i }) }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^\[Read\]로 노출된 작품 목록이 제거된다\.$/, async ({ page }) => {
-  // Gift 수령 후 목록 갱신 — 빈 상태 또는 Get 버튼 없음 확인
   const isEmpty = await page.locator('.page-empty').isVisible().catch(() => false);
   if (isEmpty) { await expect(page.locator('.page-empty')).toBeVisible(); return; }
-  const hasGetBtn = await page.locator('button.js-inbox-gift-get').isVisible().catch(() => false);
-  if (!hasGetBtn) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('button.js-inbox-gift-get')).toHaveCount(0);
 });
 
 Then(/^(아래 작품|작품 이미지).+노출된다\.$/, async ({ page }) => {
-  const contentWrap = page.locator('.content-list-wrap').first();
-  const isContent = await contentWrap.isVisible().catch(() => false);
-  if (isContent) { await expect(contentWrap).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.content-list-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^(Recent|Updated|Subscribed 화면|Wait until Free 화면|Free episodes 화면)(로| 로) 복귀(된다|한다)\.$/, async ({ page }) => {
-  const filterWrap = page.locator('.filter-wrap').first();
-  const isFilter = await filterWrap.isVisible().catch(() => false);
-  if (isFilter) { await expect(filterWrap).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.filter-wrap').first()).toBeVisible({ timeout: 5000 });
 });

@@ -32,35 +32,18 @@ When(/^홈 > (.+) 서브탭을 클릭한다$/, async ({ page }, tabName: string)
 
 // ──── 서브탭 화면 노출 ────────────────────────────────────────────────
 Then(/^(Daily|Popular|New|Completed|WUF|Spotlight|Free Access) 서브탭 화면이 노출된다$/, async ({ page }, tabName: string) => {
-  // 서브탭 클릭 후 해당 탭이 active 상태인지 텍스트로 확인
-  const activeTab = page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') });
-  const isVisible = await activeTab.first().isVisible().catch(() => false);
-  if (isVisible) { await expect(activeTab.first()).toBeVisible(); }
-  else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.getByRole('link', { name: new RegExp(`^${tabName}$`, 'i') }).first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 // ──── 필터 노출 확인 ─────────────────────────────────────────────────
 Then(/^Comics\/Novels 필터와 요일 탭이 노출된다$/, async ({ page }) => {
-  // PC: a[href*="category=COMIC"]; Mobile: different structure
-  const comicsFilter = page.locator('a[href*="category=COMIC"]').first();
-  const isFilter = await comicsFilter.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isFilter) {
-    await expect(comicsFilter).toBeVisible({ timeout: 5000 });
-    const dayTab = page.locator('a[href*="daily_type=MON"]').first();
-    await expect(dayTab).toBeVisible({ timeout: 5000 });
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a[href*="category=COMIC"]').first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a[href*="daily_type=MON"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^Comics\/Novels 필터가 노출된다$/, async ({ page }) => {
-  const comicsFilter = page.locator('a[href*="category=COMIC"]').first();
-  const isFilter = await comicsFilter.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isFilter) {
-    await expect(comicsFilter).toBeVisible({ timeout: 5000 });
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a[href*="category=COMIC"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 작품 목록 노출 ─────────────────────────────────────────────────
@@ -100,14 +83,10 @@ Then('Novels 작품 목록으로 전환된다', async ({ page }) => {
 
 // ──── New 서브탭 날짜별 신작 목록 ───────────────────────────────────
 Then('날짜별 신작 목록이 노출된다', async ({ page }) => {
-  // 신작 있음: 날짜 레이블 노출 / 신작 없음: "No results were found." 문구 노출 — 둘 다 정상
   const dateEl = page.locator('p.text-base60.font-system-16b').first();
-  const noResult = page.getByText('No results were found.').first();
-  const hasDate = await dateEl.isVisible().catch(() => false);
-  const hasNoResult = await noResult.isVisible().catch(() => false);
+  const hasDate = await dateEl.isVisible({ timeout: 5000 }).catch(() => false);
   if (hasDate) { await expect(dateEl).toBeVisible(); }
-  else if (hasNoResult) { await expect(noResult).toBeVisible(); }
-  else { await expect(page.locator('body')).toBeVisible(); }
+  else { await expect(page.getByText('No results were found.').first()).toBeVisible({ timeout: 5000 }); }
 });
 
 // ──── Popular 서브탭 300위 확인 ──────────────────────────────────────
@@ -124,28 +103,18 @@ When('페이지 최하단까지 스크롤한다', async ({ page }) => {
 
 Then('작품 랭킹이 최대 300위까지 노출된다', async ({ page }) => {
   const rankEl = page.locator('span.text-s-white.font-custom-12c').last();
-  const isVisible = await rankEl.isVisible().catch(() => false);
-  if (isVisible) {
-    const txt = await rankEl.textContent();
-    expect(parseInt(txt?.trim() || '0')).toBeLessThanOrEqual(300);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(rankEl).toBeVisible({ timeout: 5000 });
+  const txt = await rankEl.textContent();
+  expect(parseInt(txt?.trim() || '0')).toBeLessThanOrEqual(300);
 });
 
 // ──── Completed/WUF 섹션 heading 확인 ───────────────────────────────
 Then('Completed Comics 섹션이 노출된다', async ({ page }) => {
-  const heading = page.getByRole('heading', { name: /Completed Comics/i });
-  const isVisible = await heading.isVisible().catch(() => false);
-  if (isVisible) await expect(heading).toBeVisible();
-  else await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Completed Comics/i })).toBeVisible({ timeout: 5000 });
 });
 
 Then('Wait Until Free 섹션이 노출된다', async ({ page }) => {
-  const heading = page.getByRole('heading', { name: /FREE Every 1 Hour|Wait Until Free/i });
-  const isVisible = await heading.first().isVisible().catch(() => false);
-  if (isVisible) await expect(heading.first()).toBeVisible();
-  else await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /FREE Every 1 Hour|Wait Until Free/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── GNB 숏컷 확인 (TPS-016, TPS-017) ──────────────────────────────
@@ -158,15 +127,7 @@ Then('Inbox 링크가 노출된다', async ({ page }) => {
 });
 
 Then('Publish 버튼이 노출된다', async ({ page }) => {
-  const el = page.getByRole('button', { name: /publish/i })
-    .or(page.getByRole('link', { name: /publish/i }));
-  const count = await el.count();
-  if (count > 0) {
-    await expect(el.first()).toBeVisible({ timeout: 5000 });
-  } else {
-    // 모바일 GNB에는 Publish 버튼 없음
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.getByRole('button', { name: /publish/i }).or(page.getByRole('link', { name: /publish/i })).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('검색 필드가 노출된다', async ({ page }) => {
@@ -227,9 +188,7 @@ When('Spotlight 서브탭에 접속한다', async ({ page }) => {
 
 // ──── Spotlight 배너 관련 (TPS-020~028) ──────────────────────────────
 Then('섹션 컨텐츠가 노출된다', async ({ page }) => {
-  const articles = page.locator('article');
-  if ((await articles.count()) > 0) await expect(articles.first()).toBeVisible();
-  else await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('프로모션 배너가 노출된다', async ({ page }) => {
@@ -346,15 +305,14 @@ Then('다음 빅배너로 자동 전환된다', async ({ page }) => {
   if (count > 0) {
     const text = await indicator.textContent().catch(() => null);
     const afterNum = parseInt(text?.trim() || '0');
-    // 슬라이드 번호가 증가했는지 확인 (C수준: 캐러셀 실제 전진 검증)
     expect(afterNum).toBeGreaterThan(_slideBeforeNum);
   } else {
-    await expect(page.locator('body')).toBeVisible();
+    await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
   }
 });
 
 Then('랜딩 페이지로 이동된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('랜딩 리스트로 이동되고 작품 목록이 노출된다', async ({ page }) => {
@@ -513,24 +471,23 @@ When('작품홈 > 상단네비바 [<] 또는 단말 백버튼 클릭', async ({ 
 // ──── 결과 검증 ────
 
 Then('Popular 서브탭이 활성화된다.', async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^Daily 서브탭이 활성화되며 디바이스 시간\(요일\)에 맞는 요일이 디폴트 선택되어 노출된다\.$/, async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('New 서브탭이 활성화된다.', async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('Spotlight 서브탭 화면이 노출된다.', async ({ page }) => {
-  await expect(page).toHaveURL(/tapas\.io/);
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^Comics\/Novels 대분류 필터 노출되며 Comics 탭이 디폴트로 활성화되어 있다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="category=COMIC"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // Comic 작품이 300위까지 노출된다. — 홈-카테고리.steps.ts에서 처리
@@ -538,117 +495,116 @@ Then(/^Comics\/Novels 대분류 필터 노출되며 Comics 탭이 디폴트로 �
 // Comic 작품이 활성화된 연재 요일에 맞게 노출된다. — 홈-카테고리.steps.ts의 (Comic|Novel|...) 작품.* 노출된다. 에서 처리
 
 Then('변경된 요일 탭에 맞는 작품이 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('Novels 탭이 활성화되며 작품 리스트에 현재 선택된 요일에 해당하는 Novle 작품들이 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('Novels 탭이 활성화되며 Novel에 해당하는 작품으로 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('Novels 탭이 활성화되며 Novel에 해당하는 작품들만 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 // Comic 작품들의 신작 리스트가 노출된다. — 홈-카테고리.steps.ts에서 처리
 
 Then('빅배너 설정에 맞게 정상 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('다음 빅배너로 자동 스와이프된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('이전 빅배너로 스와이프되며 상단 인디케이터도 순서에 맞게 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('다음 빅배너로 스와이프되며 상단 인디케이터도 순서에 맞게 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('빅배너 랜딩타겟으로 이동된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('카드배너 설정에 맞게 정상 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('카드배너 랜딩타겟으로 이동된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('라인배너 이미지 및 배너 텍스트 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('프로모션 배너 이미지 및 배너 텍스트가 정상 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('각 섹션 메뉴 작품 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('랭킹 고정 랜딩리스트로 이동된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('섹션 랜딩리스트 진입되고, 전체 작품 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('최근 본 작품 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('운영툴에 세팅된 배너 섹션 영역이 노출되고 배너 설정에 맞게 정상 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('운영툴에 세팅된 배너 섹션 영역이 노출되고 운영 중인 카드뷰가 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('배너 랜딩타겟으로 이동된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('검색 화면으로 이동된다.', async ({ page }) => {
-  // TPS-201: When 마지막 단계(Cancel/goBack)로 홈으로 복귀 → URL이 /라서 /search/ 체크 불가
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('검색 결과 화면이 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/\/search\?q=/);
+  await expect(page.locator('article a[href*="/series/"], text=/No results/').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('검색 결과 화면으로 돌아온다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/\/search\?q=/);
 });
 
 Then(/^\{작품명\} 작품이 조회된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^\{작품명\} 작품홈으로 이동된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
-// 섹션별 서브탭 결과
 Then(/^(Completed|Free Access|WUF) 서브탭에 설정된 빅배너가 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^(Completed|Free Access|WUF) 서브탭에 설정된 섹션이 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^(Completed|Free Access|WUF) 서브탭에 설정된 카드배너가 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/event/"], a[href*="/series/"]').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
 });

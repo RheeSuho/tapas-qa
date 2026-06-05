@@ -452,72 +452,49 @@ Then('토스트 팝업이 노출되며 뷰어로 진입된다.', async ({ page }
 });
 
 Then('기다무 팝업 또는 뷰어가 노출된다.', async ({ page }) => {
-  // 기다무 회차 클릭 시 — 팝업(dialog) 또는 바로 뷰어 진입
   const dialog = page.locator('[role="dialog"]').first();
   const viewer = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const dialogVisible = await dialog.isVisible().catch(() => false);
-  const viewerVisible = await viewer.isVisible().catch(() => false);
+  const dialogVisible = await dialog.isVisible({ timeout: 3000 }).catch(() => false);
   if (dialogVisible) { await expect(dialog).toBeVisible(); }
-  else if (viewerVisible) { await expect(viewer).toBeVisible(); }
-  else { await expect(page.locator('body')).toBeVisible(); }
+  else { await expect(viewer).toBeVisible({ timeout: 5000 }); }
 });
 
 Then('구매 팝업 또는 뷰어가 노출된다.', async ({ page }) => {
-  // 유료 회차 클릭 시 — 구매 팝업(dialog) 또는 이미 구매된 경우 뷰어 진입
   const dialog = page.locator('[role="dialog"]').first();
   const viewer = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const dialogVisible = await dialog.isVisible().catch(() => false);
-  const viewerVisible = await viewer.isVisible().catch(() => false);
+  const dialogVisible = await dialog.isVisible({ timeout: 3000 }).catch(() => false);
   if (dialogVisible) { await expect(dialog).toBeVisible(); }
-  else if (viewerVisible) { await expect(viewer).toBeVisible(); }
-  else { await expect(page.locator('body')).toBeVisible(); }
+  else { await expect(viewer).toBeVisible({ timeout: 5000 }); }
 });
 
 Then(/^회차 구매 팝업이 노출된다\.?$/, async ({ page }) => {
-  const dialog = page.locator('[role="dialog"]').first();
-  const isVisible = await dialog.isVisible().catch(() => false);
-  if (isVisible) { await expect(dialog).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^기다무 사용 팝업이 노출된다\.?$/, async ({ page }) => {
-  const dialog = page.locator('[role="dialog"]').first();
-  const isVisible = await dialog.isVisible().catch(() => false);
-  if (isVisible) { await expect(dialog).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('기다무 사용 확인 팝업이 노출된다', async ({ page }) => {
-  const dialog = page.locator('[role="dialog"]').first();
-  const isVisible = await dialog.isVisible().catch(() => false);
-  if (isVisible) { await expect(dialog).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('기다무 사용 확인 팝업이 노출되지 않고 회차 구매 팝업이 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^기다무 (작품, 공지 사항|작품) 띠배너가 노출된다\.$/, async ({ page }) => {
-  // WUF 띠배너: "WUF episode now available!" 텍스트 포함 요소
-  const wufBanner = page.locator('*').filter({ hasText: /WUF episode now available/i }).first();
-  const isVisible = await wufBanner.isVisible().catch(() => false);
-  if (isVisible) {
-    await expect(wufBanner).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('*').filter({ hasText: /WUF episode now available/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('기다무 사용 팝업이 노출되지 않고 회차 구매 팝업이 노출된다.', async ({ page }) => {
-  const dialog = page.locator('[role="dialog"]').first();
-  const isVisible = await dialog.isVisible().catch(() => false);
-  if (isVisible) { await expect(dialog).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // 기다무 이용권 차감 결과 — 뷰어.steps.ts에서 처리
 
 Then('뷰어로 이동된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const isVisible = await likeBtn.isVisible().catch(() => false);
-  if (isVisible) { await expect(likeBtn).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작품정보 하단에 미구독 상태로 버튼이 노출된다.', async ({ page }) => {
@@ -525,10 +502,7 @@ Then('작품정보 하단에 미구독 상태로 버튼이 노출된다.', async
 });
 
 Then('작가 홈으로 이동된다.', async ({ page }) => {
-  // creator 페이지 — 프로필 이미지 확인
-  const profileImg = page.locator('img.profile-thumb').first();
-  const isVisible = await profileImg.isVisible().catch(() => false);
-  if (isVisible) { await expect(profileImg).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('img.profile-thumb').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('장르 랜딩 리스트로 이동된다.', async ({ page }) => {
@@ -537,9 +511,7 @@ Then('장르 랜딩 리스트로 이동된다.', async ({ page }) => {
 });
 
 Then('Episodes 우측으로 Details 영역이 노출된다.', async ({ page }) => {
-  const desc = page.locator('.description.js-series-description').first();
-  const isVisible = await desc.isVisible().catch(() => false);
-  if (isVisible) { await expect(desc).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('.description.js-series-description').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^Creaotrs, Details, .+가 노출된다\.$/, async ({ page }) => {
@@ -547,9 +519,7 @@ Then(/^Creaotrs, Details, .+가 노출된다\.$/, async ({ page }) => {
 });
 
 Then('Fans also read 문구 및 추천 작품이 노출된다.', async ({ page }) => {
-  const fansEl = page.locator('.detail-row__body--series-list').first();
-  const isVisible = await fansEl.isVisible().catch(() => false);
-  if (isVisible) { await expect(fansEl).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('.detail-row__body--series-list').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('[Continue Ep.2] 버튼 노출된다.', async ({ page }) => {
@@ -557,37 +527,22 @@ Then('[Continue Ep.2] 버튼 노출된다.', async ({ page }) => {
 });
 
 Then(/^(팝업이 닫히며|팝업이 종료되며).+$/, async ({ page }) => {
-  // 소설 뷰어: 팝업 닫힌 후 원고 영역(.ep-epub-content) 또는 뷰어 툴바 확인
-  const content = page.locator('.ep-epub-content').first();
-  const isContent = await content.isVisible().catch(() => false);
-  if (isContent) { await expect(content).toBeVisible(); return; }
-  const listBtn = page.locator('a.toolbar-btn.js-list-btn').first();
-  const isBtn = await listBtn.isVisible().catch(() => false);
-  if (isBtn) { await expect(listBtn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.ep-epub-content, a.toolbar-btn.js-list-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^\{(BM값|정렬값|장르값)\} (선택|으)로.+$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('공지사항 내용이 노출된다.', async ({ page }) => {
-  // 공지사항 클릭 후 — 팝업 또는 공지 페이지로 이동됨
   const dialog = page.locator('[role="dialog"]').first();
-  const isDialog = await dialog.isVisible().catch(() => false);
+  const isDialog = await dialog.isVisible({ timeout: 3000 }).catch(() => false);
   if (isDialog) { await expect(dialog).toBeVisible(); return; }
-  // 공지 페이지 혹은 시리즈 페이지 어느 쪽이든 body 확인
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item, [class*="notice"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('기다무 안내 팝업이 노출된다.', async ({ page }) => {
-  const dialog = page.locator('[role="dialog"]').first();
-  const isVisible = await dialog.isVisible().catch(() => false);
-  if (isVisible) {
-    await expect(dialog).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작품홈 화면으로 이동되고 해당 회차에 대여기간이 노출된다.', async ({ page }) => {
@@ -635,15 +590,11 @@ Then(/^기다무 작품, 띠배너가 노출된다\.$/, async ({ page }) => {
 });
 
 Then('뷰어로 진입된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const isVisible = await likeBtn.isVisible().catch(() => false);
-  if (isVisible) { await expect(likeBtn).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then(/^프로필 이미지, 작가명, 작가 작품이 노출된다\.$/, async ({ page }) => {
-  const profileImg = page.locator('img.profile-thumb').first();
-  const isVisible = await profileImg.isVisible().catch(() => false);
-  if (isVisible) { await expect(profileImg).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('img.profile-thumb').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^최신순으로 정렬된다\. \(제일 상단 에피소드 번호가 총 회차수 인지 확인 \)$/, async ({ page }) => {
@@ -699,40 +650,24 @@ When('첫 번째 작품을 클릭한다', async ({ page }) => {
 });
 
 Then('작품홈으로 진입된다', async ({ page }) => {
-  // Popular 탭 클릭 후 /series/ 진입 확인 — /info 없는 경우도 허용
-  await page.waitForURL(/\/series\//, { timeout: 8000 }).catch(() => {});
-  if (page.url().includes('/series/')) {
-    const epItem = page.locator('a.episode-item').first();
-    const isVisible = await epItem.isVisible({ timeout: 3000 }).catch(() => false);
-    if (isVisible) { await expect(epItem).toBeVisible(); return; }
-  }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/\/series\//);
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작품홈 페이지가 노출된다', async ({ page }) => {
-  // 구독 버튼 클릭 후 시리즈 페이지에 남아 있거나 다른 페이지로 이동할 수 있음
-  const epItem = page.locator('a.episode-item').first();
-  const isVisible = await epItem.isVisible({ timeout: 5000 }).catch(() => false);
-  if (isVisible) { await expect(epItem).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('뷰어로 진입된다', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn').first();
-  const isVisible = await likeBtn.isVisible().catch(() => false);
-  if (isVisible) { await expect(likeBtn).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 Then('Details 영역이 노출된다', async ({ page }) => {
-  const desc = page.locator('.description.js-series-description').first();
-  const isVisible = await desc.isVisible().catch(() => false);
-  if (isVisible) { await expect(desc).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('.description.js-series-description').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작가 홈으로 이동된다', async ({ page }) => {
-  const profileImg = page.locator('img.profile-thumb').first();
-  const isVisible = await profileImg.isVisible().catch(() => false);
-  if (isVisible) { await expect(profileImg).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('img.profile-thumb').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('장르 랜딩 리스트로 이동된다', async ({ page }) => {
@@ -740,7 +675,5 @@ Then('장르 랜딩 리스트로 이동된다', async ({ page }) => {
 });
 
 Then('Fans also read 추천 작품이 노출된다', async ({ page }) => {
-  const fansEl = page.locator('.detail-row__body--series-list').first();
-  const isVisible = await fansEl.isVisible().catch(() => false);
-  if (isVisible) { await expect(fansEl).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('.detail-row__body--series-list').first()).toBeVisible({ timeout: 5000 });
 });

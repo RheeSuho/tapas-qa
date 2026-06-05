@@ -159,40 +159,14 @@ Then('Merch shop 이동된다.', async ({ page }) => {
 });
 
 Then('뉴스 리스트가 노출된다.', async ({ page }) => {
-  try {
-    const newsList = page.locator('[class*="news"], [class*="newsfeed"], article').first();
-    const isVisible = await newsList.isVisible({ timeout: 5000 }).catch(() => false);
-    if (isVisible) {
-      await expect(newsList).toBeVisible();
-    } else {
-      await expect(page.locator('body')).toBeVisible();
-    }
-  } catch {
-    // Newsfeed 클릭 후 페이지 context 닫힐 수 있음 — graceful pass
-  }
+  await expect(page.locator('[class*="news"], [class*="newsfeed"], article').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('뉴스 상세화면으로 노출된다.', async ({ page }) => {
-  const url = page.url();
-  if (/\/news\//i.test(url)) {
-    await expect(page).toHaveURL(/\/news\//i);
-  } else {
-    const article = page.locator('article, [class*="news-detail"], [class*="article"]').first();
-    if (await article.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await expect(article).toBeVisible();
-    } else {
-      await expect(page.locator('body')).toBeVisible();
-    }
-  }
+  await expect(page.locator('article, [class*="news-detail"], [class*="article"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^Help \/ Discord \/ Forums \/ Newsfeed \/ Contact \/ Merch shop 노출된다\.$/, async ({ page }) => {
-  const url = page.url();
-  if (/\/more/i.test(url)) {
-    await expect(page).toHaveURL(/\/more/i);
-    const menuLink = page.locator('a').filter({ hasText: /help|discord|forums|newsfeed|contact|merch/i }).first();
-    if (await menuLink.isVisible({ timeout: 3000 }).catch(() => false)) await expect(menuLink).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/\/more/i);
+  await expect(page.locator('a').filter({ hasText: /help|discord|forums|newsfeed|contact|merch/i }).first()).toBeVisible({ timeout: 5000 });
 });

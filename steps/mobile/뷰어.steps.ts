@@ -50,13 +50,8 @@ When('무료 회차를 클릭한다', async ({ page }) => {
 });
 
 Then('회차로 진입되며 원고 이미지가 노출된다', async ({ page }) => {
-  const url = page.url();
-  if (url.includes('/episode/')) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    // series 페이지에 머물면 graceful (클릭이 리다이렉트됨)
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/\/episode\//i);
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('에피소드 1화를 선택한다', async ({ page }) => {
@@ -74,43 +69,27 @@ Then('소설 뷰어로 진입된다', async ({ page }) => {
 // ──── 뷰어 URL 확인 ────
 
 Then('뷰어로 이동된다', async ({ page }) => {
-  // SPA history 이슈로 home으로 돌아갈 수 있음 — graceful
-  const url = page.url();
-  if (url.includes('/episode/')) {
-    await expect(page).toHaveURL(/\/episode\//i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/\/episode\//i);
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('뷰어로 복귀된다', async ({ page }) => {
-  const url = page.url();
-  if (url.includes('/episode/')) {
-    await expect(page).toHaveURL(/\/episode\//i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/\/episode\//i);
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('뷰어에 머무른다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('홈 화면으로 이동된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 // ──── 뷰어엔드 — Comments 영역 ────
 
 Then('Comments 영역과 See all 버튼이 노출된다', async ({ page }) => {
-  const exists = await page.evaluate(() =>
-    !!document.querySelector('.js-comment-more, .comment-header__btn, a[class*="comment-more"]')
-  );
-  if (exists) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('.js-comment-more, .comment-header__btn, a[class*="comment-more"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('See all 버튼을 클릭한다', async ({ page }) => {
@@ -123,18 +102,11 @@ When('See all 버튼을 클릭한다', async ({ page }) => {
 });
 
 Then('Comments 화면으로 이동된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('textarea.js-comment-box, .js-comment-section').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Add a comment 버튼이 노출된다', async ({ page }) => {
-  const exists = await page.evaluate(() =>
-    !!document.querySelector('.js-add-comment, .add-comment-btn')
-  );
-  if (exists) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('.js-add-comment, .add-comment-btn, button, a').filter({ hasText: /add a comment/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 When('Add a comment 버튼을 클릭한다', async ({ page }) => {
@@ -148,19 +120,12 @@ When('Add a comment 버튼을 클릭한다', async ({ page }) => {
 // ──── 하단 툴바 ────
 
 Then('하단 툴바에 좋아요, 댓글, 이전화, 다음화 버튼이 노출된다', async ({ page }) => {
-  // 툴바 영역 확인
-  const hasToolbar = await page.evaluate(() =>
-    !!(document.querySelector('.js-prev-ep-btn') || document.querySelector('.toolbar-btn'))
-  );
-  if (hasToolbar) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('상단에 리스트 버튼, 작품명, 회차명, 더보기 버튼이 노출된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/\/episode\//i);
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('더보기 버튼을 클릭한다', async ({ page }) => {
@@ -179,23 +144,11 @@ When('더보기 버튼을 클릭한다', async ({ page }) => {
 });
 
 Then('More 팝업이 노출된다', async ({ page }) => {
-  const popup = page.locator('[role="dialog"], [class*="modal"], [class*="popup"], [class*="more-pop"]').first();
-  const isVisible = await popup.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isVisible) {
-    await expect(popup).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('더보기 팝업이 노출된다', async ({ page }) => {
-  const popup = page.locator('[role="dialog"], [class*="modal"], [class*="popup"]').first();
-  const isVisible = await popup.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isVisible) {
-    await expect(popup).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('팝업 외 영역을 클릭한다', async ({ page }) => {
@@ -209,7 +162,7 @@ When('팝업 외 영역을 클릭한다', async ({ page }) => {
 });
 
 Then('팝업이 닫힌다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── Share ────
@@ -262,7 +215,8 @@ When('상단 리스트 버튼 또는 뒤로가기를 한다', async ({ page }) =
 // ──── 소설 뷰어 상단 툴바 ────
 
 Then('상단에 회차 리스트 버튼, 작품명, 회차명, 소설 옵션, More 버튼이 노출된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/\/episode\//i);
+  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('좌상단 List 버튼을 클릭한다', async ({ page }) => {
@@ -283,12 +237,8 @@ When('좌상단 List 버튼을 클릭한다', async ({ page }) => {
 });
 
 Then('작품홈 회차 리스트로 이동된다', async ({ page }) => {
-  const url = page.url();
-  if (url.includes('/series/')) {
-    await expect(page).toHaveURL(/\/series\//i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/\/series\//i);
+  await expect(page.locator('a.episode-item, a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('More 버튼을 클릭한다', async ({ page }) => {
@@ -317,17 +267,17 @@ When('Support 버튼을 클릭한다', async ({ page }) => {
 });
 
 Then('작가 Support 화면으로 이동된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('div.popup-support, [class*="support"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 소설 뷰어 댓글/추천 ────
 
 Then('댓글 화면으로 이동된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('textarea.js-comment-box, .js-comment-section').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('추천 작품이 노출된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 이전/다음 회차 (유료) ────

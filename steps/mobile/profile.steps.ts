@@ -15,22 +15,14 @@ Given('모바일 인박스 Activity로 이동한다', async ({ page }) => {
 });
 
 Then('수신된 Activity 목록이 노출된다', async ({ page }) => {
-  // activity 목록은 /activities 또는 /inbox/* 경로에 있음
   await expect(page).toHaveURL(/activities|inbox/i);
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('li.item.js-item, a.activity, [class*="activity-item"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── Profile 메뉴 ────
 
 Then('하위 메뉴가 노출된다', async ({ page }) => {
-  // Profile 드롭다운/페이지가 열렸는지 확인
-  const menu = page.locator('[class*="profile"], [class*="menu"], [class*="dropdown"]').first();
-  const isVisible = await menu.isVisible({ timeout: 5000 }).catch(() => false);
-  if (isVisible) {
-    await expect(menu).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('[class*="profile"], [class*="menu"], [class*="dropdown"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 보유 잉크 ────
@@ -42,13 +34,7 @@ When('보유 잉크 영역을 클릭한다', async ({ page }) => {
 });
 
 Then('Ink 탭으로 이동된다', async ({ page }) => {
-  const url = page.url();
-  const isInk = url.includes('/ink') || url.includes('/balance') || url.includes('/coin');
-  if (isInk) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a.item.js-tier-btn, [class*="ink"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 // ──── Publish (Mweb only) ────
@@ -89,13 +75,7 @@ When('Settings를 클릭한다', async ({ page }) => {
 });
 
 Then('Edit profile 탭으로 이동된다', async ({ page }) => {
-  const url = page.url();
-  const isSettings = url.includes('/settings') || url.includes('/profile') || url.includes('/edit');
-  if (isSettings) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/settings|profile|edit/i);
 });
 
 // ──── 댓글 화면 ────
@@ -113,13 +93,7 @@ When('댓글 입력창을 선택한다', async ({ page }) => {
 });
 
 Then('가상 키보드가 노출되며 텍스트 입력 가능 상태다', async ({ page }) => {
-  const input = page.locator('textarea, input[placeholder*="comment"]').first();
-  const isVisible = await input.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isVisible) {
-    await expect(input).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('textarea, input[placeholder*="comment"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('댓글 텍스트를 입력하고 Comment 버튼을 클릭한다', async ({ page }) => {
@@ -134,7 +108,7 @@ When('댓글 텍스트를 입력하고 Comment 버튼을 클릭한다', async ({
 });
 
 Then('작성한 댓글이 상단 목록에 노출된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap, [class*="comment-item"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('다른 유저의 프로필 이미지를 클릭한다', async ({ page }) => {
@@ -151,7 +125,7 @@ When('다른 유저의 프로필 이미지를 클릭한다', async ({ page }) =>
 });
 
 Then('유저홈으로 이동된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/\/(creator|user|profile)\//i);
 });
 
 When('상단 뒤로가기 버튼을 클릭한다', async ({ page }) => {

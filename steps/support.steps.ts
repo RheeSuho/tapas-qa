@@ -19,10 +19,6 @@ When('잉크 수량 입력 후 서포트를 완료한다', async ({ page }) => {
 });
 
 Then('작가 서포트 팝업이 닫히고 뷰어로 이동된다', async ({ page }) => {
-  const isGone = !(await page.locator('div.popup-support').isVisible().catch(() => false));
-  if (isGone) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('div.popup-support')).not.toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
 });

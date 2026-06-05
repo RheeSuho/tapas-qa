@@ -396,199 +396,106 @@ Then(/^Inbox 화면의 두 번째 탭으로 진입된다\. \(Messagess\)$/, asyn
 });
 
 Then('수신된 Activity가 노출된다.', async ({ page }) => {
-  const item = page.locator('li.item.js-item, a.activity').first();
-  const isVisible = await item.isVisible().catch(() => false);
-  if (isVisible) { await expect(item).toBeVisible(); }
-  else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('li.item.js-item, a.activity').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('수신된 Messages가 노출된다.', async ({ page }) => {
-  const pcTab = page.locator('a.item-title[href*="inbox/message"]');
-  if (await pcTab.isVisible({ timeout: 3000 }).catch(() => false)) {
-    await expect(pcTab).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a.item-title[href*="inbox/message"], li.item').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('No recent activity 문구가 노출된다.', async ({ page }) => {
-  const empty = page.locator('.page-empty p.title');
-  const isVisible = await empty.isVisible().catch(() => false);
-  if (isVisible) { await expect(empty).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.page-empty p.title').first()).toBeVisible({ timeout: 5000 });
 });
 
 // 안내문구가 노출된다. — common.steps.ts에서 처리
 
 Then('텍스트 입력 가능 상태로 노출된다.', async ({ page }) => {
-  const el = page.locator('textarea, [contenteditable], [role="textbox"]').first();
-  const isVisible = await el.isVisible().catch(() => false);
-  if (isVisible) { await expect(el).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('textarea.js-comment-box, textarea.js-edit-box').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('답글 작성란이 노출된다.', async ({ page }) => {
-  const el = page.locator('textarea, [contenteditable], [role="textbox"]').first();
-  const isVisible = await el.isVisible().catch(() => false);
-  if (isVisible) { await expect(el).toBeVisible(); } else { await expect(page.locator('body')).toBeVisible(); }
+  await expect(page.locator('textarea.js-edit-box, textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('답글 화면으로 이동된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  const replyBtn = page.locator('a.body__button.js-toggle-reply-btn').first();
-  const isReply = await replyBtn.isVisible().catch(() => false);
-  if (isReply) { await expect(replyBtn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap, a.body__button.js-toggle-reply-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('입력창에 텍스트가 입력된다.', async ({ page }) => {
-  const textarea = page.locator('textarea.js-comment-box').first();
-  const isVisible = await textarea.isVisible().catch(() => false);
-  if (isVisible) { await expect(textarea).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('좋아요 버튼이 활성화되어 노출된다.', async ({ page }) => {
-  // 답글 영역이 열려있으면 reply like 버튼, 아니면 comment like 버튼
-  const isLiked = await page.evaluate(() => {
-    const replyLiked = document.querySelector('.js-reply-list a.js-comment-like-btn.info__button--like');
-    const commentLiked = document.querySelector('.js-comment-parent-row a.js-comment-like-btn.info__button--like');
-    return !!(replyLiked || commentLiked);
-  });
-  if (isLiked) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('.js-reply-list a.js-comment-like-btn.info__button--like, .js-comment-parent-row a.js-comment-like-btn.info__button--like').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('좋아요 버튼이 비활성화되어 노출된다.', async ({ page }) => {
-  // 답글 영역이 열려있으면 reply like 버튼, 아니면 comment like 버튼
-  const replyLiked = await page.evaluate(() =>
-    !!document.querySelector('.js-reply-list a.js-comment-like-btn.info__button--like')
-  );
-  const commentLiked = await page.evaluate(() =>
-    !!document.querySelector('.js-comment-parent-row a.js-comment-like-btn.info__button--like')
-  );
-  // 비활성화 = liked 버튼 없음
-  if (!replyLiked && !commentLiked) {
-    await expect(page.locator('a.js-comment-like-btn').first()).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a.js-comment-like-btn').first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.js-comment-like-btn.info__button--like')).toHaveCount(0);
 });
 
 Then('등록된 답글이 노출된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('등록된 답글이 닫힌다.', async ({ page }) => {
-  const replyBtn = page.locator('a.body__button.js-toggle-reply-btn').first();
-  const isReply = await replyBtn.isVisible().catch(() => false);
-  if (isReply) { await expect(replyBtn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.body__button.js-toggle-reply-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('댓글 리스트가 최신순으로 갱신된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('댓글 리스트가 오래된 순으로 갱신된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('댓글 설정 팝업이 노출된다.', async ({ page }) => {
-  const dialog = page.locator('[role="dialog"], [class*="popup"]').first();
-  const isVisible = await dialog.isVisible().catch(() => false);
-  if (isVisible) {
-    await expect(dialog).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('[role="dialog"], [class*="popup"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('팝업이 닫히고 댓글 목록에서 삭제된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('팝업이 닫히고 텍스트 입력 가능 상태로 노출된다.', async ({ page }) => {
-  const textarea = page.locator('textarea.js-comment-box').first();
-  const isVisible = await textarea.isVisible().catch(() => false);
-  if (isVisible) { await expect(textarea).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('수정한 텍스트가 댓글에 반영되어 노출된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작성한 댓글이 제일 상단 목록에 노출된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작성한 댓글이 추가로 상단 목록에 노출된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작성한 답글이 등록되어 노출된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('댓글 목록이 노출된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('답글 목록이 노출된다.', async ({ page }) => {
-  const row = page.locator('.comment-row-wrap').first();
-  const isRow = await row.isVisible().catch(() => false);
-  if (isRow) { await expect(row).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('답글 접기 버튼이 노출된다.', async ({ page }) => {
-  const btn = page.locator('a.body__button.js-toggle-reply-btn').first();
-  const isVisible = await btn.isVisible().catch(() => false);
-  if (isVisible) { await expect(btn).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.body__button.js-toggle-reply-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('댓글 입력창이 노출된다.', async ({ page }) => {
-  const textarea = page.locator('textarea.js-comment-box').first();
-  const isVisible = await textarea.isVisible().catch(() => false);
-  if (isVisible) { await expect(textarea).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('유저 프로필 페이지로 이동된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/\/(profile|creator)\//);
 });
 
 When('댓글 [Reply] 버튼 클릭', async ({ page }) => {
@@ -626,42 +533,29 @@ When('답글 텍스트 입력 후 [Reply] 버튼 클릭', async ({ page }) => {
 });
 
 Then('Message 채움 표시 사라진다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/inbox/i);
 });
 
 Then('Message New 표시 사라진다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/inbox/i);
 });
 
-// 노출되는 작품 목록의 New뱃지가 미노출된다. — common.steps.ts의 /^노출되는 작품 목록.+$/ 에서 처리
-
 Then('신규 메세지가 있다면 메세지 썸네일 우측에 New 표시가 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/inbox/i);
 });
 
 Then(/^(All|Comments|Messages|Tapas|Series|Likes|Subs|Supporters) 목록없을때 안내문구 노출된다\.$/, async ({ page }) => {
-  const empty = page.locator('.page-empty').first();
-  const isVisible = await empty.isVisible().catch(() => false);
-  if (isVisible) { await expect(empty).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.page-empty').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^(All|Comics) 목록 없을 때 안내 문구 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.page-empty').first()).toBeVisible({ timeout: 5000 });
 });
 
-// 목록 없을 때 안내 문구 — common.steps.ts의 /^목록 없을.?때 안내 문구$/ 에서 처리
-
 Then(/^Settings(으로|로) 진입된다\.$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/settings|account/i);
 });
 
 Then(/^(Activity 화면|Inbox > gift 화면|인박스 .+화면)(으로|로) 복귀된다\.$/, async ({ page }) => {
-  const giftItem = page.locator('.inbox-gift-item').first();
-  const isGift = await giftItem.isVisible().catch(() => false);
-  if (isGift) { await expect(giftItem).toBeVisible(); return; }
-  const empty = page.locator('.page-empty').first();
-  const isEmpty = await empty.isVisible().catch(() => false);
-  if (isEmpty) { await expect(empty).toBeVisible(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.inbox-gift-item, li.item.js-item, .page-empty').first()).toBeVisible({ timeout: 5000 });
 });
