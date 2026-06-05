@@ -125,13 +125,12 @@ When('{string} 요일 탭 클릭', async ({ page }, day: string) => {
   if ((await tab.count()) > 0) { await tab.first().click(); return; }
   const btn = page.getByRole('button', { name: new RegExp(`^${day}`, 'i') });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const link = page.getByRole('link', { name: new RegExp(`^${day}`, 'i') });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: new RegExp(`^${day}`, 'i') }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: new RegExp(`^${day}`, 'i') }).first().click();
 });
 
 When(/^정렬\/필터 노출 확인$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('더보기[>] 영역 클릭', async ({ page }) => {
@@ -191,9 +190,8 @@ When(/^미성년에 해당되는 연\/월\/일 입력$/, async ({ page }) => {
 });
 
 When('Submit 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /submit/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /submit/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /submit/i }).first().click();
 });
 
 When('M 뱃지 노출되는 작품 클릭', async ({ page }) => {

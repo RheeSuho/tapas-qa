@@ -76,7 +76,7 @@ When('Activity 탭 우측 상단 [Mark all as read] 버튼 클릭', async ({ pag
 // ──── Messages 탭 액션 ────
 
 When('Messages 영역 노출 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="message"], a[href*="/inbox/message"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('Messages 타입별 클릭', async ({ page }) => {
@@ -108,7 +108,7 @@ When('Messages 탭 우측 상단 [Mark all as read] 버튼 클릭', async ({ pag
 // ──── Gifts 탭 액션 ────
 
 When('Get Gift Passes 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="gift"], [class*="inbox"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('Gifts 탭 새로고침 동작', async ({ page }) => {
@@ -119,7 +119,7 @@ When('Gifts 탭 새로고침 동작', async ({ page }) => {
 // ──── 공통 하위 액션 (Gifts feature에서 사용) ────
 
 When('작품 정보 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="gift"] a, a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('작품 오른쪽의 [Get] 버튼 클릭', async ({ page }) => {

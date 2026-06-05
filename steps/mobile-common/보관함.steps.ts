@@ -54,17 +54,13 @@ When('Wait until Free 메뉴 클릭', async ({ page }) => {
 // ──── 작품 클릭 ────
 
 When('작품 클릭', async ({ page }) => {
-  const item = page.locator('a[href*="/series/"], a[href*="/episode/"]').first();
-  if ((await item.count()) > 0) {
-    await item.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a[href*="/series/"], a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a[href*="/series/"], a[href*="/episode/"]').first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('작품 리스트 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('Comic 작품 열람', async ({ page }) => {
@@ -81,45 +77,29 @@ When('Comic 작품 열람', async ({ page }) => {
 });
 
 When('임의의 작품 클릭', async ({ page }) => {
-  const item = page.locator('a[href*="/series/"]').first();
-  if ((await item.count()) > 0) {
-    await item.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a[href*="/series/"]').first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 // ──── 필터 (Subscribed / Free episodes / Wait until Free 공통) ────
 
 When('Comics 필터 클릭', async ({ page }) => {
-  const btn = page.locator('button, a').filter({ hasText: /^comics$/i }).first();
-  if ((await btn.count()) > 0) {
-    await btn.click();
-    await page.waitForTimeout(400);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('button, a').filter({ hasText: /^comics$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button, a').filter({ hasText: /^comics$/i }).first().click();
+  await page.waitForTimeout(400);
 });
 
 When('Novels 필터 클릭', async ({ page }) => {
-  const btn = page.locator('button, a').filter({ hasText: /^novels$/i }).first();
-  if ((await btn.count()) > 0) {
-    await btn.click();
-    await page.waitForTimeout(400);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('button, a').filter({ hasText: /^novels$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button, a').filter({ hasText: /^novels$/i }).first().click();
+  await page.waitForTimeout(400);
 });
 
 When('All 필터 클릭', async ({ page }) => {
-  const btn = page.locator('button, a').filter({ hasText: /^all$/i }).first();
-  if ((await btn.count()) > 0) {
-    await btn.click();
-    await page.waitForTimeout(400);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('button, a').filter({ hasText: /^all$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button, a').filter({ hasText: /^all$/i }).first().click();
+  await page.waitForTimeout(400);
 });
 
 // PCW 전용 필터 (feature 파일에 [PCW] / [MW] 분기 있음 — [PCW] step은 공통.steps.ts에서 noop)
@@ -310,7 +290,7 @@ Then('Settings으로 진입된다.', async ({ page }) => {
 // ──── Wait until Free 전용 ────
 
 When('작품 리스트 노출 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('아래 작품이 노출된다.', async ({ page }) => {

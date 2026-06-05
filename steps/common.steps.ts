@@ -132,9 +132,8 @@ When(/^\{(.+)\} 버튼 클릭$/, async ({ page }, label: string) => {
 When(/^\[(Sign up|Submit)\] 버튼 클릭$/, async ({ page }, label: string) => {
   const btn = page.getByRole('button', { name: new RegExp(label, 'i') });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const link = page.getByRole('link', { name: new RegExp(label, 'i') });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: new RegExp(label, 'i') }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: new RegExp(label, 'i') }).first().click();
 });
 
 // ──── 뒤로가기 ────
@@ -260,7 +259,7 @@ Then(/^로그아웃되며 홈 화면으로 이동된다\.$/, async ({ page }) =>
 // ──── 공통 확인 스텝 (smoke) ────
 
 When('숏컷 영역 노출 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/reading-list"], a[href*="/inbox"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('숏컷 영역에 Library, Inbox, Publish, 검색 아이콘 노출된다.', async ({ page }) => {

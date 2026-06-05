@@ -45,7 +45,8 @@ async function clickToolbarBtn(page: any, selector: string): Promise<void> {
       return;
     }
   }
-  await expect(page.locator('body')).toBeVisible();
+  // 보이는 버튼 없음 → 진짜 실패
+  await expect(els.first()).toBeVisible({ timeout: 5000 });
 }
 
 // 에피소드 페이지가 아니면 comicEp2로 이동 (Given 없는 시나리오 대응)
@@ -87,8 +88,7 @@ Given('작가의 말 있는 경우', async () => {
 // ──── 뷰어 진입 ────
 
 When('뷰어 진입', async ({ page }) => {
-  // 이미 작품홈 에피소드 클릭으로 뷰어에 있음 — 상태 확인만
-  await expect(page.locator('body')).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 When('소설 뷰어 진입', async ({ page }) => {
@@ -96,8 +96,7 @@ When('소설 뷰어 진입', async ({ page }) => {
 });
 
 When('소설 작품 진입', async ({ page }) => {
-  // Background '소설 뷰어 진입'이 이미 에피소드로 이동 — 상태 확인만
-  await expect(page.locator('body')).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 When('GNB > Home > Novels > Popular 서브탭 진입', async ({ page }) => {
@@ -124,9 +123,8 @@ When('GNB > Home > Novels > Daily 서브탭 진입', async ({ page }) => {
 });
 
 When('첫 번째 에피소드 클릭', async ({ page }) => {
-  const ep = page.locator('a.episode-item').first();
-  if ((await ep.count()) > 0) { await ep.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a.episode-item').first().click();
 });
 
 // ──── 툴바 / 하단 영역 ────
@@ -140,8 +138,7 @@ When('Bottom 영역 노출 확인', async ({ page }) => {
 });
 
 When('하단 영역 확인', async ({ page }) => {
-  // Background '소설 뷰어 진입'이 이미 에피소드로 이동 — 상태 확인만
-  await expect(page.locator('body')).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 When('뷰어 하단 툴바 > [이전회차] 버튼 클릭', async ({ page }) => {
@@ -417,28 +414,28 @@ When('우측 스크롤바 위로 드래그', async ({ page }) => {
 });
 
 When('가로 스크롤 동작', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 // ──── 뷰어 엔드 ────
 
 When('뷰어엔드 > 이벤트 배너 노출 확인', async ({ page }) => {
   await page.keyboard.press('End');
-  await expect(page.locator('body')).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 When('뷰어엔드 > 작가의 말 노출 확인', async ({ page }) => {
   await page.keyboard.press('End');
-  await expect(page.locator('body')).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 When('뷰어엔드 > 하단 광고 노출 확인', async ({ page }) => {
   await page.keyboard.press('End');
-  await expect(page.locator('body')).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 When('뷰어 엔드 > 작가의 말 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
 });
 
 // ──── 기타 ────

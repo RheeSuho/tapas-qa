@@ -18,39 +18,35 @@ Given(/^(Mweb only|리딤코드 정상 입력|리딤코드 오입력)$/, async (
 // GNB > Profile 클릭 / GNB > More 클릭 은 common.steps.ts의 /^GNB > (.+) 클릭$/ 에서 처리
 
 When('Profile 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('img[alt="profile image"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('More 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a').filter({ hasText: /help|discord/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── Profile 메뉴 항목 ────
 
 When('Ink shop 클릭', async ({ page }) => {
   await page.waitForLoadState('domcontentloaded');
-  // QA/Prod 모두 "Inkshop" (공백 없음) 또는 "Ink shop" 대응
   const link = page.getByRole('link', { name: /ink\s?shop/i });
   if ((await link.count()) > 0) { await link.first().click(); return; }
-  const btn = page.getByRole('button', { name: /ink\s?shop/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /ink\s?shop/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /ink\s?shop/i }).first().click();
 });
 
 When('Redeem Code 클릭', async ({ page }) => {
   const link = page.getByRole('link', { name: /redeem/i });
   if ((await link.count()) > 0) { await link.first().click(); return; }
-  const btn = page.getByRole('button', { name: /redeem/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /redeem/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /redeem/i }).first().click();
 });
 
 When('Settings 클릭', async ({ page }) => {
   const link = page.getByRole('link', { name: /settings/i });
   if ((await link.count()) > 0) { await link.first().click(); return; }
-  const btn = page.getByRole('button', { name: /settings/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /settings/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /settings/i }).first().click();
 });
 
 // [Settings] 클릭 — common.steps.ts의 /^\[(.+)\] 클릭$/ 에서 처리
@@ -58,9 +54,8 @@ When('Settings 클릭', async ({ page }) => {
 When('Log out 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: /log out|logout/i });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const link = page.getByRole('link', { name: /log out|logout/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /log out|logout/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /log out|logout/i }).first().click();
 });
 
 When('Publish 클릭', async ({ page }) => {
@@ -74,23 +69,21 @@ When('Publish 클릭', async ({ page }) => {
 // ──── Ink Shop ────
 
 When('보유 잉크 영역 클릭', async ({ page }) => {
-  // Use a, button to avoid Tailwind utility classes (e.g. shrink-0 contains "ink")
   const el = page.locator('a, button').filter({ hasText: /ink/i }).first();
   if ((await el.count()) > 0 && await el.isVisible().catch(() => false)) {
     await el.click();
     return;
   }
-  const inkLink = page.locator('a[href*="/ink"], a[href*="/balance"]').first();
-  if ((await inkLink.count()) > 0) { await inkLink.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/ink"], a[href*="/balance"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a[href*="/ink"], a[href*="/balance"]').first().click();
 });
 
 When('Ink 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.item.js-tier-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('Ink 탭 으로 이동된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.item.js-tier-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('임의의 잉크 티어 클릭', async ({ page }) => {
@@ -182,45 +175,38 @@ When('비밀번호 검증 팝업 > 비밀번호 정상 입력 후 Delete account
 // ──── More 메뉴 ────
 
 When('Help 클릭', async ({ page }) => {
-  const link = page.getByRole('link', { name: /help/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /help/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /help/i }).first().click();
 });
 
 When('Discord 클릭', async ({ page }) => {
-  const link = page.getByRole('link', { name: /discord/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /discord/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /discord/i }).first().click();
 });
 
 When('Forums 클릭', async ({ page }) => {
-  const link = page.getByRole('link', { name: /forums/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /forums/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /forums/i }).first().click();
 });
 
 When('Newsfeed 클릭', async ({ page }) => {
-  const link = page.getByRole('link', { name: /newsfeed/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /newsfeed/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /newsfeed/i }).first().click();
 });
 
 When('Contact 클릭', async ({ page }) => {
-  const link = page.getByRole('link', { name: /contact/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /contact/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /contact/i }).first().click();
 });
 
 When('Merch Shop 클릭', async ({ page }) => {
-  const link = page.getByRole('link', { name: /merch/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /merch/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /merch/i }).first().click();
 });
 
 When('뉴스 리스트 클릭', async ({ page }) => {
-  const link = page.getByRole('link').filter({ hasText: /news/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link').filter({ hasText: /news/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link').filter({ hasText: /news/i }).first().click();
 });
 
 // ──── 결과 검증 ────

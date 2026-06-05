@@ -92,15 +92,13 @@ When('랭킹 1위 작품 클릭', async ({ page }) => {
 });
 
 When('우측 영역 > 작품 이미지 선택', async ({ page }) => {
-  const link = page.getByRole('link').filter({ has: page.locator('img') });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
 });
 
 When('작품 이미지 선택', async ({ page }) => {
-  const link = page.getByRole('link').filter({ has: page.locator('img') });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
 });
 
 // ──── 탭 / 영역 ────
@@ -120,35 +118,35 @@ When('Episodes 탭 클릭', async ({ page }) => {
 });
 
 When('Details 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.description.js-series-description').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('영역 노출 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('배너 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('구독 버튼 노출 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.js-subscribe-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('구독 버튼 좌측 버튼 노출 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.js-subscribe-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('스크롤하여 회차 리스트 노출 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('작품 정보 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('추천 작품 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.detail-row__body--series-list').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 회차 클릭 ────
@@ -234,43 +232,38 @@ When('작품홈 Episode 탭 > 무료 회차 클릭', async ({ page }) => {
 // ──── 구독 / 좋아요 ────
 
 When('구독 버튼 클릭', async ({ page }) => {
-  // 미구독 작품으로 이동 후 구독 버튼 클릭
   await page.goto(`https://tapas.io${TEST_DATA.series.subscribeTest}`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1000);
-  // a.js-subscribe-btn — 구독자 수 링크(js-subscribe-cnt)와 구분
-  const btn = page.locator('a.js-subscribe-btn');
-  if ((await btn.count()) > 0) { await btn.first().click(); await page.waitForTimeout(800); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.js-subscribe-btn').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a.js-subscribe-btn').first().click();
+  await page.waitForTimeout(800);
 });
 
 // ──── 작가 ────
 
 When('작가 클릭', async ({ page }) => {
-  const link = page.getByRole('link', { name: /creator|author|작가/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /creator|author|작가/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /creator|author|작가/i }).first().click();
 });
 
 When('작가 홈 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('img.profile-thumb').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 정렬 ────
 
 When('정렬 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /sort|정렬/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /sort|정렬/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /sort|정렬/i }).first().click();
 });
 
 When('정렬 버튼 재클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /sort|정렬/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /sort|정렬/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /sort|정렬/i }).first().click();
 });
 
 When('현재 정렬 버튼 상태 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 // 장르값 클릭 — CSS visible 판정 불가 → JS 클릭
@@ -340,7 +333,7 @@ When('공지사항 띠배너 클릭', async ({ page }) => {
 });
 
 When('episode 1 회차 노출 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('회차 구매 옵션 클릭', async ({ page }) => {
@@ -390,7 +383,7 @@ When('[Yes] 버튼 클릭', async ({ page }) => {
 });
 
 When('장르 랜딩 리스트 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('작품홈으로 복귀한다', async ({ page }) => {
@@ -622,16 +615,10 @@ When('Comics Popular 서브탭에 접속한다', async ({ page }) => {
 });
 
 When('작품 썸네일을 클릭한다', async ({ page }) => {
-  // 이미 /info 페이지면 스킵 (Spotlight 등 직접 진입 케이스)
   if (page.url().includes('/info')) return;
-  // side-section 썸네일 버튼 클릭 → /series/xxx/info 진입
-  const thumbBtn = page.locator('a.thumb.js-series-btn').first();
-  if ((await thumbBtn.count()) > 0) {
-    await thumbBtn.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-    return;
-  }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.thumb.js-series-btn').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a.thumb.js-series-btn').first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('첫 번째 작품을 클릭한다', async ({ page }) => {

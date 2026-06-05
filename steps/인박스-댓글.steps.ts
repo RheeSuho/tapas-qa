@@ -32,20 +32,18 @@ async function ensureOnInbox(page: any) {
 
 When('Inbox > Activity 탭 클릭', async ({ page }) => {
   await ensureOnInbox(page);
-  const tab = page.locator('a.item-title[href="/activities"]');
-  if ((await tab.count()) > 0) { await tab.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.item-title[href="/activities"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a.item-title[href="/activities"]').first().click();
 });
 
 When('Inbox > Messages 탭 클릭', async ({ page }) => {
   await ensureOnInbox(page);
-  const tab = page.locator('a.item-title[href="/inbox/message"]');
-  if ((await tab.count()) > 0) { await tab.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.item-title[href="/inbox/message"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a.item-title[href="/inbox/message"]').first().click();
 });
 
 When('Messages 영역 노출 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.item-title[href="/inbox/message"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('Activity 타입별 클릭', async ({ page }) => {
@@ -102,27 +100,23 @@ When('[Settings] 버튼 클릭', async ({ page }) => {
 // ──── 인박스 필터 ────
 
 When(/^(All|Comics|Novels) 필터 클릭$/, async ({ page }, filterName: string) => {
-  const btn = page.getByRole('button', { name: new RegExp(`^${filterName}$`, 'i') });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: new RegExp(`^${filterName}$`, 'i') }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: new RegExp(`^${filterName}$`, 'i') }).first().click();
 });
 
 When(/^(Comments|Messages|Tapas|Series|Likes|Subs|Supporters|Commets) 필터 클릭$/, async ({ page }, filterName: string) => {
-  const btn = page.getByRole('button', { name: new RegExp(filterName, 'i') });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: new RegExp(filterName, 'i') }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: new RegExp(filterName, 'i') }).first().click();
 });
 
 When('[Novels] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /^novels$/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /^novels$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /^novels$/i }).first().click();
 });
 
 When('[All] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /^all$/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /^all$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /^all$/i }).first().click();
 });
 
 // ──── 댓글 ────
@@ -262,7 +256,7 @@ When('댓글 [View n reply] 버튼 클릭', async ({ page }) => {
 });
 
 When('답글 리스트 노출 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.comment-row-wrap, .js-reply-list').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('[Hide n reply] 버튼 클릭', async ({ page }) => {

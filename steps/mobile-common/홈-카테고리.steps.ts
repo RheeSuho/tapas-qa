@@ -147,8 +147,13 @@ When('리스트의 첫번째 작품 클릭', async ({ page }) => {
     if (el) { el.click(); return true; }
     return false;
   });
-  if (clicked) await page.waitForLoadState('domcontentloaded').catch(() => {});
-  else await expect(page.locator('body')).toBeVisible();
+  if (clicked) {
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  } else {
+    await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+    await page.locator('a[href*="/series/"]').first().click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  }
 });
 // '작품 리스트 확인' → 보관함.steps.ts에 등록되어 있음
 When(/^작품 정보 영역 (.+) 클릭$/, async ({ page }) => {

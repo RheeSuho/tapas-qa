@@ -53,7 +53,7 @@ async function dismissPopup(page: any): Promise<void> {
 // ──── 뷰어 진입 ────
 
 When('뷰어 진입', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await assertMwebViewer(page);
 });
 
 When('소설 뷰어 진입', async ({ page }) => {
@@ -61,7 +61,7 @@ When('소설 뷰어 진입', async ({ page }) => {
 });
 
 When('소설 작품 진입', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await assertMwebViewer(page);
 });
 
 // NOTE: 'GNB > Home > Novels > Daily 서브탭 진입' — 공통.steps.ts에서 처리
@@ -72,7 +72,10 @@ When('첫 번째 에피소드 클릭', async ({ page }) => {
     if (el) { el.click(); return true; }
     return false;
   });
-  if (!clicked) await expect(page.locator('body')).toBeVisible();
+  if (!clicked) {
+    await expect(page.locator('a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
+    await page.locator('a[href*="/episode/"]').first().click();
+  }
   await page.waitForTimeout(1000);
 });
 
@@ -87,7 +90,7 @@ When('Bottom 영역 노출 확인', async ({ page }) => {
 });
 
 When('하단 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await assertMwebViewer(page);
 });
 
 // ──── 더보기 버튼 ────
@@ -440,25 +443,25 @@ When('이전 회차 이동 버튼 클릭', async ({ page }) => {
 When('뷰어엔드 > 이벤트 배너 노출 확인', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(500);
-  await expect(page.locator('body')).toBeVisible();
+  await assertMwebViewer(page);
 });
 
 When('뷰어엔드 > 작가의 말 노출 확인', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(500);
-  await expect(page.locator('body')).toBeVisible();
+  await assertMwebViewer(page);
 });
 
 When('뷰어엔드 > 하단 광고 노출 확인', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(500);
-  await expect(page.locator('body')).toBeVisible();
+  await assertMwebViewer(page);
 });
 
 When('뷰어 엔드 > 작가의 말 영역 확인', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(500);
-  await expect(page.locator('body')).toBeVisible();
+  await assertMwebViewer(page);
 });
 
 // ──── Comments 영역 ────
@@ -512,7 +515,7 @@ When('Recommendation for you 영역 확인', async ({ page }) => {
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await page.waitForTimeout(500);
   }
-  await expect(page.locator('body')).toBeVisible();
+  await assertMwebViewer(page);
 });
 
 // ──── 기타 When ────

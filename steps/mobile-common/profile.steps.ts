@@ -26,17 +26,12 @@ When('Settings 클릭', async ({ page }) => {
 });
 
 When('Log out 클릭', async ({ page }) => {
-  const logoutBtn = page.locator('button, a').filter({ hasText: /^log ?out$/i }).first();
-  if ((await logoutBtn.count()) > 0) {
-    await logoutBtn.click();
-    await page.waitForTimeout(800);
-    // 확인 팝업 처리
-    const confirmBtn = page.locator('button').filter({ hasText: /confirm|yes|log ?out/i }).first();
-    if ((await confirmBtn.count()) > 0) await confirmBtn.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('button, a').filter({ hasText: /^log ?out$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button, a').filter({ hasText: /^log ?out$/i }).first().click();
+  await page.waitForTimeout(800);
+  const confirmBtn = page.locator('button').filter({ hasText: /confirm|yes|log ?out/i }).first();
+  if ((await confirmBtn.count()) > 0) await confirmBtn.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('[Setting] 버튼 클릭', async ({ page }) => {
@@ -57,7 +52,7 @@ When('하위 영역 확인.', async ({ page }) => {
 // ──── Ink ────
 
 When('Ink 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="ink"], button').filter({ hasText: /buy ink|ink shop/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 When('Ink shop 클릭', async ({ page }) => {
@@ -149,7 +144,7 @@ When('[Contact CS] 텍스트 버튼 클릭', async ({ page }) => {
 // ──── Profile 영역 ────
 
 When('Profile 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('img[alt="profile image"], [class*="profile"], [class*="avatar"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('Publish 클릭', async ({ page }) => {
