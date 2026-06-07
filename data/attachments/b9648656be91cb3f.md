@@ -1,0 +1,319 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: ../.features-gen/features/11-댓글/댓글-리스트.feature.spec.js >> 댓글 리스트 >> [TPS-168] 다른 유저 댓글 > 프로필 이미지 클릭
+- Location: .features-gen/features/11-댓글/댓글-리스트.feature.spec.js:34:7
+
+# Error details
+
+```
+Error: expect(page).toHaveURL(expected) failed
+
+Expected pattern: /\/(profile|creator)\//
+Received string:  "https://tapas.io/hebertspence"
+Timeout: 5000ms
+
+Call log:
+  - Expect "toHaveURL" with timeout 5000ms
+    8 × unexpected value "https://tapas.io/hebertspence"
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - link [ref=e7] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e9]:
+        - link "Home" [ref=e11] [cursor=pointer]:
+          - /url: /
+        - link "Comics" [ref=e13] [cursor=pointer]:
+          - /url: /comics
+        - link "Novels" [ref=e15] [cursor=pointer]:
+          - /url: /novels
+        - link "Community" [ref=e17] [cursor=pointer]:
+          - /url: /community
+        - link "Mature" [ref=e19] [cursor=pointer]:
+          - /url: /mature
+        - generic [ref=e21] [cursor=pointer]: More
+      - generic [ref=e23]:
+        - textbox "Search" [ref=e25]
+        - generic [ref=e28]:
+          - link [ref=e29] [cursor=pointer]:
+            - /url: /reading-list
+          - link "122" [ref=e31] [cursor=pointer]:
+            - /url: /inbox/gift
+            - generic [ref=e32]: "122"
+          - img [ref=e36] [cursor=pointer]
+        - link "Publish" [ref=e39] [cursor=pointer]:
+          - /url: https://www.creators.tapas.io/
+    - generic [ref=e41]:
+      - generic [ref=e46]:
+        - img [ref=e48]
+        - generic [ref=e49]:
+          - paragraph [ref=e50]: Hebsey
+          - paragraph [ref=e51]: Joined Dec 2020
+          - list
+      - generic [ref=e53]:
+        - generic [ref=e54]:
+          - list [ref=e55]:
+            - listitem [ref=e56]:
+              - link [ref=e57] [cursor=pointer]:
+                - /url: "#!/artist-post/list/hebertspence"
+            - listitem [ref=e59]:
+              - link "74" [ref=e60] [cursor=pointer]:
+                - /url: "#!/artist-post/list/hebertspence"
+                - text: "74"
+            - listitem [ref=e62]:
+              - link "1.2k" [ref=e63] [cursor=pointer]:
+                - /url: "#!/artist-post/list/hebertspence"
+                - text: 1.2k
+            - listitem [ref=e65]:
+              - link [ref=e66] [cursor=pointer]:
+                - /url: "#!/artist-post/list/hebertspence"
+          - link [ref=e69] [cursor=pointer]:
+            - /url: "#!/block-option"
+        - generic [ref=e71]:
+          - generic [ref=e72]:
+            - img "dkttapas00" [ref=e74]
+            - generic [ref=e75]:
+              - textbox "Share something..." [ref=e80]
+              - generic [ref=e82]:
+                - button "Choose File" [ref=e84] [cursor=pointer]
+                - generic [ref=e85]:
+                  - link [ref=e86] [cursor=pointer]:
+                    - /url: "#!/upload"
+                  - button "Share" [disabled] [ref=e88]
+                  - generic [ref=e90] [cursor=pointer]: Private
+          - paragraph [ref=e94]: No messages or posts yet
+        - complementary [ref=e95]:
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - link "212 Library" [ref=e99] [cursor=pointer]:
+                - /url: /hebertspence/reading-list
+                - generic: 212 Library
+              - link "see all" [ref=e101] [cursor=pointer]:
+                - /url: /hebertspence/reading-list
+                - generic [ref=e102]: see all
+            - list [ref=e103]:
+              - listitem [ref=e104]:
+                - link "My Little Groom, Even After I'm Gone" [ref=e105] [cursor=pointer]:
+                  - /url: /series/my-little-groom-even-after-im-gone
+                  - img "My Little Groom, Even After I'm Gone" [ref=e106]
+                - generic [ref=e111]:
+                  - heading "My Little Groom, Even After I'm Gone" [level=3] [ref=e112]:
+                    - link "My Little Groom, Even After I'm Gone" [ref=e113] [cursor=pointer]:
+                      - /url: /series/my-little-groom-even-after-im-gone
+                  - paragraph [ref=e114]:
+                    - text: by
+                    - link "Antstudio" [ref=e115] [cursor=pointer]:
+                      - /url: /antstudio
+                    - text: 7 hours ago
+              - listitem [ref=e116]:
+                - link "Dawn of Vengeance" [ref=e117] [cursor=pointer]:
+                  - /url: /series/dawn-of-vengeance
+                  - img "Dawn of Vengeance" [ref=e118]
+                - generic [ref=e123]:
+                  - heading "Dawn of Vengeance" [level=3] [ref=e124]:
+                    - link "Dawn of Vengeance" [ref=e125] [cursor=pointer]:
+                      - /url: /series/dawn-of-vengeance
+                  - paragraph [ref=e126]:
+                    - text: by
+                    - link "Jinkyo" [ref=e127] [cursor=pointer]:
+                      - /url: /Jinkyo
+                    - text: 7 hours ago
+              - listitem [ref=e128]:
+                - link "Forget My Husband, I'll Go Make Money" [ref=e129] [cursor=pointer]:
+                  - /url: /series/forget-my-husband-ill-go-make-money
+                  - img "Forget My Husband, I'll Go Make Money" [ref=e130]
+                - generic [ref=e135]:
+                  - heading "Forget My Husband, I'll Go Make Money" [level=3] [ref=e136]:
+                    - link "Forget My Husband, I'll Go Make Money" [ref=e137] [cursor=pointer]:
+                      - /url: /series/forget-my-husband-ill-go-make-money
+                  - paragraph [ref=e138]:
+                    - text: by
+                    - link "HÆON" [ref=e139] [cursor=pointer]:
+                      - /url: /HAEON
+                    - text: 7 hours ago
+  - link [ref=e141]:
+    - /url: "#!/go-to-top"
+```
+
+# Test source
+
+```ts
+  368 | Then('수신된 Activity가 노출된다.', async ({ page }) => {
+  369 |   await expect(page.locator('li.item.js-item, a.activity').first()).toBeVisible({ timeout: 5000 });
+  370 | });
+  371 | 
+  372 | Then('수신된 Messages가 노출된다.', async ({ page }) => {
+  373 |   await expect(page.locator('a.item-title[href*="inbox/message"], li.item').first()).toBeVisible({ timeout: 5000 });
+  374 | });
+  375 | 
+  376 | Then('No recent activity 문구가 노출된다.', async ({ page }) => {
+  377 |   await expect(page.locator('.page-empty p.title').first()).toBeVisible({ timeout: 5000 });
+  378 | });
+  379 | 
+  380 | // 안내문구가 노출된다. — common.steps.ts에서 처리
+  381 | 
+  382 | Then('텍스트 입력 가능 상태로 노출된다.', async ({ page }) => {
+  383 |   await expect(page.locator('textarea.js-comment-box, textarea.js-edit-box').first()).toBeVisible({ timeout: 5000 });
+  384 | });
+  385 | 
+  386 | Then('답글 작성란이 노출된다.', async ({ page }) => {
+  387 |   await expect(page.locator('textarea.js-edit-box, textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
+  388 | });
+  389 | 
+  390 | Then('답글 화면으로 이동된다.', async ({ page }) => {
+  391 |   await expect(page.locator('.comment-row-wrap, a.body__button.js-toggle-reply-btn').first()).toBeVisible({ timeout: 5000 });
+  392 | });
+  393 | 
+  394 | Then('입력창에 텍스트가 입력된다.', async ({ page }) => {
+  395 |   await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
+  396 | });
+  397 | 
+  398 | Then('좋아요 버튼이 활성화되어 노출된다.', async ({ page }) => {
+  399 |   await expect(page.locator('.js-reply-list a.js-comment-like-btn.info__button--like, .js-comment-parent-row a.js-comment-like-btn.info__button--like').first()).toBeVisible({ timeout: 5000 });
+  400 | });
+  401 | 
+  402 | Then('좋아요 버튼이 비활성화되어 노출된다.', async ({ page }) => {
+  403 |   await expect(page.locator('a.js-comment-like-btn').first()).toBeVisible({ timeout: 5000 });
+  404 |   await expect(page.locator('a.js-comment-like-btn.info__button--like')).toHaveCount(0);
+  405 | });
+  406 | 
+  407 | Then('등록된 답글이 노출된다.', async ({ page }) => {
+  408 |   await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
+  409 | });
+  410 | 
+  411 | Then('등록된 답글이 닫힌다.', async ({ page }) => {
+  412 |   await expect(page.locator('a.body__button.js-toggle-reply-btn').first()).toBeVisible({ timeout: 5000 });
+  413 | });
+  414 | 
+  415 | Then('댓글 리스트가 최신순으로 갱신된다.', async ({ page }) => {
+  416 |   await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
+  417 | });
+  418 | 
+  419 | Then('댓글 리스트가 오래된 순으로 갱신된다.', async ({ page }) => {
+  420 |   await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
+  421 | });
+  422 | 
+  423 | Then('댓글 설정 팝업이 노출된다.', async ({ page }) => {
+  424 |   await expect(page.locator('[role="dialog"], [class*="popup"]').first()).toBeVisible({ timeout: 5000 });
+  425 | });
+  426 | 
+  427 | Then('팝업이 닫히고 댓글 목록에서 삭제된다.', async ({ page }) => {
+  428 |   await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
+  429 | });
+  430 | 
+  431 | Then('팝업이 닫히고 텍스트 입력 가능 상태로 노출된다.', async ({ page }) => {
+  432 |   await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
+  433 | });
+  434 | 
+  435 | Then('수정한 텍스트가 댓글에 반영되어 노출된다.', async ({ page }) => {
+  436 |   await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
+  437 | });
+  438 | 
+  439 | Then('작성한 댓글이 제일 상단 목록에 노출된다.', async ({ page }) => {
+  440 |   await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
+  441 | });
+  442 | 
+  443 | Then('작성한 댓글이 추가로 상단 목록에 노출된다.', async ({ page }) => {
+  444 |   await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
+  445 | });
+  446 | 
+  447 | Then('작성한 답글이 등록되어 노출된다.', async ({ page }) => {
+  448 |   await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
+  449 | });
+  450 | 
+  451 | Then('댓글 목록이 노출된다.', async ({ page }) => {
+  452 |   await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
+  453 | });
+  454 | 
+  455 | Then('답글 목록이 노출된다.', async ({ page }) => {
+  456 |   await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
+  457 | });
+  458 | 
+  459 | Then('답글 접기 버튼이 노출된다.', async ({ page }) => {
+  460 |   await expect(page.locator('a.body__button.js-toggle-reply-btn').first()).toBeVisible({ timeout: 5000 });
+  461 | });
+  462 | 
+  463 | Then('댓글 입력창이 노출된다.', async ({ page }) => {
+  464 |   await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
+  465 | });
+  466 | 
+  467 | Then('유저 프로필 페이지로 이동된다.', async ({ page }) => {
+> 468 |   await expect(page).toHaveURL(/\/(profile|creator)\//);
+      |                      ^ Error: expect(page).toHaveURL(expected) failed
+  469 | });
+  470 | 
+  471 | When('댓글 [Reply] 버튼 클릭', async ({ page }) => {
+  472 |   await ensureOnEpisode(page);
+  473 |   // 댓글 패널 열기
+  474 |   const panelOpen = await page.locator('textarea.js-comment-box').isVisible().catch(() => false);
+  475 |   if (!panelOpen) {
+  476 |     await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+  477 |     await page.waitForTimeout(600);
+  478 |   }
+  479 |   // Reply 버튼은 hover 시만 visible — JS로 직접 클릭
+  480 |   const clicked = await page.evaluate(() => {
+  481 |     const btn = document.querySelector('a.js-comment-reply-btn') as HTMLElement | null;
+  482 |     if (btn) { btn.click(); return true; }
+  483 |     return false;
+  484 |   });
+  485 |   if (clicked) { await page.waitForTimeout(600); return; }
+  486 |   await expect(page.locator('body')).toBeVisible();
+  487 | });
+  488 | 
+  489 | When('답글 텍스트 입력 후 [Reply] 버튼 클릭', async ({ page }) => {
+  490 |   const replyBox = page.locator('textarea.js-edit-box');
+  491 |   if (!(await replyBox.isVisible().catch(() => false))) {
+  492 |     await expect(page.locator('body')).toBeVisible(); return;
+  493 |   }
+  494 |   await replyBox.click();
+  495 |   await replyBox.pressSequentially('Test reply', { delay: 30 });
+  496 |   await page.waitForTimeout(400);
+  497 |   // 답글 제출 버튼: a.js-save-edit (text: "Reply") — 댓글 제출과 다른 버튼
+  498 |   await page.evaluate(() => {
+  499 |     const btn = document.querySelector('a.js-save-edit') as HTMLElement | null;
+  500 |     if (btn) btn.click();
+  501 |   });
+  502 |   await page.waitForTimeout(1000);
+  503 | });
+  504 | 
+  505 | Then('Message 채움 표시 사라진다', async ({ page }) => {
+  506 |   await expect(page).toHaveURL(/inbox/i);
+  507 | });
+  508 | 
+  509 | Then('Message New 표시 사라진다.', async ({ page }) => {
+  510 |   await expect(page).toHaveURL(/inbox/i);
+  511 | });
+  512 | 
+  513 | Then('신규 메세지가 있다면 메세지 썸네일 우측에 New 표시가 노출된다.', async ({ page }) => {
+  514 |   await expect(page).toHaveURL(/inbox/i);
+  515 | });
+  516 | 
+  517 | Then(/^(All|Comments|Messages|Tapas|Series|Likes|Subs|Supporters) 목록없을때 안내문구 노출된다\.$/, async ({ page }) => {
+  518 |   await expect(page.locator('.page-empty').first()).toBeVisible({ timeout: 5000 });
+  519 | });
+  520 | 
+  521 | Then(/^(All|Comics) 목록 없을 때 안내 문구 노출된다\.$/, async ({ page }) => {
+  522 |   await expect(page.locator('.page-empty').first()).toBeVisible({ timeout: 5000 });
+  523 | });
+  524 | 
+  525 | Then(/^Settings(으로|로) 진입된다\.$/, async ({ page }) => {
+  526 |   await expect(page).toHaveURL(/settings|account/i);
+  527 | });
+  528 | 
+  529 | Then(/^(Activity 화면|Inbox > gift 화면|인박스 .+화면)(으로|로) 복귀된다\.$/, async ({ page }) => {
+  530 |   await expect(page.locator('.inbox-gift-item, li.item.js-item, .page-empty').first()).toBeVisible({ timeout: 5000 });
+  531 | });
+  532 | 
+```

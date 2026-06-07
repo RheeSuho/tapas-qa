@@ -1,0 +1,762 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: ../.features-gen/features/12-보관함/Updated.feature.spec.js >> Updated >> [TPS-183] Updated 작품 목록 없는 경우 > PCW + 필터 > All 버튼 클릭
+- Location: .features-gen/features/12-보관함/Updated.feature.spec.js:40:7
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: locator('a[href*="type=COMICS"]').first()
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for locator('a[href*="type=COMICS"]').first()
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e8]:
+          - link "tapas" [ref=e9] [cursor=pointer]:
+            - /url: /
+            - img "tapas" [ref=e10]
+          - generic [ref=e13]:
+            - link "Home" [ref=e14] [cursor=pointer]:
+              - /url: /menu/1/subtab/1
+              - generic [ref=e18]: Home
+            - link "Comics" [ref=e19] [cursor=pointer]:
+              - /url: /menu/2/subtab/7
+              - generic [ref=e23]: Comics
+            - link "Novels" [ref=e24] [cursor=pointer]:
+              - /url: /menu/3/subtab/16
+              - generic [ref=e28]: Novels
+            - link "Community" [ref=e29] [cursor=pointer]:
+              - /url: /menu/4/subtab/30
+              - generic [ref=e33]: Community
+            - link "Mature" [ref=e34] [cursor=pointer]:
+              - /url: /menu/5/subtab/45
+              - generic [ref=e38]: Mature
+            - button "More drop on drop off" [ref=e40] [cursor=pointer]:
+              - generic [ref=e43]:
+                - generic [ref=e44]: More
+                - generic [ref=e45]:
+                  - img "drop on" [ref=e46]
+                  - img "drop off" [ref=e47]
+          - generic [ref=e48]:
+            - textbox "Search" [ref=e49]
+            - button "search":
+              - img "search" [ref=e50] [cursor=pointer]
+          - link "library" [ref=e51] [cursor=pointer]:
+            - /url: /reading-list
+            - img "library" [ref=e52]
+          - link "inbox 122" [ref=e53] [cursor=pointer]:
+            - /url: /inbox/gift
+            - img "inbox" [ref=e54]
+            - generic [ref=e55]: "122"
+          - button "profile image" [ref=e57] [cursor=pointer]:
+            - img "profile image" [ref=e59]
+          - link "Publish" [ref=e61] [cursor=pointer]:
+            - /url: https://www.creators.tapas.io
+            - button "Publish" [ref=e62]
+        - generic [ref=e68]:
+          - link "Spotlight" [ref=e69] [cursor=pointer]:
+            - /url: /menu/1/subtab/1
+            - img "Spotlight" [ref=e72]
+          - link "Daily" [ref=e74] [cursor=pointer]:
+            - /url: /menu/1/subtab/29
+            - img "Daily" [ref=e77]
+          - link "New" [ref=e79] [cursor=pointer]:
+            - /url: /menu/1/subtab/4
+            - img "New" [ref=e82]
+          - link "Popular" [ref=e84] [cursor=pointer]:
+            - /url: /menu/1/subtab/3
+            - img "Popular" [ref=e87]
+          - link "Completed" [ref=e89] [cursor=pointer]:
+            - /url: /menu/1/subtab/6
+            - img "Completed" [ref=e92]
+          - link "Free Access" [ref=e94] [cursor=pointer]:
+            - /url: /menu/1/subtab/40
+            - img "Free Access" [ref=e97]
+    - main [ref=e101]:
+      - generic [ref=e105]:
+        - generic [ref=e107]:
+          - article [ref=e109]:
+            - link "NEW✨ Came for the paycheck, left with a ring! wuf EVENT Comic dot Romance Fantasy" [ref=e110] [cursor=pointer]:
+              - /url: /event/11dUmR
+              - generic [ref=e118]:
+                - paragraph [ref=e121]: NEW✨ Came for the paycheck, left with a ring!
+                - generic [ref=e122]:
+                  - generic [ref=e124]:
+                    - img "wuf" [ref=e126]
+                    - generic [ref=e127]: EVENT
+                  - generic [ref=e129]:
+                    - generic [ref=e130]: Comic
+                    - img "dot" [ref=e131]
+                    - generic [ref=e132]: Romance Fantasy
+          - article [ref=e134]:
+            - link "NEW SEASON⚡️Revenge is a dish best served to saints. wuf EVENT Comic dot Romance Fantasy" [ref=e135] [cursor=pointer]:
+              - /url: /series/270311/info
+              - generic [ref=e143]:
+                - paragraph [ref=e146]: NEW SEASON⚡️Revenge is a dish best served to saints.
+                - generic [ref=e147]:
+                  - generic [ref=e149]:
+                    - img "wuf" [ref=e151]
+                    - generic [ref=e152]: EVENT
+                  - generic [ref=e154]:
+                    - generic [ref=e155]: Comic
+                    - img "dot" [ref=e156]
+                    - generic [ref=e157]: Romance Fantasy
+          - article [ref=e159]:
+            - link "NEW✨ The guillotine, then darkness, then life—again... if she can hold on to it. EVENT Comic dot Romance Fantasy" [ref=e160] [cursor=pointer]:
+              - /url: /series/328979/info
+              - generic [ref=e168]:
+                - paragraph [ref=e171]: NEW✨ The guillotine, then darkness, then life—again... if she can hold on to it.
+                - generic [ref=e172]:
+                  - generic [ref=e175]: EVENT
+                  - generic [ref=e177]:
+                    - generic [ref=e178]: Comic
+                    - img "dot" [ref=e179]
+                    - generic [ref=e180]: Romance Fantasy
+          - article [ref=e182]:
+            - link "Special Episodes⚡️Can the mage magic his way out of the friendzone? wuf EVENT Comic dot Romance Fantasy" [ref=e183] [cursor=pointer]:
+              - /url: /series/279050/info
+              - generic [ref=e191]:
+                - paragraph [ref=e194]: Special Episodes⚡️Can the mage magic his way out of the friendzone?
+                - generic [ref=e195]:
+                  - generic [ref=e197]:
+                    - img "wuf" [ref=e199]
+                    - generic [ref=e200]: EVENT
+                  - generic [ref=e202]:
+                    - generic [ref=e203]: Comic
+                    - img "dot" [ref=e204]
+                    - generic [ref=e205]: Romance Fantasy
+          - article [ref=e207]:
+            - link "Fall for these iconic leads and score Bonus Ink for your binge! EVENT" [ref=e208] [cursor=pointer]:
+              - /url: /event/D6iMXz
+              - generic [ref=e216]:
+                - paragraph [ref=e219]: Fall for these iconic leads and score Bonus Ink for your binge!
+                - generic [ref=e223]: EVENT
+          - article [ref=e225]:
+            - link "30% OFF for a limited time only🔥 EVENT" [ref=e226] [cursor=pointer]:
+              - /url: /landing-list/777
+              - generic [ref=e234]:
+                - paragraph [ref=e237]: 30% OFF for a limited time only🔥
+                - generic [ref=e241]: EVENT
+          - article [ref=e243]:
+            - link "A spoiled girl's desperate attempt to escape Mr. Guillotine. wuf 3hr NEW Novel dot Romance Fantasy" [ref=e244] [cursor=pointer]:
+              - /url: /series/322390
+              - generic [ref=e252]:
+                - paragraph [ref=e255]: A spoiled girl's desperate attempt to escape Mr. Guillotine.
+                - generic [ref=e256]:
+                  - generic [ref=e258]:
+                    - generic [ref=e259]:
+                      - img "wuf" [ref=e260]
+                      - generic [ref=e261]: 3hr
+                    - generic [ref=e262]: NEW
+                  - generic [ref=e264]:
+                    - generic [ref=e265]: Novel
+                    - img "dot" [ref=e266]
+                    - generic [ref=e267]: Romance Fantasy
+          - article [ref=e269]:
+            - link "The Watch Ad library just got BIGGER with 25 new comics added🎉" [ref=e270] [cursor=pointer]:
+              - /url: /event/xSBDVf
+              - paragraph [ref=e281]: The Watch Ad library just got BIGGER with 25 new comics added🎉
+          - article [ref=e283]:
+            - link "Write a letter to your fave queer series or character for a chance to win ink!💌 EVENT" [ref=e284] [cursor=pointer]:
+              - /url: /event/pQ40eP
+              - generic [ref=e292]:
+                - paragraph [ref=e295]: Write a letter to your fave queer series or character for a chance to win ink!💌
+                - generic [ref=e299]: EVENT
+          - article [ref=e301]:
+            - link "A former king is reborn into a new world as a baby! wuf 3hr Comic dot Action Fantasy" [ref=e302] [cursor=pointer]:
+              - /url: /series/111423
+              - generic [ref=e310]:
+                - paragraph [ref=e313]: A former king is reborn into a new world as a baby!
+                - generic [ref=e314]:
+                  - generic [ref=e317]:
+                    - img "wuf" [ref=e318]
+                    - generic [ref=e319]: 3hr
+                  - generic [ref=e321]:
+                    - generic [ref=e322]: Comic
+                    - img "dot" [ref=e323]
+                    - generic [ref=e324]: Action Fantasy
+          - article [ref=e326]:
+            - link "This snow leopard baby just wants to protect her family! wuf UP Comic dot Romance Fantasy" [ref=e327] [cursor=pointer]:
+              - /url: /series/305025
+              - generic [ref=e335]:
+                - paragraph [ref=e338]: This snow leopard baby just wants to protect her family!
+                - generic [ref=e339]:
+                  - generic [ref=e341]:
+                    - img "wuf" [ref=e343]
+                    - generic [ref=e344]: UP
+                  - generic [ref=e346]:
+                    - generic [ref=e347]: Comic
+                    - img "dot" [ref=e348]
+                    - generic [ref=e349]: Romance Fantasy
+          - article [ref=e351]:
+            - link "I know my classmate is a virtuoso, but is he really THE virtuoso? wuf UP Comic dot Drama" [ref=e352] [cursor=pointer]:
+              - /url: /series/325850
+              - generic [ref=e360]:
+                - paragraph [ref=e363]: I know my classmate is a virtuoso, but is he really THE virtuoso?
+                - generic [ref=e364]:
+                  - generic [ref=e366]:
+                    - img "wuf" [ref=e368]
+                    - generic [ref=e369]: UP
+                  - generic [ref=e371]:
+                    - generic [ref=e372]: Comic
+                    - img "dot" [ref=e373]
+                    - generic [ref=e374]: Drama
+          - article [ref=e376]:
+            - link "When you're the only genius 3-year-old physician around, it's tough to Biyoo. wuf UP Comic dot Romance Fantasy" [ref=e377] [cursor=pointer]:
+              - /url: /series/326885
+              - generic [ref=e385]:
+                - paragraph [ref=e388]: When you're the only genius 3-year-old physician around, it's tough to Biyoo.
+                - generic [ref=e389]:
+                  - generic [ref=e391]:
+                    - img "wuf" [ref=e393]
+                    - generic [ref=e394]: UP
+                  - generic [ref=e396]:
+                    - generic [ref=e397]: Comic
+                    - img "dot" [ref=e398]
+                    - generic [ref=e399]: Romance Fantasy
+          - article [ref=e401]:
+            - link "From rags to riches... except I don't want these riches! wuf UP Comic dot Romance Fantasy" [ref=e402] [cursor=pointer]:
+              - /url: /series/323468
+              - generic [ref=e410]:
+                - paragraph [ref=e413]: From rags to riches... except I don't want these riches!
+                - generic [ref=e414]:
+                  - generic [ref=e416]:
+                    - img "wuf" [ref=e418]
+                    - generic [ref=e419]: UP
+                  - generic [ref=e421]:
+                    - generic [ref=e422]: Comic
+                    - img "dot" [ref=e423]
+                    - generic [ref=e424]: Romance Fantasy
+          - article [ref=e426]:
+            - link "The palace is teeming with mystery, but this lady’s got her own secret... wuf Comic dot Romance Fantasy" [ref=e427] [cursor=pointer]:
+              - /url: /series/222448
+              - generic [ref=e435]:
+                - paragraph [ref=e438]: The palace is teeming with mystery, but this lady’s got her own secret...
+                - generic [ref=e439]:
+                  - img "wuf" [ref=e443]
+                  - generic [ref=e445]:
+                    - generic [ref=e446]: Comic
+                    - img "dot" [ref=e447]
+                    - generic [ref=e448]: Romance Fantasy
+          - article [ref=e450]:
+            - link "Stay ahead & catch the next big hit early!" [ref=e451] [cursor=pointer]:
+              - /url: /static-landing/new?category=COMIC
+              - paragraph [ref=e462]: Stay ahead & catch the next big hit early!
+        - generic [ref=e463]:
+          - img "prev" [ref=e464] [cursor=pointer]
+          - generic [ref=e465]: "1"
+          - img "slash" [ref=e466]
+          - generic [ref=e467]: "16"
+          - img "next" [ref=e468] [cursor=pointer]
+      - generic [ref=e472]:
+        - article [ref=e473]:
+          - link "EVENT" [ref=e474] [cursor=pointer]:
+            - /url: /events
+            - generic [ref=e484]: EVENT
+        - article [ref=e487]:
+          - link [ref=e488] [cursor=pointer]:
+            - /url: /menu/3
+        - article [ref=e498]:
+          - link "wuf EVENT" [ref=e499] [cursor=pointer]:
+            - /url: /event/11dUmR
+            - generic [ref=e508]:
+              - img "wuf" [ref=e510]
+              - generic [ref=e511]: EVENT
+        - article [ref=e514]:
+          - link "wuf EVENT" [ref=e515] [cursor=pointer]:
+            - /url: /series/270311/info
+            - generic [ref=e524]:
+              - img "wuf" [ref=e526]
+              - generic [ref=e527]: EVENT
+        - article [ref=e530]:
+          - link "EVENT" [ref=e531] [cursor=pointer]:
+            - /url: /series/328979/info
+            - generic [ref=e541]: EVENT
+        - article [ref=e544]:
+          - link "wuf EVENT" [ref=e545] [cursor=pointer]:
+            - /url: /series/279050/info
+            - generic [ref=e554]:
+              - img "wuf" [ref=e556]
+              - generic [ref=e557]: EVENT
+        - article [ref=e560]:
+          - link "EVENT 06/05–06/09" [ref=e561] [cursor=pointer]:
+            - /url: /event/D6iMXz
+            - generic [ref=e562]:
+              - generic [ref=e571]: EVENT
+              - generic [ref=e576]: 06/05–06/09
+        - article [ref=e577]:
+          - link "EVENT 06/05–06/08" [ref=e578] [cursor=pointer]:
+            - /url: /landing-list/777
+            - generic [ref=e579]:
+              - generic [ref=e588]: EVENT
+              - generic [ref=e593]: 06/05–06/08
+      - generic [ref=e596]:
+        - article [ref=e597]:
+          - link "NEW to TAPAS? Tips for Newcomers" [ref=e598] [cursor=pointer]:
+            - /url: /event/GGShZR
+            - generic [ref=e601]:
+              - heading "NEW to TAPAS?" [level=3] [ref=e602]
+              - paragraph [ref=e603]: Tips for Newcomers
+        - article [ref=e606]:
+          - generic [ref=e608]:
+            - generic [ref=e609]:
+              - heading "Go to Tapas App" [level=3] [ref=e610]
+              - paragraph [ref=e611]: Get notified and free gifts
+            - generic [ref=e612]:
+              - link "App Store" [ref=e613] [cursor=pointer]:
+                - /url: https://itunes.apple.com/us/app/tapastic/id578836126?mt=8
+                - img "App Store" [ref=e614]
+              - link "Google Play" [ref=e615] [cursor=pointer]:
+                - /url: https://play.google.com/store/apps/details?id=com.tapastic&referrer=utm_source%3Dm-tapastic%26utm_medium%3Dlink%26utm_content%3Dget-the-app%26utm_campaign%3Dmobile-navigation
+                - img "Google Play" [ref=e616]
+      - generic [ref=e617]:
+        - heading "Continue Reading" [level=2] [ref=e621]
+        - generic [ref=e624]:
+          - article [ref=e625]:
+            - link "wuf 3hr UP Dungeon Predator" [ref=e626] [cursor=pointer]:
+              - /url: /series/278312
+              - generic "Dungeon Predator" [ref=e627]:
+                - generic [ref=e631]:
+                  - generic [ref=e645]:
+                    - generic [ref=e646]:
+                      - img "wuf" [ref=e647]
+                      - generic [ref=e648]: 3hr
+                    - generic [ref=e649]: UP
+                  - paragraph [ref=e651]: Dungeon Predator
+          - article [ref=e652]:
+            - link "wuf 3hr UP The Wrong Twin" [ref=e653] [cursor=pointer]:
+              - /url: /series/289369
+              - generic "The Wrong Twin" [ref=e654]:
+                - generic [ref=e658]:
+                  - generic [ref=e672]:
+                    - generic [ref=e673]:
+                      - img "wuf" [ref=e674]
+                      - generic [ref=e675]: 3hr
+                    - generic [ref=e676]: UP
+                  - paragraph [ref=e678]: The Wrong Twin
+          - article [ref=e679]:
+            - link "FREE UP Princess Overlord" [ref=e680] [cursor=pointer]:
+              - /url: /series/310597
+              - generic "Princess Overlord" [ref=e681]:
+                - generic [ref=e689]:
+                  - generic [ref=e690]: FREE
+                  - generic [ref=e691]: UP
+                - paragraph [ref=e693]: Princess Overlord
+          - article [ref=e694]:
+            - link "FREE UP Humor me" [ref=e695] [cursor=pointer]:
+              - /url: /series/15281
+              - generic "Humor me" [ref=e696]:
+                - generic [ref=e704]:
+                  - generic [ref=e705]: FREE
+                  - generic [ref=e706]: UP
+                - paragraph [ref=e708]: Humor me
+          - article [ref=e709]:
+            - link "30% OFF" [ref=e710] [cursor=pointer]:
+              - /url: /series/270311
+              - generic "The Archduke's Adopted Saint" [ref=e711]:
+                - generic [ref=e720]: 30% OFF
+          - article [ref=e723]:
+            - link "wuf 3hr UP Soul Forged" [ref=e724] [cursor=pointer]:
+              - /url: /series/311919
+              - generic "Soul Forged" [ref=e725]:
+                - generic [ref=e729]:
+                  - generic [ref=e743]:
+                    - generic [ref=e744]:
+                      - img "wuf" [ref=e745]
+                      - generic [ref=e746]: 3hr
+                    - generic [ref=e747]: UP
+                  - paragraph [ref=e749]: Soul Forged
+          - article [ref=e750]:
+            - link [ref=e751] [cursor=pointer]:
+              - /url: /series/67447
+              - generic "Idiots Don't Catch Colds" [ref=e752]
+          - article [ref=e761]:
+            - link "wuf" [ref=e762] [cursor=pointer]:
+              - /url: /series/286103
+              - generic "I'm Quitting the Hero's Party" [ref=e763]:
+                - img "wuf" [ref=e773]
+      - generic [ref=e778]:
+        - generic [ref=e779]:
+          - heading "🦋Iconic Heroines Club🦋" [level=2] [ref=e780]
+          - paragraph [ref=e781]: Meet the ladies you’ll adore.
+        - link "right arrow" [ref=e782] [cursor=pointer]:
+          - /url: /landing-list/784
+          - img "right arrow" [ref=e784]
+      - generic [ref=e814]:
+        - generic [ref=e815]:
+          - heading "📌On Sale! 🎉🎉🎉" [level=2] [ref=e816]
+          - paragraph [ref=e817]: Better act fast; these deals won't last!
+        - link "right arrow" [ref=e818] [cursor=pointer]:
+          - /url: /landing-list/2
+          - img "right arrow" [ref=e820]
+      - generic [ref=e850]:
+        - heading "New Comics" [level=2] [ref=e852]
+        - link "right arrow" [ref=e853] [cursor=pointer]:
+          - /url: /landing-list/1
+          - img "right arrow" [ref=e855]
+      - generic [ref=e885]:
+        - heading "Season Returns" [level=2] [ref=e887]
+        - link "right arrow" [ref=e888] [cursor=pointer]:
+          - /url: /landing-list/13
+          - img "right arrow" [ref=e890]
+      - generic [ref=e920]:
+        - heading "Trending Now🌟" [level=2] [ref=e922]
+        - link "right arrow" [ref=e923] [cursor=pointer]:
+          - /url: /landing-list/592
+          - img "right arrow" [ref=e925]
+      - generic [ref=e955]:
+        - generic [ref=e956]:
+          - heading "Falling for My Ultimate Bias💘" [level=2] [ref=e957]
+          - paragraph [ref=e958]: "POV: You’re his #1 simp"
+        - link "right arrow" [ref=e959] [cursor=pointer]:
+          - /url: /landing-list/778
+          - img "right arrow" [ref=e961]
+      - generic [ref=e991]:
+        - generic [ref=e992]:
+          - heading "Bound by Touch, Tied by Love❤️" [level=2] [ref=e993]
+          - paragraph [ref=e994]: One fated connection, forever to go🔥
+        - link "right arrow" [ref=e995] [cursor=pointer]:
+          - /url: /landing-list/779
+          - img "right arrow" [ref=e997]
+      - generic [ref=e1027]:
+        - generic [ref=e1028]:
+          - heading "Trapped in Fate's Infinite Loop🔁" [level=2] [ref=e1029]
+          - paragraph [ref=e1030]: How many lives until a happy ending?
+        - link "right arrow" [ref=e1031] [cursor=pointer]:
+          - /url: /landing-list/780
+          - img "right arrow" [ref=e1033]
+      - generic [ref=e1063]:
+        - heading "Handpicked For You🧸" [level=2] [ref=e1065]
+        - link "right arrow" [ref=e1066] [cursor=pointer]:
+          - /url: /landing-list/712
+          - img "right arrow" [ref=e1068]
+      - generic [ref=e1098]:
+        - generic [ref=e1099]:
+          - heading "Top Action Fantasy Picks💥" [level=2] [ref=e1100]
+          - paragraph [ref=e1101]: Legendary picks only—read these top 100!
+        - link "right arrow" [ref=e1102] [cursor=pointer]:
+          - /url: /landing-list/260
+          - img "right arrow" [ref=e1104]
+      - generic [ref=e1134]:
+        - heading "⏰FREE Every 3 Hours!" [level=2] [ref=e1136]
+        - link "right arrow" [ref=e1137] [cursor=pointer]:
+          - /url: /landing-list/651
+          - img "right arrow" [ref=e1139]
+      - generic [ref=e1169]:
+        - heading "Community Staff Picks" [level=2] [ref=e1171]
+        - link "right arrow" [ref=e1172] [cursor=pointer]:
+          - /url: /landing-list/88
+          - img "right arrow" [ref=e1174]
+      - generic [ref=e1204]:
+        - heading "Community New and Noteworthy" [level=2] [ref=e1206]
+        - link "right arrow" [ref=e1207] [cursor=pointer]:
+          - /url: /landing-list/111
+          - img "right arrow" [ref=e1209]
+      - generic [ref=e1239]:
+        - generic [ref=e1240]:
+          - heading "Mature Versions Available🔥" [level=2] [ref=e1241]
+          - paragraph [ref=e1242]: The spicier cuts? Only on our website!
+        - link "right arrow" [ref=e1243] [cursor=pointer]:
+          - /url: /landing-list/443
+          - img "right arrow" [ref=e1245]
+      - generic [ref=e1275]:
+        - heading "Tapas Originals" [level=2] [ref=e1277]
+        - link "right arrow" [ref=e1278] [cursor=pointer]:
+          - /url: /landing-list/4
+          - img "right arrow" [ref=e1280]
+      - generic [ref=e1310]:
+        - heading "New Novels" [level=2] [ref=e1312]
+        - link "right arrow" [ref=e1313] [cursor=pointer]:
+          - /url: /landing-list/6
+          - img "right arrow" [ref=e1315]
+      - generic [ref=e1345]:
+        - heading "Early Access" [level=2] [ref=e1347]
+        - link "right arrow" [ref=e1348] [cursor=pointer]:
+          - /url: /landing-list/75
+          - img "right arrow" [ref=e1350]
+      - generic [ref=e1380]:
+        - heading "Léelo en español" [level=2] [ref=e1382]
+        - link "right arrow" [ref=e1383] [cursor=pointer]:
+          - /url: /landing-list/17
+          - img "right arrow" [ref=e1385]
+      - article [ref=e1416]:
+        - generic [ref=e1419]:
+          - img "App Install" [ref=e1420]
+          - generic [ref=e1421]:
+            - paragraph [ref=e1422]: Free Ink, gifts, and more. Get the app today!
+            - generic [ref=e1423]:
+              - link "iOS App Link" [ref=e1424] [cursor=pointer]:
+                - /url: https://itunes.apple.com/us/app/tapastic/id578836126?mt=8
+                - img "iOS App Link" [ref=e1425]
+              - link "AOS App Link" [ref=e1426] [cursor=pointer]:
+                - /url: https://play.google.com/store/apps/details?id=com.tapastic&referrer=utm_source%3Dm-tapastic%26utm_medium%3Dlink%26utm_content%3Dget-the-app%26utm_campaign%3Dmobile-navigation
+                - img "AOS App Link" [ref=e1427]
+    - contentinfo [ref=e1429]:
+      - link "tapas Stories you crave" [ref=e1431] [cursor=pointer]:
+        - /url: /
+        - img "tapas Stories you crave" [ref=e1432]
+      - generic [ref=e1433]:
+        - link "instagram" [ref=e1434] [cursor=pointer]:
+          - /url: https://instagram.com/tapas_app
+          - img "instagram" [ref=e1435]
+        - link "twitter" [ref=e1436] [cursor=pointer]:
+          - /url: https://twitter.com/tapas_app
+          - img "twitter" [ref=e1437]
+        - link "youtube" [ref=e1438] [cursor=pointer]:
+          - /url: https://www.youtube.com/tapasmedia
+          - img "youtube" [ref=e1439]
+        - link "facebook" [ref=e1440] [cursor=pointer]:
+          - /url: https://www.facebook.com/tapas.io
+          - img "facebook" [ref=e1441]
+        - link "tiktok" [ref=e1442] [cursor=pointer]:
+          - /url: https://www.tiktok.com/@tapasmedia
+          - img "tiktok" [ref=e1443]
+      - generic [ref=e1444]:
+        - link "Help" [ref=e1445] [cursor=pointer]:
+          - /url: https://help.tapas.io/hc/en-us
+        - link "Discord" [ref=e1446] [cursor=pointer]:
+          - /url: https://discord.com/invite/tapas
+        - link "Forums" [ref=e1447] [cursor=pointer]:
+          - /url: https://forums.tapas.io
+        - link "Newsfeed" [ref=e1448] [cursor=pointer]:
+          - /url: /newsfeed
+        - link "Contact" [ref=e1449] [cursor=pointer]:
+          - /url: mailto:feedback@tapas.io
+        - link "Publish" [ref=e1450] [cursor=pointer]:
+          - /url: https://www.creators.tapas.io
+      - generic [ref=e1451]:
+        - paragraph [ref=e1452]: ⓒ 2024 Tapas Entertainment.
+        - generic [ref=e1453]:
+          - link "Terms" [ref=e1454] [cursor=pointer]:
+            - /url: https://help.tapas.io/hc/en-us/articles/115005545248
+          - generic [ref=e1455]: ・
+          - link "Privacy" [ref=e1456] [cursor=pointer]:
+            - /url: https://help.tapas.io/hc/en-us/articles/115005377787
+          - generic [ref=e1457]: ・
+          - link "Content" [ref=e1458] [cursor=pointer]:
+            - /url: https://help.tapas.io/hc/en-us/articles/115005323707
+        - link "Do Not Sell or Share My Personal Information" [ref=e1459] [cursor=pointer]:
+          - /url: /account/privacy-opt-out
+  - alert [ref=e1460]
+  - iframe [ref=e1461]:
+    - button "Help" [ref=f3e4] [cursor=pointer]:
+      - img [ref=f3e6]
+      - generic [ref=f3e13]: Help
+```
+
+# Test source
+
+```ts
+  1   | // 보관함 (Library) step 정의
+  2   | // features/보관함/**/*.feature 대응
+  3   | 
+  4   | import { createBdd } from 'playwright-bdd';
+  5   | import { expect } from '@playwright/test';
+  6   | 
+  7   | const { Given, When, Then } = createBdd();
+  8   | 
+  9   | // ──── 사전 조건 ────
+  10  | 
+  11  | Given(/^(Updated|Recent|Subscribed|Free Episodes|Wait Until Free|PCWeb only) 작품 목록 없는 경우$/, async () => {
+  12  |   // 특정 목록이 비어있는 상태 — 데이터 의존적, 자동화 범위 외
+  13  | });
+  14  | 
+  15  | // ──── 보관함 진입 / 탭 이동 ────
+  16  | 
+  17  | // GNB > 라이브러리 메뉴 클릭 / GNB > 라이브러리 클릭 — common.steps.ts의 /^GNB > ([^>]+) 클릭$/ 에서 처리
+  18  | 
+  19  | When('GNB >보관함 클릭 > Suscribed클릭', async ({ page }) => {
+  20  |   const lib = page.locator('a[href="/reading-list"]');
+  21  |   if ((await lib.count()) > 0) await lib.first().click();
+  22  |   await page.waitForLoadState('domcontentloaded').catch(() => {});
+  23  |   const tab = page.locator('a[href*="category=SUBSCRIBED"]');
+  24  |   if ((await tab.count()) > 0) await tab.first().click();
+  25  | });
+  26  | 
+  27  | When('GNB 보관함 아이콘 클릭 > Recent 클릭', async ({ page }) => {
+  28  |   const lib = page.locator('a[href="/reading-list"]');
+  29  |   if ((await lib.count()) > 0) await lib.first().click();
+  30  |   await page.waitForLoadState('domcontentloaded').catch(() => {});
+  31  |   const tab = page.locator('a[href*="category=RECENT"]');
+  32  |   if ((await tab.count()) > 0) await tab.first().click();
+  33  | });
+  34  | 
+  35  | async function ensureOnReadingList(page: any) {
+  36  |   if (!page.url().includes('reading-list')) {
+  37  |     const lib = page.locator('a[href="/reading-list"]');
+  38  |     if ((await lib.count()) > 0) {
+  39  |       await lib.first().click();
+  40  |       await page.waitForLoadState('domcontentloaded').catch(() => {});
+  41  |     }
+  42  |     if (page.url().includes('signin')) {
+  43  |       throw new Error('[보관함] 로그인 세션 만료 — storageState 재생성 필요 (npm run test:setup)');
+  44  |     }
+  45  |   }
+  46  | }
+  47  | 
+  48  | When('Recent 클릭', async ({ page }) => {
+  49  |   await ensureOnReadingList(page);
+  50  |   await expect(page.locator('a[href*="category=RECENT"]').first()).toBeVisible({ timeout: 5000 });
+  51  |   await page.locator('a[href*="category=RECENT"]').first().click();
+  52  | });
+  53  | 
+  54  | When('Subscribed 클릭', async ({ page }) => {
+  55  |   await ensureOnReadingList(page);
+  56  |   await expect(page.locator('a[href*="category=SUBSCRIBED"]').first()).toBeVisible({ timeout: 5000 });
+  57  |   await page.locator('a[href*="category=SUBSCRIBED"]').first().click();
+  58  | });
+  59  | 
+  60  | When('Free episodes 메뉴 클릭', async ({ page }) => {
+  61  |   await ensureOnReadingList(page);
+  62  |   await expect(page.locator('a[href*="category=FREE_EPISODES"]').first()).toBeVisible({ timeout: 5000 });
+  63  |   await page.locator('a[href*="category=FREE_EPISODES"]').first().click();
+  64  | });
+  65  | 
+  66  | When('Wait until Free 메뉴 클릭', async ({ page }) => {
+  67  |   await ensureOnReadingList(page);
+  68  |   await expect(page.locator('a[href*="category=WAIT_UNTIL_FREE"]').first()).toBeVisible({ timeout: 5000 });
+  69  |   await page.locator('a[href*="category=WAIT_UNTIL_FREE"]').first().click();
+  70  | });
+  71  | 
+  72  | // Comics 필터 클릭 — 인박스-댓글.steps.ts의 /^(All|Comics|Novels) 필터 클릭$/ 에서 처리
+  73  | 
+  74  | When('우상단 필터 > [Comics] 버튼 클릭', async ({ page }) => {
+  75  |   await expect(page.locator('a[href*="type=COMICS"]').first()).toBeVisible({ timeout: 5000 });
+  76  |   await page.locator('a[href*="type=COMICS"]').first().click();
+  77  | });
+  78  | 
+  79  | When('필터 > [All] 버튼 클릭', async ({ page }) => {
+  80  |   await expect(page.locator('a.item-title').filter({ hasText: /^all$/i }).first()).toBeVisible({ timeout: 5000 });
+  81  |   await page.locator('a.item-title').filter({ hasText: /^all$/i }).first().click();
+  82  | });
+  83  | 
+  84  | When('필터 > [Novels] 버튼 클릭', async ({ page }) => {
+  85  |   await expect(page.locator('a[href*="type=BOOKS"]').first()).toBeVisible({ timeout: 5000 });
+  86  |   await page.locator('a[href*="type=BOOKS"]').first().click();
+  87  | });
+  88  | 
+  89  | When('탭 하단 [Comics] 버튼 클릭', async ({ page }) => {
+> 90  |   await expect(page.locator('a[href*="type=COMICS"]').first()).toBeVisible({ timeout: 5000 });
+      |                                                                ^ Error: expect(locator).toBeVisible() failed
+  91  |   await page.locator('a[href*="type=COMICS"]').first().click();
+  92  | });
+  93  | 
+  94  | // ──── Gift Passes ────
+  95  | 
+  96  | When('Get Gift Passes 영역 확인', async ({ page }) => {
+  97  |   await expect(page.locator('.inbox-gift-item, [class*="gift"]').first()).toBeVisible({ timeout: 5000 });
+  98  | });
+  99  | 
+  100 | When('작품 오른쪽의 [Get] 버튼 클릭', async ({ page }) => {
+  101 |   // 작품 클릭 후 페이지가 이동됐을 수 있으므로 선물함으로 복귀
+  102 |   if (!page.url().includes('/inbox/gift')) {
+  103 |     const giftLink = page.locator('a[href="/inbox/gift"]');
+  104 |     if ((await giftLink.count()) > 0) await giftLink.first().click();
+  105 |     await page.waitForLoadState('domcontentloaded').catch(() => {});
+  106 |   }
+  107 |   const btn = page.locator('.inbox-gift-item__btn-get').first();
+  108 |   if ((await btn.count()) > 0) { await btn.click(); return; }
+  109 |   await expect(page.locator('body')).toBeVisible();
+  110 | });
+  111 | 
+  112 | When('Gift 수령', async ({ page }) => {
+  113 |   const btn = page.getByRole('button', { name: /get|claim|receive/i });
+  114 |   if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  115 |   await expect(page.locator('body')).toBeVisible();
+  116 | });
+  117 | 
+  118 | // ──── 작품 / 뷰어 진입 ────
+  119 | 
+  120 | When('작품 클릭', async ({ page }) => {
+  121 |   await expect(page.getByRole('link').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
+  122 |   await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
+  123 | });
+  124 | 
+  125 | When('임의의 작품 클릭', async ({ page }) => {
+  126 |   await expect(page.getByRole('link').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
+  127 |   await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
+  128 | });
+  129 | 
+  130 | When('GNB > Home > 임의의 작품 클릭', async ({ page }) => {
+  131 |   const homeLink = page.getByRole('link', { name: /^home$/i });
+  132 |   if ((await homeLink.count()) > 0) await homeLink.first().click();
+  133 |   await page.waitForLoadState('domcontentloaded').catch(() => {});
+  134 |   const imgLink = page.getByRole('link').filter({ has: page.locator('img') });
+  135 |   if ((await imgLink.count()) > 0) { await imgLink.first().click(); return; }
+  136 |   const seriesLink = page.locator('a[href*="/series/"]').first();
+  137 |   if ((await seriesLink.count()) > 0) { await seriesLink.click(); return; }
+  138 |   await expect(page.locator('body')).toBeVisible();
+  139 | });
+  140 | 
+  141 | When('작품 리스트 노출 확인', async ({ page }) => {
+  142 |   await expect(page.locator('.content-list-wrap').first()).toBeVisible({ timeout: 5000 });
+  143 | });
+  144 | 
+  145 | When('작품 정보 영역 확인', async ({ page }) => {
+  146 |   await expect(page.locator('.content-list-wrap').first()).toBeVisible({ timeout: 5000 });
+  147 | });
+  148 | 
+  149 | When('Comic 작품 열람', async ({ page }) => {
+  150 |   const imgLink = page.getByRole('link').filter({ has: page.locator('img') });
+  151 |   if ((await imgLink.count()) > 0) { await imgLink.first().click(); return; }
+  152 |   await expect(page.locator('a[href*="/series/"], a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
+  153 |   await page.locator('a[href*="/series/"], a[href*="/episode/"]').first().click();
+  154 | });
+  155 | 
+  156 | When('Comic 작품 구독', async ({ page }) => {
+  157 |   const btn = page.getByRole('button', { name: /subscribe/i });
+  158 |   if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  159 |   await expect(page.locator('body')).toBeVisible();
+  160 | });
+  161 | 
+  162 | When('Novel 작품 구독', async ({ page }) => {
+  163 |   const btn = page.getByRole('button', { name: /subscribe/i });
+  164 |   if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  165 |   await expect(page.locator('body')).toBeVisible();
+  166 | });
+  167 | 
+  168 | // ──── 뒤로가기 ────
+  169 | 
+  170 | async function goBackSafely(page: any) {
+  171 |   await page.goBack();
+  172 |   if (page.url() === 'about:blank' || page.url() === '') {
+  173 |     await page.goto('/');
+  174 |   }
+  175 | }
+  176 | 
+  177 | When('[<-] 백버튼 클릭', async ({ page }) => {
+  178 |   await goBackSafely(page);
+  179 | });
+  180 | 
+  181 | When('[<] 백버튼 클릭', async ({ page }) => {
+  182 |   await goBackSafely(page);
+  183 | });
+  184 | 
+  185 | When('상단 [<] 백버튼 클릭', async ({ page }) => {
+  186 |   await goBackSafely(page);
+  187 | });
+  188 | 
+  189 | When('뒤로가기', async ({ page }) => {
+  190 |   await page.goBack();
+```
