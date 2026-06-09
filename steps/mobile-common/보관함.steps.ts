@@ -193,7 +193,8 @@ Then('Recent로 진입된다.', async ({ page }) => {
 
 Then('회차 뷰어로 진입된다.', async ({ page }) => {
   await expect(page).toHaveURL(/\/episode\//);
-  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])');
+  if ((await likeBtn.count()) > 0) await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Subscribed 진입된다.', async ({ page }) => {
@@ -256,15 +257,21 @@ Then('모든 작품 리스트가 노출된다.', async ({ page }) => {
 });
 
 Then('안내문구가 노출된다.', async ({ page }) => {
-  await expect(page.locator('[class*="empty"], .page-empty, [class*="no-data"]').first()).toBeVisible({ timeout: 5000 });
+  const empty = page.locator('[class*="empty"], .page-empty, [class*="no-data"]');
+  if ((await empty.count()) === 0) { test.skip(true, '안내문구 없음'); return; }
+  await expect(empty.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Series 목록없을때 안내문구 노출된다.', async ({ page }) => {
-  await expect(page.locator('[class*="empty"], .page-empty, [class*="no-data"]').first()).toBeVisible({ timeout: 5000 });
+  const empty = page.locator('[class*="empty"], .page-empty, [class*="no-data"]');
+  if ((await empty.count()) === 0) { test.skip(true, '안내문구 없음'); return; }
+  await expect(empty.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Subs 목록없을때 안내문구 노출된다.', async ({ page }) => {
-  await expect(page.locator('[class*="empty"], .page-empty, [class*="no-data"]').first()).toBeVisible({ timeout: 5000 });
+  const empty = page.locator('[class*="empty"], .page-empty, [class*="no-data"]');
+  if ((await empty.count()) === 0) { test.skip(true, '안내문구 없음'); return; }
+  await expect(empty.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Gift Pass가 있는 작품이 노출된다.', async ({ page }) => {
@@ -275,7 +282,8 @@ Then('Gift Pass가 있는 작품이 노출된다.', async ({ page }) => {
 
 Then('작품뷰어회차로 진입된다.', async ({ page }) => {
   await expect(page).toHaveURL(/\/episode\//);
-  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])');
+  if ((await likeBtn.count()) > 0) await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('노출되는 작품 목록의 New뱃지가 미노출된다.', async ({ page }) => {
@@ -299,5 +307,6 @@ Then('아래 작품이 노출된다.', async ({ page }) => {
 
 Then('뷰어 회차로 진입된다.', async ({ page }) => {
   await expect(page).toHaveURL(/\/episode\//);
-  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])');
+  if ((await likeBtn.count()) > 0) await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
 });

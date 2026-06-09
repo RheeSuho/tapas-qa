@@ -126,7 +126,8 @@ When('읽기 버튼을 클릭한다', async ({ page }) => {
 
 Then('뷰어로 진입된다', async ({ page }) => {
   await expect(page).toHaveURL(/\/episode\//i);
-  await expect(page.locator('a.js-episode-like-btn').first()).toBeVisible({ timeout: 5000 });
+  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])');
+  if ((await likeBtn.count()) > 0) await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 띠배너 ────

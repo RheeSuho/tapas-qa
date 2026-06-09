@@ -130,7 +130,7 @@ When('{string} 요일 탭 클릭', async ({ page }, day: string) => {
 });
 
 When(/^정렬\/필터 노출 확인$/, async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('더보기[>] 영역 클릭', async ({ page }) => {
@@ -214,11 +214,11 @@ When('Comics Spotlight 서브탭에 접속한다', async ({ page }) => {
 });
 
 Then('Comics 홈으로 돌아온다', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('Comics 카테고리 페이지가 노출된다', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 // ──── Novels 전용 진입 / 복귀 ────
@@ -235,11 +235,11 @@ When('Novels Spotlight 서브탭에 접속한다', async ({ page }) => {
 });
 
 Then('Novels 홈으로 돌아온다', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('Novels 카테고리 페이지가 노출된다', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 // ──── Mature 전용 진입 / 복귀 ────
@@ -256,11 +256,11 @@ When('Mature Spotlight 서브탭에 접속한다', async ({ page }) => {
 });
 
 Then('Mature 홈으로 돌아온다', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('Mature 카테고리 페이지가 노출된다', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('빅배너가 노출된다', async ({ page }) => {
@@ -269,7 +269,7 @@ Then('빅배너가 노출된다', async ({ page }) => {
 
 Then('장르 필터와 정렬 옵션이 노출된다', async ({ page }) => {
   // Popular 정렬 버튼 + 작품 카드 노출 확인
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
   const sortBtn = page.getByRole('button', { name: /popular/i });
   const isVisible = await sortBtn.first().isVisible().catch(() => false);
   if (isVisible) { await expect(sortBtn.first()).toBeVisible(); }
@@ -293,14 +293,14 @@ Then('Community 홈으로 돌아온다', async ({ page }) => {
 });
 
 Then('Community 카테고리 페이지가 노출된다', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 // ──── 결과 검증 ────
 
 Then(/^(Comics|Novels|Community|mature) 홈화면의 첫 번째 서브탭으로 진입된다\.$/, async ({ page }, category: string) => {
   // 작품 카드 노출 확인
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
   // Comics/Novels는 Daily 탭(요일 버튼)도 같이 확인
   if (category === 'Comics' || category === 'Novels') {
     const dayTab = page.locator('a[href*="daily_type="]').first();
@@ -310,11 +310,11 @@ Then(/^(Comics|Novels|Community|mature) 홈화면의 첫 번째 서브탭으로 
 });
 
 Then(/^(Comics|Novels) 서브탭이 활성화된다\.$/, async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then(/^\{(All Comics|All Novels|장르명)\} 서브탭이 활성화된다\.$/, async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('장르 선택 팝업이 노출된다.', async ({ page }) => {
@@ -326,15 +326,15 @@ Then('정렬 선택 팝업이 노출된다.', async ({ page }) => {
 });
 
 Then('팝업이 닫히고 작품 리스트가 갱신되며 필터된 장르의 작품만 노출된다.', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('팝업이 닫히고 작품 리스트가 갱신되며 선택한 정렬 순으로 작품 리스트가 노출된다.', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('상단에 장르 선택 필터와 정렬 옵션 변경 영역이 노출된다.', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^Comics\/Novels 대분류 필터 노출되지 않는다\.$/, async ({ page }) => {
@@ -351,7 +351,7 @@ Then('연령 인증 페이지 랜딩된다.', async ({ page }) => {
 });
 
 Then('mature 작품이 M 뱃지와 함께 딤드되어 노출된다.', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then(/^Submit 버튼 (활성화|비활성화)된다\.$/, async ({ page }) => {
@@ -359,21 +359,21 @@ Then(/^Submit 버튼 (활성화|비활성화)된다\.$/, async ({ page }) => {
 });
 
 Then(/^(Comic|Novel|Mature|Community .+|해당 장르의 .+) 작품(?!홈 구독).* 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then(/^변경된 요일 탭에 맞는 (Comic|Novel|Mature) 작품이 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then(/^(Comic|Novel|Mature) 작품이 연재 요일에 맞게 노출된다\..+$/, async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 // Mature 작품이 최대 300위까지 노출된다. — /^(Comic|Novel|Mature|...) 작품.* 노출된다\.$/ 에서 처리
 
 Then(/^이전 화면으로 돌아온다\. \(.+ 홈\)$/, async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then(/^해당 작품홈으로 진입된다\.$/, async ({ page }) => {
@@ -381,7 +381,7 @@ Then(/^해당 작품홈으로 진입된다\.$/, async ({ page }) => {
 });
 
 Then(/^2-[12]\. .+$/, async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 // ──── Community 신규 서브탭 진입 ────
@@ -432,7 +432,7 @@ When('Mature Novels 필터를 클릭한다', async ({ page }) => {
 
 Then('Mature Novels 작품 목록으로 전환된다', async ({ page }) => {
   await expect(page).toHaveURL(/category=MATURE_NOVEL/, { timeout: 8000 });
-  const series = page.locator('article a[href*="/series/"]').first();
+  const series = page.locator('a[href*="/series/"]').first();
   const noResult = page.getByText('No results were found.').first();
   const hasNoResult = await noResult.isVisible().catch(() => false);
   if (hasNoResult) { await expect(noResult).toBeVisible(); }
@@ -440,9 +440,9 @@ Then('Mature Novels 작품 목록으로 전환된다', async ({ page }) => {
 });
 
 Then('Mature - Comic 작품의 모든 장르에 해당하는 작품이 노출된다.', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('Mature - Novel 작품의 모든 장르에 해당하는 작품이 노출된다.', async ({ page }) => {
-  await expect(page.locator('article a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
