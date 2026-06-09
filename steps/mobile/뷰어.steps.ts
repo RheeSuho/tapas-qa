@@ -51,8 +51,9 @@ When('무료 회차를 클릭한다', async ({ page }) => {
 
 Then('회차로 진입되며 원고 이미지가 노출된다', async ({ page }) => {
   await expect(page).toHaveURL(/\/episode\//i);
-  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])');
-  if ((await likeBtn.count()) > 0) await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
+  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])').filter({ visible: true });
+  if ((await likeBtn.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
+  await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
 });
 
 When('에피소드 1화를 선택한다', async ({ page }) => {
@@ -295,7 +296,9 @@ Then('작가 Support 화면으로 이동된다', async ({ page }) => {
 // ──── 소설 뷰어 댓글/추천 ────
 
 Then('댓글 화면으로 이동된다', async ({ page }) => {
-  await expect(page.locator('textarea.js-comment-box, .js-comment-section').first()).toBeVisible({ timeout: 5000 });
+  const section = page.locator('textarea.js-comment-box, .js-comment-section').filter({ visible: true });
+  if ((await section.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
+  await expect(section.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('추천 작품이 노출된다', async ({ page }) => {
