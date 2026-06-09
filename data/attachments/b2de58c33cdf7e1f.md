@@ -1,0 +1,595 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: ../.features-gen/features/09-뷰어-(Comic)/하단-툴바.feature.spec.js >> 하단 툴바 >> [TPS-131] 구독 상태 > 더보기 버튼 클릭 + 더보기 버튼 재클릭 > Subscribe 버튼 클릭
+- Location: .features-gen/features/09-뷰어-(Comic)/하단-툴바.feature.spec.js:18:7
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByRole('button', { name: /subscribe/i }).first()
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for getByRole('button', { name: /subscribe/i }).first()
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e5]:
+    - link [ref=e7] [cursor=pointer]:
+      - /url: /
+    - generic [ref=e9]:
+      - link "Home" [ref=e11] [cursor=pointer]:
+        - /url: /
+      - link "Comics" [ref=e13] [cursor=pointer]:
+        - /url: /comics
+      - link "Novels" [ref=e15] [cursor=pointer]:
+        - /url: /novels
+      - link "Community" [ref=e17] [cursor=pointer]:
+        - /url: /community
+      - link "Mature" [ref=e19] [cursor=pointer]:
+        - /url: /mature
+      - generic [ref=e21] [cursor=pointer]: More
+    - generic [ref=e23]:
+      - textbox "Search" [ref=e25]
+      - generic [ref=e28]:
+        - link [ref=e29] [cursor=pointer]:
+          - /url: /reading-list
+        - link "117" [ref=e31] [cursor=pointer]:
+          - /url: /inbox/gift
+          - generic [ref=e32]: "117"
+        - img [ref=e36] [cursor=pointer]
+      - link "Publish" [ref=e39] [cursor=pointer]:
+        - /url: https://www.creators.tapas.io/
+  - generic [ref=e41]:
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - paragraph [ref=e48]: Episode 2
+          - paragraph [ref=e49]: Dec 17, 2021
+        - article [ref=e50]:
+          - img [ref=e51]
+          - img [ref=e52]
+          - img [ref=e53]
+          - img [ref=e54]
+          - img [ref=e55]
+          - img [ref=e56]
+          - img [ref=e57]
+          - img [ref=e58]
+          - img [ref=e59]
+          - img [ref=e60]
+          - img [ref=e61]
+          - img [ref=e62]
+          - img [ref=e63]
+          - img [ref=e64]
+          - img [ref=e65]
+          - img [ref=e66]
+          - img [ref=e67]
+          - img [ref=e68]
+          - img [ref=e69]
+          - img [ref=e70]
+          - img [ref=e71]
+          - img [ref=e72]
+          - img [ref=e73]
+          - img [ref=e74]
+          - img [ref=e75]
+          - img [ref=e76]
+          - img [ref=e77]
+          - img [ref=e78]
+          - img [ref=e79]
+          - img [ref=e80]
+          - img [ref=e81]
+          - img [ref=e82]
+          - img [ref=e83]
+          - img [ref=e84]
+          - img [ref=e85]
+          - img [ref=e86]
+          - img [ref=e87]
+          - img [ref=e88]
+          - img [ref=e89]
+          - img [ref=e90]
+          - img [ref=e91]
+          - img [ref=e92]
+          - img [ref=e93]
+          - img [ref=e94]
+          - img [ref=e95]
+          - img [ref=e96]
+          - img [ref=e97]
+          - img [ref=e98]
+          - img [ref=e99]
+          - img [ref=e100]
+          - img [ref=e101]
+          - img [ref=e102]
+          - img [ref=e103]
+          - img [ref=e104]
+          - img [ref=e105]
+          - img [ref=e106]
+          - img [ref=e107]
+          - img [ref=e108]
+          - img [ref=e109]
+          - img [ref=e110]
+          - img [ref=e111]
+          - img [ref=e112]
+          - img [ref=e113]
+          - img [ref=e114]
+      - generic [ref=e115]:
+        - link "custom banner" [ref=e117] [cursor=pointer]:
+          - /url: https://tapas.app.link/y4KHkhCYrob
+          - img "custom banner" [ref=e118]
+        - generic [ref=e119]:
+          - link "SWE01" [ref=e121] [cursor=pointer]:
+            - /url: /SWE01
+            - img "SWE01" [ref=e122]
+          - generic [ref=e124]:
+            - generic [ref=e125]:
+              - link "SWE" [ref=e126] [cursor=pointer]:
+                - /url: /SWE01
+              - paragraph [ref=e127]: Creator
+            - paragraph
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - paragraph [ref=e130]: Comments (289)
+            - generic [ref=e131] [cursor=pointer]: See all
+          - generic [ref=e132]:
+            - link "Hebsey" [ref=e134] [cursor=pointer]:
+              - /url: /hebertspence
+              - img "Hebsey" [ref=e135]
+            - generic [ref=e137]:
+              - generic [ref=e138]:
+                - link "Hebsey" [ref=e139] [cursor=pointer]:
+                  - /url: /hebertspence
+                - paragraph [ref=e140]: Top comment
+              - paragraph [ref=e142]: The writing 🤣 this is how every one of these stories should start hahahaha
+              - paragraph [ref=e147] [cursor=pointer]: 5.6k
+          - generic [ref=e148] [cursor=pointer]: Add a comment
+        - generic [ref=e150]:
+          - paragraph [ref=e152]: Recommendation for you
+          - list [ref=e153]:
+            - listitem [ref=e154]:
+              - link "Engaged to the Blind Duke Recommendation Engaged to the Blind Duke Romance Fantasy 10.7k likes" [ref=e155] [cursor=pointer]:
+                - /url: /series/engaged-to-the-blind-duke
+                - img "Engaged to the Blind Duke" [ref=e157]
+                - generic [ref=e162]:
+                  - paragraph [ref=e163]: Recommendation
+                  - paragraph [ref=e164]: Engaged to the Blind Duke
+                  - paragraph [ref=e165]:
+                    - generic [ref=e166]: Romance Fantasy
+                    - generic [ref=e168]: 10.7k likes
+            - listitem [ref=e169]:
+              - link "Became the Lout First Prince Recommendation Became the Lout First Prince Action Fantasy 5k likes" [ref=e170] [cursor=pointer]:
+                - /url: /series/became-the-lout-first-prince
+                - img "Became the Lout First Prince" [ref=e172]
+                - generic [ref=e177]:
+                  - paragraph [ref=e178]: Recommendation
+                  - paragraph [ref=e179]: Became the Lout First Prince
+                  - paragraph [ref=e180]:
+                    - generic [ref=e181]: Action Fantasy
+                    - generic [ref=e183]: 5k likes
+            - listitem [ref=e184]:
+              - link "The Archduke's Adopted Saint 30% OFF Recommendation The Archduke's Adopted Saint Romance Fantasy 346.1k likes" [ref=e185] [cursor=pointer]:
+                - /url: /series/the-archdukes-adopted-saint
+                - generic [ref=e186]:
+                  - img "The Archduke's Adopted Saint" [ref=e187]
+                  - generic [ref=e192]: 30% OFF
+                - generic [ref=e193]:
+                  - paragraph [ref=e194]: Recommendation
+                  - paragraph [ref=e195]: The Archduke's Adopted Saint
+                  - paragraph [ref=e196]:
+                    - generic [ref=e197]: Romance Fantasy
+                    - generic [ref=e199]: 346.1k likes
+            - listitem [ref=e200]:
+              - link "Mr. Beta Recommendation Mr. Beta BL 4.8m likes" [ref=e201] [cursor=pointer]:
+                - /url: /series/MrBeta
+                - img "Mr. Beta" [ref=e203]
+                - generic [ref=e205]:
+                  - paragraph [ref=e206]: Recommendation
+                  - paragraph [ref=e207]: Mr. Beta
+                  - paragraph [ref=e208]:
+                    - generic [ref=e209]: BL
+                    - generic [ref=e211]: 4.8m likes
+            - listitem [ref=e212]:
+              - link "I Swear We're Just Friends Recommendation I Swear We're Just Friends Romance Fantasy 213.1k likes" [ref=e213] [cursor=pointer]:
+                - /url: /series/i-swear-were-just-friends
+                - img "I Swear We're Just Friends" [ref=e215]
+                - generic [ref=e220]:
+                  - paragraph [ref=e221]: Recommendation
+                  - paragraph [ref=e222]: I Swear We're Just Friends
+                  - paragraph [ref=e223]:
+                    - generic [ref=e224]: Romance Fantasy
+                    - generic [ref=e226]: 213.1k likes
+            - listitem [ref=e227]:
+              - link "EYES ON ME Recommendation EYES ON ME Romance 8.6m likes" [ref=e228] [cursor=pointer]:
+                - /url: /series/eyesonmecomic
+                - img "EYES ON ME" [ref=e230]
+                - generic [ref=e232]:
+                  - paragraph [ref=e233]: Recommendation
+                  - paragraph [ref=e234]: EYES ON ME
+                  - paragraph [ref=e235]:
+                    - generic [ref=e236]: Romance
+                    - generic [ref=e238]: 8.6m likes
+            - listitem [ref=e239]:
+              - generic [ref=e240] [cursor=pointer]:
+                - img "feeling lucky" [ref=e242]
+                - generic [ref=e244]:
+                  - paragraph [ref=e245]: Feeling lucky
+                  - paragraph [ref=e246]: Random series you may like
+    - generic [ref=e247]:
+      - generic [ref=e252]:
+        - generic [ref=e253]:
+          - img "Villainesses Have More Fun" [ref=e256] [cursor=pointer]
+          - generic [ref=e261]:
+            - text: Villainesses Have More Fun
+            - paragraph [ref=e262]:
+              - generic [ref=e263]: 6.8m views
+              - generic [ref=e265]: 113.6k subscribers
+        - generic [ref=e269] [cursor=pointer]: WUF episode now available!
+        - paragraph [ref=e274] [cursor=pointer]: Hiatus Announcement
+        - generic [ref=e277] [cursor=pointer]:
+          - text: From growing up in a dysfunctional family to being cheated on, Sojin never had it easy. So after waking up in the body of villainess Reilynn Candmion, daughter of the empire’s wealthiest duke, all she wants is to revel in her riches. But something feels amiss when the story’s heroine, Iris, constantly starts fights with her -- from stealing her dress to seducing her fiancé. Reilynn wants no drama, but Iris and her four love interests won’t leave her alone! Can’t a girl just wanna have fun?
+          - generic [ref=e278]: Read more
+        - generic [ref=e280] [cursor=pointer]: Subscribed
+      - generic [ref=e281]:
+        - paragraph [ref=e283]: 142 episodes
+        - list [ref=e288]:
+          - listitem [ref=e289] [cursor=pointer]:
+            - img "Episode 1" [ref=e291]
+            - generic [ref=e293]:
+              - generic [ref=e294]: Episode 1
+              - generic [ref=e295]: Episode 1
+          - listitem [ref=e296] [cursor=pointer]:
+            - img "Episode 2" [ref=e298]
+            - generic [ref=e300]:
+              - generic [ref=e301]: Episode 2
+              - generic [ref=e302]: Episode 2
+          - listitem [ref=e303] [cursor=pointer]:
+            - img "Episode 3" [ref=e305]
+            - generic [ref=e307]:
+              - generic [ref=e308]: Episode 3
+              - generic [ref=e309]: Episode 3
+          - listitem [ref=e310] [cursor=pointer]:
+            - img "Episode 4" [ref=e312]
+            - generic [ref=e315]:
+              - generic [ref=e316]: Episode 4
+              - generic [ref=e317]: Episode 4
+              - generic [ref=e321]: WUF
+          - listitem [ref=e322] [cursor=pointer]:
+            - img "Episode 5" [ref=e324]
+            - generic [ref=e327]:
+              - generic [ref=e328]: Episode 5
+              - generic [ref=e329]: Episode 5
+              - generic [ref=e333]: WUF
+          - listitem [ref=e334] [cursor=pointer]:
+            - img "Episode 6" [ref=e336]
+            - generic [ref=e339]:
+              - generic [ref=e340]: Episode 6
+              - generic [ref=e341]: Episode 6
+              - generic [ref=e345]: WUF
+          - listitem [ref=e346] [cursor=pointer]:
+            - img "Episode 7" [ref=e348]
+            - generic [ref=e351]:
+              - generic [ref=e352]: Episode 7
+              - generic [ref=e353]: Episode 7
+              - generic [ref=e357]: WUF
+          - listitem [ref=e358] [cursor=pointer]:
+            - img "Episode 8" [ref=e360]
+            - generic [ref=e363]:
+              - generic [ref=e364]: Episode 8
+              - generic [ref=e365]: Episode 8
+              - generic [ref=e369]: WUF
+          - listitem [ref=e370] [cursor=pointer]:
+            - img "Episode 9" [ref=e372]
+            - generic [ref=e375]:
+              - generic [ref=e376]: Episode 9
+              - generic [ref=e377]: Episode 9
+              - generic [ref=e381]: WUF
+          - listitem [ref=e382] [cursor=pointer]:
+            - img "Episode 10" [ref=e384]
+            - generic [ref=e387]:
+              - generic [ref=e388]: Episode 10
+              - generic [ref=e389]: Episode 10
+              - generic [ref=e393]: WUF
+          - listitem [ref=e394] [cursor=pointer]:
+            - img "Episode 11" [ref=e396]
+            - generic [ref=e399]:
+              - generic [ref=e400]: Episode 11
+              - generic [ref=e401]: Episode 11
+              - generic [ref=e405]: WUF
+          - listitem [ref=e406] [cursor=pointer]:
+            - img "Episode 12" [ref=e408]
+            - generic [ref=e411]:
+              - generic [ref=e412]: Episode 12
+              - generic [ref=e413]: Episode 12
+              - generic [ref=e417]: WUF
+          - listitem [ref=e418] [cursor=pointer]:
+            - img "Episode 13" [ref=e420]
+            - generic [ref=e423]:
+              - generic [ref=e424]: Episode 13
+              - generic [ref=e425]: Episode 13
+              - generic [ref=e429]: WUF
+          - listitem [ref=e430] [cursor=pointer]:
+            - img "Episode 14" [ref=e432]
+            - generic [ref=e435]:
+              - generic [ref=e436]: Episode 14
+              - generic [ref=e437]: Episode 14
+              - generic [ref=e441]: WUF
+          - listitem [ref=e442] [cursor=pointer]:
+            - img "Episode 15" [ref=e444]
+            - generic [ref=e447]:
+              - generic [ref=e448]: Episode 15
+              - generic [ref=e449]: Episode 15
+              - generic [ref=e453]: WUF
+          - listitem [ref=e454] [cursor=pointer]:
+            - img "Episode 16" [ref=e456]
+            - generic [ref=e459]:
+              - generic [ref=e460]: Episode 16
+              - generic [ref=e461]: Episode 16
+              - generic [ref=e465]: WUF
+          - listitem [ref=e466] [cursor=pointer]:
+            - img "Episode 17" [ref=e468]
+            - generic [ref=e471]:
+              - generic [ref=e472]: Episode 17
+              - generic [ref=e473]: Episode 17
+              - generic [ref=e477]: WUF
+          - listitem [ref=e478] [cursor=pointer]:
+            - img "Episode 18" [ref=e480]
+            - generic [ref=e483]:
+              - generic [ref=e484]: Episode 18
+              - generic [ref=e485]: Episode 18
+              - generic [ref=e489]: WUF
+          - listitem [ref=e490] [cursor=pointer]:
+            - img "Episode 19" [ref=e492]
+            - generic [ref=e495]:
+              - generic [ref=e496]: Episode 19
+              - generic [ref=e497]: Episode 19
+              - generic [ref=e501]: WUF
+          - listitem [ref=e502] [cursor=pointer]:
+            - img "Episode 20" [ref=e504]
+            - generic [ref=e507]:
+              - generic [ref=e508]: Episode 20
+              - generic [ref=e509]: Episode 20
+              - generic [ref=e513]: WUF
+    - generic [ref=e515]:
+      - generic [ref=e516]:
+        - generic [ref=e517]:
+          - img "Episode 2" [ref=e518]
+          - generic [ref=e519]:
+            - paragraph [ref=e520]: Episode 2
+            - paragraph [ref=e521]:
+              - generic [ref=e522]: 191.9k views
+              - generic [ref=e524]: 16.4k likes
+              - generic [ref=e526]: 289 comments
+        - separator [ref=e527]
+        - generic [ref=e532] [cursor=pointer]: More
+      - generic [ref=e538] [cursor=pointer]: Like
+      - generic [ref=e539]:
+        - generic [ref=e540]:
+          - generic [ref=e545] [cursor=pointer]: List
+          - generic [ref=e550] [cursor=pointer]: Comment
+        - separator [ref=e551]
+        - generic [ref=e552]:
+          - generic [ref=e556] [cursor=pointer]: Prev
+          - generic [ref=e560] [cursor=pointer]: Next
+        - separator [ref=e561]
+        - generic [ref=e566] [cursor=pointer]: Full
+```
+
+# Test source
+
+```ts
+  91  |   await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
+  92  | });
+  93  | 
+  94  | When('소설 뷰어 진입', async ({ page }) => {
+  95  |   await ensureOnNovelEpisode(page);
+  96  | });
+  97  | 
+  98  | When('소설 작품 진입', async ({ page }) => {
+  99  |   await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
+  100 | });
+  101 | 
+  102 | When('GNB > Home > Novels > Popular 서브탭 진입', async ({ page }) => {
+  103 |   await page.goto('/');
+  104 |   await page.getByRole('link', { name: /^novels$/i }).first().click();
+  105 |   const popular = page.getByRole('link', { name: /popular/i });
+  106 |   if ((await popular.count()) > 0) await popular.first().click();
+  107 | });
+  108 | 
+  109 | When('GNB > Home > Novels > Daily 서브탭 진입', async ({ page }) => {
+  110 |   await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  111 |   await page.getByRole('link', { name: /^novels$/i }).first().click();
+  112 |   await page.waitForLoadState('domcontentloaded').catch(() => {});
+  113 |   const daily = page.getByRole('link', { name: /^daily$/i });
+  114 |   await daily.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  115 |   if ((await daily.count()) > 0) await daily.first().click();
+  116 |   await page.waitForLoadState('domcontentloaded').catch(() => {});
+  117 |   const seriesLink = page.locator('a[href*="/series/"]').first();
+  118 |   await seriesLink.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  119 |   if ((await seriesLink.count()) > 0) {
+  120 |     await seriesLink.click();
+  121 |     await page.waitForLoadState('domcontentloaded').catch(() => {});
+  122 |   }
+  123 | });
+  124 | 
+  125 | When('첫 번째 에피소드 클릭', async ({ page }) => {
+  126 |   await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
+  127 |   await page.locator('a.episode-item').first().click();
+  128 | });
+  129 | 
+  130 | // ──── 툴바 / 하단 영역 ────
+  131 | 
+  132 | When('하단 툴바 확인', async ({ page }) => {
+  133 |   await ensureOnEpisode(page);
+  134 | });
+  135 | 
+  136 | When('Bottom 영역 노출 확인', async ({ page }) => {
+  137 |   await ensureOnEpisode(page);
+  138 | });
+  139 | 
+  140 | When('하단 영역 확인', async ({ page }) => {
+  141 |   await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
+  142 | });
+  143 | 
+  144 | When('뷰어 하단 툴바 > [이전회차] 버튼 클릭', async ({ page }) => {
+  145 |   await ensureOnEpisode(page);
+  146 |   await clickToolbarBtn(page, 'a.js-prev-ep-btn');
+  147 | });
+  148 | 
+  149 | When('뷰어 하단 툴바 > [다음회차] 버튼 클릭', async ({ page }) => {
+  150 |   await ensureOnEpisode(page);
+  151 |   await clickToolbarBtn(page, 'a.js-next-ep-btn');
+  152 | });
+  153 | 
+  154 | When('다음회차 이동 버튼 클릭', async ({ page }) => {
+  155 |   await ensureOnEpisode(page);
+  156 |   await clickToolbarBtn(page, 'a.js-next-ep-btn');
+  157 | });
+  158 | 
+  159 | When('다음 회차 이동 버튼 클릭', async ({ page }) => {
+  160 |   await ensureOnEpisode(page);
+  161 |   await clickToolbarBtn(page, 'a.js-next-ep-btn');
+  162 | });
+  163 | 
+  164 | When('이전회차 이동 버튼 클릭', async ({ page }) => {
+  165 |   await ensureOnEpisode(page);
+  166 |   await clickToolbarBtn(page, 'a.js-prev-ep-btn');
+  167 | });
+  168 | 
+  169 | When('이전 회차 이동 버튼 클릭', async ({ page }) => {
+  170 |   await ensureOnEpisode(page);
+  171 |   await clickToolbarBtn(page, 'a.js-prev-ep-btn');
+  172 | });
+  173 | 
+  174 | // ──── 툴바 버튼 ────
+  175 | 
+  176 | When('[더보기] 버튼 클릭', async ({ page }) => {
+  177 |   await ensureOnEpisode(page);
+  178 |   await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
+  179 |   await page.waitForTimeout(500);
+  180 | });
+  181 | 
+  182 | When('하단 [더보기] 버튼 클릭', async ({ page }) => {
+  183 |   await ensureOnEpisode(page);
+  184 |   await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
+  185 |   await page.waitForTimeout(500);
+  186 | });
+  187 | 
+  188 | When('[더보기] 버튼 재클릭 > [Subscribe] 버튼 클릭', async ({ page }) => {
+  189 |   await ensureOnEpisode(page);
+  190 |   await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
+> 191 |   await expect(page.getByRole('button', { name: /subscribe/i }).first()).toBeVisible({ timeout: 5000 });
+      |                                                                          ^ Error: expect(locator).toBeVisible() failed
+  192 |   await page.getByRole('button', { name: /subscribe/i }).first().click();
+  193 | });
+  194 | 
+  195 | When('[Unsubscribe] 버튼 클릭', async ({ page }) => {
+  196 |   await ensureOnEpisode(page);
+  197 |   const btn = page.getByRole('link', { name: /unsubscribe/i });
+  198 |   if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  199 |   await expect(page.locator('body')).toBeVisible();
+  200 | });
+  201 | 
+  202 | When('[Like] 버튼 클릭', async ({ page }) => {
+  203 |   await ensureOnEpisode(page);
+  204 |   await clickToolbarBtn(page, 'a.js-episode-like-btn');
+  205 | });
+  206 | 
+  207 | When('[Like] 버튼 재클릭', async ({ page }) => {
+  208 |   await ensureOnEpisode(page);
+  209 |   await clickToolbarBtn(page, 'a.js-episode-like-btn');
+  210 | });
+  211 | 
+  212 | When('[좋아요] 버튼 선택', async ({ page }) => {
+  213 |   await ensureOnEpisode(page);
+  214 |   await clickToolbarBtn(page, 'a.js-episode-like-btn');
+  215 |   await page.waitForTimeout(500);
+  216 |   // 첫 클릭 후 활성 상태 저장 → Then 검증용
+  217 |   await page.evaluate(() => {
+  218 |     (window as any).__likeActiveAfterFirst = Array.from(document.querySelectorAll('a.js-episode-like-btn'))
+  219 |       .some(el => el.classList.contains('toolbar-btn--like'));
+  220 |   });
+  221 | });
+  222 | 
+  223 | When('[좋아요] 버튼 재선택', async ({ page }) => {
+  224 |   await ensureOnEpisode(page);
+  225 |   await clickToolbarBtn(page, 'a.js-episode-like-btn');
+  226 |   await page.waitForTimeout(500);
+  227 | });
+  228 | 
+  229 | When('[Likes] 버튼 재클릭', async ({ page }) => {
+  230 |   await ensureOnEpisode(page);
+  231 |   await clickToolbarBtn(page, 'a.js-episode-like-btn');
+  232 | });
+  233 | 
+  234 | When('[리스트] 버튼 클릭', async ({ page }) => {
+  235 |   await ensureOnEpisode(page);
+  236 |   await clickToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
+  237 | });
+  238 | 
+  239 | When('[리스트] 버튼 재클릭', async ({ page }) => {
+  240 |   await ensureOnEpisode(page);
+  241 |   await clickToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
+  242 | });
+  243 | 
+  244 | When('[Comment] 버튼 클릭', async ({ page }) => {
+  245 |   await ensureOnEpisode(page);
+  246 |   await clickToolbarBtn(page, 'a.js-comment-btn');
+  247 | });
+  248 | 
+  249 | When('[Comment] 버튼 재클릭', async ({ page }) => {
+  250 |   await ensureOnEpisode(page);
+  251 |   // 첫 번째 클릭 후 comments 드로어가 열려 modal-backdrop이 pointer events 차단
+  252 |   // → JS evaluate로 직접 클릭 (display:none 제외, offsetParent 기준)
+  253 |   const clicked = await page.evaluate(() => {
+  254 |     const btns = Array.from(document.querySelectorAll('a.js-comment-btn, a.js-narrow-comment-btn'));
+  255 |     for (const btn of btns) {
+  256 |       if ((btn as HTMLElement).offsetParent !== null) {
+  257 |         (btn as HTMLElement).click();
+  258 |         return true;
+  259 |       }
+  260 |     }
+  261 |     return false;
+  262 |   });
+  263 |   if (!clicked) {
+  264 |     await dismissWebToAppPopup(page);
+  265 |     await clickToolbarBtn(page, 'a.js-comment-btn');
+  266 |   }
+  267 | });
+  268 | 
+  269 | When('[전체화면] 버튼 클릭', async ({ page }) => {
+  270 |   await ensureOnEpisode(page);
+  271 |   const clicked = await page.evaluate(() => {
+  272 |     const btn = document.querySelector('a.toolbar-btn.js-full-btn') as HTMLElement | null;
+  273 |     if (btn) { btn.click(); return true; }
+  274 |     return false;
+  275 |   });
+  276 |   if (!clicked) {
+  277 |     const fullBtn = page.getByRole('button', { name: /full.?screen|fullscreen/i });
+  278 |     if ((await fullBtn.count()) > 0) { await fullBtn.first().click(); return; }
+  279 |   }
+  280 |   await expect(page.locator('body')).toBeVisible();
+  281 | });
+  282 | 
+  283 | When('[전체화면] 버튼 재클릭', async ({ page }) => {
+  284 |   await ensureOnEpisode(page);
+  285 |   const clicked = await page.evaluate(() => {
+  286 |     const btn = document.querySelector('a.toolbar-btn.js-full-btn') as HTMLElement | null;
+  287 |     if (btn) { btn.click(); return true; }
+  288 |     return false;
+  289 |   });
+  290 |   if (!clicked) {
+  291 |     const fullBtn = page.getByRole('button', { name: /full.?screen|fullscreen/i });
+```
