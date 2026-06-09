@@ -1,0 +1,1 @@
+[unverified-setup] TAPAS_UNVERIFIED_EMAIL/PASSWORD 없음 — 스킵 (TPS-064는 skip 처리됨)
