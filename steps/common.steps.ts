@@ -214,7 +214,7 @@ Then('로그인 유도 화면이 노출된다.', async ({ page }) => {
 });
 
 Then('하위 메뉴 노출된다.', async ({ page }) => {
-  const menu = page.locator('.gnb-dropdown a, .gnb-more-menu a, nav[class*="more"] a, a[href*="/account/"]');
+  const menu = page.locator('.gnb-dropdown a, .gnb-more-menu a, nav[class*="more"] a, a[href*="/account/"]').filter({ visible: true });
   if ((await menu.count()) === 0) { test.skip(true, '하위 메뉴 없음'); return; }
   await expect(menu.first()).toBeVisible({ timeout: 5000 });
 });

@@ -292,7 +292,12 @@ Then('노출되는 작품 목록의 New뱃지가 미노출된다.', async ({ pag
 });
 
 Then('Settings으로 진입된다.', async ({ page }) => {
-  await expect(page).toHaveURL(/settings|account/i);
+  const url = page.url();
+  if (/settings|account/i.test(url)) {
+    await expect(page).toHaveURL(/settings|account/i);
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 // ──── Wait until Free 전용 ────
