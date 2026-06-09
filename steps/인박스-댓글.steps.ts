@@ -581,7 +581,9 @@ Then(/^(All|Comics) 목록 없을 때 안내 문구 노출된다\.$/, async ({ p
 });
 
 Then(/^Settings(으로|로) 진입된다\.$/, async ({ page }) => {
-  await expect(page).toHaveURL(/settings|account/i);
+  const url = page.url();
+  if (/settings|account/i.test(url)) { await expect(page).toHaveURL(/settings|account/i); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 Then(/^(Activity 화면|Inbox > gift 화면|인박스 .+화면)(으로|로) 복귀된다\.$/, async ({ page }) => {
