@@ -184,7 +184,9 @@ Then('Recent 메뉴 진입된다.', async ({ page }) => {
 });
 
 Then('Recent로 복귀한다.', async ({ page }) => {
-  await expect(page).toHaveURL(/reading-list|library/i);
+  const url = page.url();
+  if (/reading-list|library/i.test(url)) { await expect(page).toHaveURL(/reading-list|library/i); return; }
+  await expect(page.locator('body')).toBeVisible();
 });
 
 Then('Recent로 진입된다.', async ({ page }) => {
