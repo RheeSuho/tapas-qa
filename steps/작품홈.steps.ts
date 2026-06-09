@@ -253,15 +253,19 @@ When('작가 홈 확인', async ({ page }) => {
 // ──── 정렬 ────
 
 When('정렬 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /sort|정렬/i }).filter({ visible: true });
-  if ((await btn.count()) === 0) { test.skip(true, '정렬 버튼 없음'); return; }
-  await btn.first().click();
+  const byRole = page.getByRole('button', { name: /sort|정렬/i }).filter({ visible: true });
+  if ((await byRole.count()) > 0) { await byRole.first().click(); return; }
+  const byCss = page.locator('[class*="sort"], a[class*="sort"], button[class*="sort"]').filter({ visible: true });
+  if ((await byCss.count()) > 0) { await byCss.first().click(); return; }
+  test.skip(true, '정렬 버튼 없음');
 });
 
 When('정렬 버튼 재클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /sort|정렬/i }).filter({ visible: true });
-  if ((await btn.count()) === 0) { test.skip(true, '정렬 버튼 없음'); return; }
-  await btn.first().click();
+  const byRole = page.getByRole('button', { name: /sort|정렬/i }).filter({ visible: true });
+  if ((await byRole.count()) > 0) { await byRole.first().click(); return; }
+  const byCss = page.locator('[class*="sort"], a[class*="sort"], button[class*="sort"]').filter({ visible: true });
+  if ((await byCss.count()) > 0) { await byCss.first().click(); return; }
+  test.skip(true, '정렬 버튼 없음');
 });
 
 When('현재 정렬 버튼 상태 확인', async ({ page }) => {

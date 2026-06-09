@@ -100,15 +100,21 @@ When('[Settings] 버튼 클릭', async ({ page }) => {
 // ──── 인박스 필터 ────
 
 When(/^(All|Comics|Novels) 필터 클릭$/, async ({ page }, filterName: string) => {
-  const btn = page.getByRole('button', { name: new RegExp(`^${filterName}$`, 'i') }).filter({ visible: true });
-  if ((await btn.count()) === 0) { test.skip(true, `${filterName} 필터 버튼 없음`); return; }
-  await btn.first().click();
+  const re = new RegExp(`^${filterName}$`, 'i');
+  const btn = page.getByRole('button', { name: re }).filter({ visible: true });
+  const lnk = page.getByRole('link', { name: re }).filter({ visible: true });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  if ((await lnk.count()) > 0) { await lnk.first().click(); return; }
+  test.skip(true, `${filterName} 필터 버튼 없음`);
 });
 
 When(/^(Comments|Messages|Tapas|Series|Likes|Subs|Supporters|Commets) 필터 클릭$/, async ({ page }, filterName: string) => {
-  const btn = page.getByRole('button', { name: new RegExp(filterName, 'i') }).filter({ visible: true });
-  if ((await btn.count()) === 0) { test.skip(true, `${filterName} 필터 버튼 없음`); return; }
-  await btn.first().click();
+  const re = new RegExp(filterName, 'i');
+  const btn = page.getByRole('button', { name: re }).filter({ visible: true });
+  const lnk = page.getByRole('link', { name: re }).filter({ visible: true });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  if ((await lnk.count()) > 0) { await lnk.first().click(); return; }
+  test.skip(true, `${filterName} 필터 버튼 없음`);
 });
 
 When('[Novels] 버튼 클릭', async ({ page }) => {
@@ -246,9 +252,12 @@ When('댓글 [Reply] 버튼 클릭 > 답글 작성', async ({ page }) => {
 
 When('댓글 [View n reply] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  const btn = page.getByRole('button', { name: /view.+reply|replies/i }).filter({ visible: true });
-  if ((await btn.count()) === 0) { test.skip(true, 'View reply 버튼 없음'); return; }
-  await btn.first().click();
+  // a.body__button.js-toggle-reply-btn = View/Hide n reply 토글 버튼 (<a> 태그)
+  const btn = page.locator('a.body__button.js-toggle-reply-btn').filter({ visible: true });
+  if ((await btn.count()) > 0) { await btn.first().click(); return; }
+  const fallback = page.getByRole('button', { name: /view.+reply|replies/i }).filter({ visible: true });
+  if ((await fallback.count()) > 0) { await fallback.first().click(); return; }
+  test.skip(true, 'View reply 버튼 없음');
 });
 
 When('답글 리스트 노출 확인', async ({ page }) => {

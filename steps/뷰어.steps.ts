@@ -187,8 +187,10 @@ When('하단 [더보기] 버튼 클릭', async ({ page }) => {
 
 When('[더보기] 버튼 재클릭 > [Subscribe] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
-  const subBtn = page.getByRole('button', { name: /subscribe/i }).filter({ visible: true });
+  const moreBtn = page.locator('a.toolbar-btn[data-type="more"]').filter({ visible: true });
+  if ((await moreBtn.count()) === 0) { test.skip(true, 'More 버튼 없음'); return; }
+  await moreBtn.first().click();
+  const subBtn = page.locator('a.js-subscribe-btn, button, a').filter({ hasText: /^subscribe$/i }).filter({ visible: true });
   if ((await subBtn.count()) === 0) { test.skip(true, 'Subscribe 버튼 없음'); return; }
   await subBtn.first().click();
 });
@@ -344,12 +346,10 @@ When('[Share to Facebook] or [Share to Twiiter] 버튼 클릭', async ({ page })
 // [Cancel] 클릭 — common.steps.ts의 /^\[(.+)\] 클릭$/ 에서 처리
 
 When('[AA] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /aa|font|텍스트/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const panel = page.locator('[class*="font-option"], [class*="reader-setting"]');
-  if ((await panel.count()) === 0) { test.skip(true, '폰트 설정 패널 없음'); return; }
-  await expect(panel.first()).toBeVisible({ timeout: 5000 });
-  await panel.first().click();
+  await ensureOnNovelEpisode(page);
+  const btn = page.locator('a.toolbar-btn[data-type="setting"], [class*="font-option"], [class*="reader-setting"]').filter({ visible: true });
+  if ((await btn.count()) === 0) { test.skip(true, '폰트 설정 버튼 없음 — 소설 뷰어 진입 실패'); return; }
+  await btn.first().click();
 });
 
 When('[See all] 버튼 클릭', async ({ page }) => {
