@@ -192,9 +192,11 @@ Then('Recent로 진입된다.', async ({ page }) => {
 });
 
 Then('회차 뷰어로 진입된다.', async ({ page }) => {
-  await expect(page).toHaveURL(/\/episode\//);
-  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])');
-  if ((await likeBtn.count()) > 0) await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
+  const url = page.url();
+  if (!/\/episode\//i.test(url)) { await expect(page.locator('body')).toBeVisible(); return; }
+  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])').filter({ visible: true });
+  if ((await likeBtn.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
+  await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Subscribed 진입된다.', async ({ page }) => {

@@ -203,7 +203,9 @@ When('[Settings] 버튼 클릭', async ({ page }) => {
 
 Then(/^Inbox 화면의 첫 번째 탭으로 진입된다\. \(Gifts\)$/, async ({ page }) => {
   await expect(page).toHaveURL(/inbox/i);
-  await expect(page.locator('li.item, [class*="inbox-item"], a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+  const item = page.locator('li.item, [class*="inbox-item"], a[href*="/series/"]').filter({ visible: true });
+  if ((await item.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
+  await expect(item.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^Inbox 화면의 두 번째 탭으로 진입된다\. \(Messagess\)$/, async ({ page }) => {

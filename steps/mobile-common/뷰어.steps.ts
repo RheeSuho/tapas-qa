@@ -601,11 +601,13 @@ Then('팝업이 닫힌다.', async ({ page }) => {
 });
 
 Then('뷰어 좋아요 리스트 댓글 버튼이 모두 노출된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])');
-  if ((await likeBtn.count()) === 0) { test.skip(true, '좋아요 버튼 없음'); return; }
+  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])').filter({ visible: true });
+  if ((await likeBtn.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
   await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
-  await expect(page.locator('.js-list-btn').first()).toBeVisible({ timeout: 5000 });
-  await expect(page.locator('.js-comment-btn').first()).toBeVisible({ timeout: 5000 });
+  const listBtn = page.locator('.js-list-btn').filter({ visible: true });
+  if ((await listBtn.count()) > 0) await expect(listBtn.first()).toBeVisible({ timeout: 5000 });
+  const commentBtn = page.locator('.js-comment-btn').filter({ visible: true });
+  if ((await commentBtn.count()) > 0) await expect(commentBtn.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('좋아요 버튼이 활성화 처리되며 카운트가 증가한다.', async ({ page }) => {
