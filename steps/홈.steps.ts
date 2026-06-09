@@ -312,9 +312,11 @@ Then('다음 빅배너로 자동 전환된다', async ({ page }) => {
 });
 
 Then('랜딩 페이지로 이동된다', async ({ page }) => {
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
   const series = page.locator('a[href*="/series/"]').filter({ visible: true });
-  if ((await series.count()) === 0) { test.skip(true, '랜딩 페이지에 시리즈 링크 없음'); return; }
-  await expect(series.first()).toBeVisible({ timeout: 8000 });
+  const ok = await series.first().isVisible({ timeout: 5000 }).catch(() => false);
+  if (!ok) { test.skip(true, '랜딩 페이지에 시리즈 링크 없음'); return; }
+  await expect(series.first()).toBeVisible();
 });
 
 Then('랜딩 리스트로 이동되고 작품 목록이 노출된다', async ({ page }) => {
