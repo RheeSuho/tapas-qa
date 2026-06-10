@@ -2,7 +2,8 @@
 # 1 Depth: 보관함
 Feature: Updated
   Scenario: [TPS-181] 작품 클릭 + 임의의 작품 클릭
-    When 작품 클릭
+    When GNB > 라이브러리 클릭
+    And 작품 클릭
     Then 작품홈 으로 진입 된다.
     When [<-] 백버튼 클릭
     Then Updated 메뉴가 노출된다.

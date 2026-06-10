@@ -6,7 +6,8 @@ Feature: Free episodes
     Then Free episodes 메뉴 진입된다.
     And Free episodes 작품 목록이 노출된다.
   Scenario: [TPS-171] 작품 클릭 + 상단 < 버튼 클릭
-    When 작품 클릭
+    When Free episodes 메뉴 클릭
+    And 작품 클릭
     Then 회차 뷰어로 진입된다.
     When 상단 [<] 버튼 클릭
     Then Free episodes 화면으로 복귀된다.

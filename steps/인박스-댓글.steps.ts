@@ -104,8 +104,8 @@ When(/^(All|Comics|Novels) 필터 클릭$/, async ({ page }, filterName: string)
   const btn = page.getByRole('button', { name: re }).filter({ visible: true });
   const lnk = page.getByRole('link', { name: re }).filter({ visible: true });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  if ((await lnk.count()) > 0) { await lnk.first().click(); return; }
-  test.skip(true, `${filterName} 필터 버튼 없음`);
+  await expect(lnk.first()).toBeVisible({ timeout: 5000 });
+  await lnk.first().click();
 });
 
 When(/^(Comments|Messages|Tapas|Series|Likes|Subs|Supporters|Commets) 필터 클릭$/, async ({ page }, filterName: string) => {
@@ -113,8 +113,8 @@ When(/^(Comments|Messages|Tapas|Series|Likes|Subs|Supporters|Commets) 필터 클
   const btn = page.getByRole('button', { name: re }).filter({ visible: true });
   const lnk = page.getByRole('link', { name: re }).filter({ visible: true });
   if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  if ((await lnk.count()) > 0) { await lnk.first().click(); return; }
-  test.skip(true, `${filterName} 필터 버튼 없음`);
+  await expect(lnk.first()).toBeVisible({ timeout: 5000 });
+  await lnk.first().click();
 });
 
 When('[Novels] 버튼 클릭', async ({ page }) => {
@@ -131,27 +131,22 @@ When('[All] 버튼 클릭', async ({ page }) => {
 
 When('댓글 입력창 선택', async ({ page }) => {
   await ensureOnEpisode(page);
-  // 댓글 패널이 닫혀 있으면 열기
   const commentBox = page.locator('textarea.js-comment-box');
   if (!(await commentBox.isVisible().catch(() => false))) {
     await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
-    await page.waitForTimeout(600);
+    await commentBox.waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
   }
-  if ((await commentBox.isVisible().catch(() => false))) { await commentBox.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(commentBox.first()).toBeVisible({ timeout: 5000 });
+  await commentBox.click();
 });
 
 When('댓글 입력창 선택 > 텍스트 입력 후 [Comment] 버튼 클릭', async ({ page }) => {
-  // 이전 [Comment] 버튼 클릭이 패널을 닫았을 수 있으므로 다시 열기
   const commentBox = page.locator('textarea.js-comment-box');
   if (!(await commentBox.isVisible().catch(() => false))) {
     await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
-    await page.waitForTimeout(600);
+    await commentBox.waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
   }
-  if (!(await commentBox.isVisible().catch(() => false))) {
-    await expect(page.locator('body')).toBeVisible(); return;
-  }
-  // pressSequentially로 실제 키 이벤트 발생 → Tapas JS가 disabled 클래스 제거
+  await expect(commentBox.first()).toBeVisible({ timeout: 5000 });
   await commentBox.click();
   await commentBox.pressSequentially('Test comment', { delay: 30 });
   await page.waitForTimeout(400);
@@ -188,26 +183,21 @@ When('댓글 [Likes] 버튼 클릭', async ({ page }) => {
     await page.waitForTimeout(600);
   }
   // a.js-comment-like-btn — liked: info__button--like 클래스 추가
-  const clicked = await page.evaluate(() => {
+  await page.evaluate(() => {
     const btn = document.querySelector('a.js-comment-like-btn') as HTMLElement | null;
-    if (btn) { btn.click(); return true; }
-    return false;
+    if (btn) btn.click();
   });
-  if (!clicked) { await expect(page.locator('body')).toBeVisible(); return; }
   await page.waitForTimeout(400);
-  // 첫 클릭 후 상태 저장
   await page.evaluate(() => {
     (window as any).__commentLikeActiveAfterFirst = !!document.querySelector('a.js-comment-like-btn.info__button--like');
   });
 });
 
 When('댓글 [Likes] 버튼 재클릭', async ({ page }) => {
-  const clicked = await page.evaluate(() => {
+  await page.evaluate(() => {
     const btn = document.querySelector('a.js-comment-like-btn') as HTMLElement | null;
-    if (btn) { btn.click(); return true; }
-    return false;
+    if (btn) btn.click();
   });
-  if (!clicked) { await expect(page.locator('body')).toBeVisible(); return; }
   await page.waitForTimeout(400);
 });
 
@@ -222,12 +212,10 @@ When('답글 [Likes] 버튼 클릭', async ({ page }) => {
   await page.evaluate(() => { (document.querySelector('a.js-toggle-reply-btn') as HTMLElement)?.click(); });
   await page.waitForTimeout(600);
   // .js-reply-list 안의 like 버튼 = 답글 좋아요
-  const clicked = await page.evaluate(() => {
+  await page.evaluate(() => {
     const btn = document.querySelector('.js-reply-list a.js-comment-like-btn') as HTMLElement | null;
-    if (btn) { btn.click(); return true; }
-    return false;
+    if (btn) btn.click();
   });
-  if (!clicked) { await expect(page.locator('body')).toBeVisible(); return; }
   await page.waitForTimeout(400);
   await page.evaluate(() => {
     (window as any).__replyLikeActiveAfterFirst = !!document.querySelector('.js-reply-list a.js-comment-like-btn.info__button--like');
@@ -252,12 +240,13 @@ When('댓글 [Reply] 버튼 클릭 > 답글 작성', async ({ page }) => {
 
 When('댓글 [View n reply] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  // a.body__button.js-toggle-reply-btn = View/Hide n reply 토글 버튼 (<a> 태그)
+  if (!(await page.locator('textarea.js-comment-box').isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.locator('textarea.js-comment-box').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
+  }
   const btn = page.locator('a.body__button.js-toggle-reply-btn').filter({ visible: true });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  const fallback = page.getByRole('button', { name: /view.+reply|replies/i }).filter({ visible: true });
-  if ((await fallback.count()) > 0) { await fallback.first().click(); return; }
-  test.skip(true, 'View reply 버튼 없음');
+  await expect(btn.first()).toBeVisible({ timeout: 5000 });
+  await btn.first().click();
 });
 
 When('답글 리스트 노출 확인', async ({ page }) => {
@@ -265,16 +254,21 @@ When('답글 리스트 노출 확인', async ({ page }) => {
 });
 
 When('[Hide n reply] 버튼 클릭', async ({ page }) => {
-  await expect(page.getByRole('button', { name: /hide.+reply|collapse/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('button', { name: /hide.+reply|collapse/i }).first().click();
+  const btn = page.locator('a.body__button.js-toggle-reply-btn').filter({ visible: true });
+  await expect(btn.first()).toBeVisible({ timeout: 5000 });
+  await btn.first().click();
 });
 
 When('우상단 정렬 필터 > Newest 값 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
+  if (!(await page.locator('textarea.js-comment-box').isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.locator('textarea.js-comment-box').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
+  }
   const sortBtn = page.getByRole('button', { name: /sort|newest|latest/i });
-  if ((await sortBtn.count()) > 0) await sortBtn.first().click();
+  await expect(sortBtn.first()).toBeVisible({ timeout: 5000 });
+  await sortBtn.first().click();
   await page.waitForTimeout(300);
-  // Find visible Newest option (may be in dropdown)
   const newestEl = page.locator('a, button, li').filter({ hasText: /^Newest$/i });
   const count = await newestEl.count();
   for (let i = 0; i < count; i++) {
@@ -283,22 +277,25 @@ When('우상단 정렬 필터 > Newest 값 클릭', async ({ page }) => {
       return;
     }
   }
-  // JS fallback for hidden dropdown items
   await page.evaluate(() => {
     const el = [...document.querySelectorAll('a, button, li')].find(
       (e) => /^Newest$/.test((e as HTMLElement).innerText?.trim() ?? '')
     ) as HTMLElement | undefined;
     if (el) el.click();
   });
-  await expect(page.locator('body')).toBeVisible();
 });
 
 When('우상단 정렬 필터 > Oldest 값 클릭', async ({ page }) => {
+  if (!(await page.locator('textarea.js-comment-box').isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.locator('textarea.js-comment-box').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
+  }
   const sortBtn = page.getByRole('button', { name: /sort|oldest/i });
-  if ((await sortBtn.count()) > 0) await sortBtn.first().click();
+  await expect(sortBtn.first()).toBeVisible({ timeout: 5000 });
+  await sortBtn.first().click();
   const oldest = page.getByText('Oldest', { exact: false });
-  if ((await oldest.count()) > 0) { await oldest.first().click({ force: true }); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(oldest.first()).toBeVisible({ timeout: 3000 });
+  await oldest.first().click({ force: true });
 });
 
 When('등록한 내 댓글 더보기 버튼 클릭', async ({ page }) => {
@@ -307,38 +304,58 @@ When('등록한 내 댓글 더보기 버튼 클릭', async ({ page }) => {
 });
 
 When('등록한 내 댓글 더보기 > [Edit] 버튼 클릭', async ({ page }) => {
+  await ensureOnEpisode(page);
+  if (!(await page.locator('textarea.js-comment-box').isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.locator('textarea.js-comment-box').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
+  }
   const moreBtn = page.getByRole('button', { name: /more|더보기/i }).filter({ visible: true });
-  if ((await moreBtn.count()) === 0) { test.skip(true, '더보기 버튼 없음'); return; }
+  await expect(moreBtn.first()).toBeVisible({ timeout: 5000 });
   await moreBtn.first().click();
   const editBtn = page.getByRole('button', { name: /edit/i }).filter({ visible: true });
-  if ((await editBtn.count()) === 0) { test.skip(true, 'Edit 버튼 없음'); return; }
+  await expect(editBtn.first()).toBeVisible({ timeout: 3000 });
   await editBtn.first().click();
 });
 
 When('등록한 내 댓글 더보기 > [Delete] 버튼 클릭', async ({ page }) => {
+  await ensureOnEpisode(page);
+  if (!(await page.locator('textarea.js-comment-box').isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.locator('textarea.js-comment-box').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
+  }
   const moreBtn = page.getByRole('button', { name: /more|더보기/i }).filter({ visible: true });
-  if ((await moreBtn.count()) === 0) { test.skip(true, '더보기 버튼 없음'); return; }
+  await expect(moreBtn.first()).toBeVisible({ timeout: 5000 });
   await moreBtn.first().click();
   const delBtn = page.getByRole('button', { name: /delete/i }).filter({ visible: true });
-  if ((await delBtn.count()) === 0) { test.skip(true, 'Delete 버튼 없음'); return; }
+  await expect(delBtn.first()).toBeVisible({ timeout: 3000 });
   await delBtn.first().click();
 });
 
 When('등록한 내 답글 더보기 > [Edit] 버튼 클릭', async ({ page }) => {
+  await ensureOnEpisode(page);
+  if (!(await page.locator('textarea.js-comment-box').isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.locator('textarea.js-comment-box').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
+  }
   const moreBtn = page.getByRole('button', { name: /more|더보기/i }).filter({ visible: true });
-  if ((await moreBtn.count()) === 0) { test.skip(true, '더보기 버튼 없음'); return; }
+  await expect(moreBtn.first()).toBeVisible({ timeout: 5000 });
   await moreBtn.first().click();
   const editBtn = page.getByRole('button', { name: /edit/i }).filter({ visible: true });
-  if ((await editBtn.count()) === 0) { test.skip(true, 'Edit 버튼 없음'); return; }
+  await expect(editBtn.first()).toBeVisible({ timeout: 3000 });
   await editBtn.first().click();
 });
 
 When('등록한 내 답글 더보기 > [Delete] 버튼 클릭', async ({ page }) => {
+  await ensureOnEpisode(page);
+  if (!(await page.locator('textarea.js-comment-box').isVisible().catch(() => false))) {
+    await page.evaluate(() => { (document.querySelector('a.js-comment-btn') as HTMLElement)?.click(); });
+    await page.locator('textarea.js-comment-box').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
+  }
   const moreBtn = page.getByRole('button', { name: /more|더보기/i }).filter({ visible: true });
-  if ((await moreBtn.count()) === 0) { test.skip(true, '더보기 버튼 없음'); return; }
+  await expect(moreBtn.first()).toBeVisible({ timeout: 5000 });
   await moreBtn.first().click();
   const delBtn = page.getByRole('button', { name: /delete/i }).filter({ visible: true });
-  if ((await delBtn.count()) === 0) { test.skip(true, 'Delete 버튼 없음'); return; }
+  await expect(delBtn.first()).toBeVisible({ timeout: 3000 });
   await delBtn.first().click();
 });
 
@@ -420,7 +437,7 @@ Then('입력창에 텍스트가 입력된다.', async ({ page }) => {
 });
 
 Then('좋아요 버튼이 활성화되어 노출된다.', async ({ page }) => {
-  await expect(page.locator('.js-reply-list a.js-comment-like-btn.info__button--like, .js-comment-parent-row a.js-comment-like-btn.info__button--like').first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.js-comment-like-btn.info__button--like').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('좋아요 버튼이 비활성화되어 노출된다.', async ({ page }) => {
@@ -429,82 +446,55 @@ Then('좋아요 버튼이 비활성화되어 노출된다.', async ({ page }) =>
 });
 
 Then('등록된 답글이 노출된다.', async ({ page }) => {
-  const rows = page.locator('.comment-row-wrap');
-  if ((await rows.count()) === 0) { test.skip(true, '댓글 목록 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(rows.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('등록된 답글이 닫힌다.', async ({ page }) => {
-  const btn = page.locator('a.body__button.js-toggle-reply-btn');
-  if ((await btn.count()) === 0) { test.skip(true, '답글 접기 버튼 미노출'); return; }
-  await expect(btn.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.body__button.js-toggle-reply-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('댓글 리스트가 최신순으로 갱신된다.', async ({ page }) => {
-  const rows = page.locator('.comment-row-wrap');
-  if ((await rows.count()) === 0) { test.skip(true, '댓글 목록 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(rows.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('댓글 리스트가 오래된 순으로 갱신된다.', async ({ page }) => {
-  const rows = page.locator('.comment-row-wrap');
-  if ((await rows.count()) === 0) { test.skip(true, '댓글 목록 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(rows.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('댓글 설정 팝업이 노출된다.', async ({ page }) => {
-  const dialog = page.locator('[role="dialog"], [class*="popup"]').first();
-  const isVisible = await dialog.isVisible().catch(() => false);
-  if (isVisible) { await expect(dialog).toBeVisible(); return; }
-  test.skip(true, '팝업이 노출되지 않음 — 계정 상태에 따라 다름');
+  await expect(page.locator('[role="dialog"], [class*="popup"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('팝업이 닫히고 댓글 목록에서 삭제된다.', async ({ page }) => {
-  const box = page.locator('textarea.js-comment-box');
-  if ((await box.count()) === 0) { test.skip(true, '댓글 입력창 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(box.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('팝업이 닫히고 텍스트 입력 가능 상태로 노출된다.', async ({ page }) => {
-  const box = page.locator('textarea.js-comment-box');
-  if ((await box.count()) === 0) { test.skip(true, '댓글 입력창 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(box.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('textarea.js-comment-box').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('수정한 텍스트가 댓글에 반영되어 노출된다.', async ({ page }) => {
-  const rows = page.locator('.comment-row-wrap');
-  if ((await rows.count()) === 0) { test.skip(true, '댓글 목록 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(rows.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작성한 댓글이 제일 상단 목록에 노출된다.', async ({ page }) => {
-  const rows = page.locator('.comment-row-wrap');
-  if ((await rows.count()) === 0) { test.skip(true, '댓글 목록 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(rows.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작성한 댓글이 추가로 상단 목록에 노출된다.', async ({ page }) => {
-  const rows = page.locator('.comment-row-wrap');
-  if ((await rows.count()) === 0) { test.skip(true, '댓글 목록 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(rows.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작성한 답글이 등록되어 노출된다.', async ({ page }) => {
-  const rows = page.locator('.comment-row-wrap');
-  if ((await rows.count()) === 0) { test.skip(true, '댓글 목록 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(rows.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('댓글 목록이 노출된다.', async ({ page }) => {
-  const rows = page.locator('.comment-row-wrap').filter({ visible: true });
-  if ((await rows.count()) === 0) { test.skip(true, '댓글 목록 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(rows.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('답글 목록이 노출된다.', async ({ page }) => {
-  const rows = page.locator('.comment-row-wrap');
-  if ((await rows.count()) === 0) { test.skip(true, '답글 목록 미노출 — 답글 패널 닫힘'); return; }
-  await expect(rows.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.js-reply-list, .comment-row-wrap').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('답글 접기 버튼이 노출된다.', async ({ page }) => {
@@ -512,9 +502,7 @@ Then('답글 접기 버튼이 노출된다.', async ({ page }) => {
 });
 
 Then('댓글 입력창이 노출된다.', async ({ page }) => {
-  const box = page.locator('textarea.js-comment-box');
-  if ((await box.count()) === 0) { test.skip(true, '댓글 입력창 미노출 — 댓글 패널 닫힘'); return; }
-  await expect(box.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('textarea.js-comment-box, textarea.js-edit-box').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('유저 프로필 페이지로 이동된다.', async ({ page }) => {
@@ -535,20 +523,16 @@ When('댓글 [Reply] 버튼 클릭', async ({ page }) => {
     await page.waitForTimeout(600);
   }
   // Reply 버튼은 hover 시만 visible — JS로 직접 클릭
-  const clicked = await page.evaluate(() => {
+  await page.evaluate(() => {
     const btn = document.querySelector('a.js-comment-reply-btn') as HTMLElement | null;
-    if (btn) { btn.click(); return true; }
-    return false;
+    if (btn) btn.click();
   });
-  if (clicked) { await page.waitForTimeout(600); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await page.waitForTimeout(600);
 });
 
 When('답글 텍스트 입력 후 [Reply] 버튼 클릭', async ({ page }) => {
   const replyBox = page.locator('textarea.js-edit-box');
-  if (!(await replyBox.isVisible().catch(() => false))) {
-    await expect(page.locator('body')).toBeVisible(); return;
-  }
+  await expect(replyBox.first()).toBeVisible({ timeout: 5000 });
   await replyBox.click();
   await replyBox.pressSequentially('Test reply', { delay: 30 });
   await page.waitForTimeout(400);
@@ -581,9 +565,7 @@ Then(/^(All|Comics) 목록 없을 때 안내 문구 노출된다\.$/, async ({ p
 });
 
 Then(/^Settings(으로|로) 진입된다\.$/, async ({ page }) => {
-  const url = page.url();
-  if (/settings|account/i.test(url)) { await expect(page).toHaveURL(/settings|account/i); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/settings|account/i, { timeout: 5000 });
 });
 
 Then(/^(Activity 화면|Inbox > gift 화면|인박스 .+화면)(으로|로) 복귀된다\.$/, async ({ page }) => {

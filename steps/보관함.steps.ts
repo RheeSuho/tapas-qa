@@ -73,25 +73,25 @@ When('Wait until Free 메뉴 클릭', async ({ page }) => {
 
 When('우상단 필터 > [Comics] 버튼 클릭', async ({ page }) => {
   const link = page.locator('a.item-title, a[href*="type=COMICS"], button').filter({ hasText: /^comics$/i }).filter({ visible: true });
-  if ((await link.count()) === 0) { test.skip(true, 'Comics 필터 버튼 미노출 — 보관함 페이지가 아님'); return; }
+  await expect(link.first()).toBeVisible({ timeout: 5000 });
   await link.first().click();
 });
 
 When('필터 > [All] 버튼 클릭', async ({ page }) => {
   const link = page.locator('a.item-title, button').filter({ hasText: /^all$/i }).filter({ visible: true });
-  if ((await link.count()) === 0) { test.skip(true, 'All 필터 버튼 미노출'); return; }
+  await expect(link.first()).toBeVisible({ timeout: 5000 });
   await link.first().click();
 });
 
 When('필터 > [Novels] 버튼 클릭', async ({ page }) => {
   const link = page.locator('a.item-title, a[href*="type=BOOKS"], button').filter({ hasText: /^novels$/i }).filter({ visible: true });
-  if ((await link.count()) === 0) { test.skip(true, 'Novels 필터 버튼 미노출'); return; }
+  await expect(link.first()).toBeVisible({ timeout: 5000 });
   await link.first().click();
 });
 
 When('탭 하단 [Comics] 버튼 클릭', async ({ page }) => {
   const link = page.locator('a.item-title, a[href*="type=COMICS"], button').filter({ hasText: /^comics$/i }).filter({ visible: true });
-  if ((await link.count()) === 0) { test.skip(true, 'Comics 필터 버튼 미노출 — 보관함 페이지가 아님'); return; }
+  await expect(link.first()).toBeVisible({ timeout: 5000 });
   await link.first().click();
 });
 
@@ -143,15 +143,11 @@ When('GNB > Home > 임의의 작품 클릭', async ({ page }) => {
 });
 
 When('작품 리스트 노출 확인', async ({ page }) => {
-  const wrap = page.locator('.content-list-wrap').filter({ visible: true });
-  if ((await wrap.count()) === 0) { test.skip(true, '콘텐츠 목록 영역 미노출'); return; }
-  await expect(wrap.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.content-list-wrap').first()).toBeVisible({ timeout: 8000 });
 });
 
 When('작품 정보 영역 확인', async ({ page }) => {
-  const wrap = page.locator('.content-list-wrap').filter({ visible: true });
-  if ((await wrap.count()) === 0) { test.skip(true, '콘텐츠 목록 영역 미노출'); return; }
-  await expect(wrap.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.content-list-wrap').first()).toBeVisible({ timeout: 8000 });
 });
 
 When('Comic 작품 열람', async ({ page }) => {
@@ -263,27 +259,19 @@ Then(/^(Comics|Novels|모든) 작품.+노출된다\.$/, async ({ page }) => {
 // Comics/Novels 작품리스트만 노출된다. — /^(Comics|Novels|모든) 작품.+노출된다\.$/ 에서 처리
 
 Then('회차 뷰어로 진입된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn, .toolbar-btn[class*="like"], .viewer-toolbar a[class*="like"]');
-  if ((await likeBtn.count()) === 0) { test.skip(true, '뷰어 진입 확인 버튼 없음'); return; }
-  await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn, .toolbar-btn[class*="like"], .viewer-toolbar a[class*="like"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('작품뷰어회차로 진입된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn, .toolbar-btn[class*="like"], .viewer-toolbar a[class*="like"]');
-  if ((await likeBtn.count()) === 0) { test.skip(true, '뷰어 진입 확인 버튼 없음'); return; }
-  await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn, .toolbar-btn[class*="like"], .viewer-toolbar a[class*="like"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('뷰어 회차로 진입된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn, .toolbar-btn[class*="like"], .viewer-toolbar a[class*="like"]');
-  if ((await likeBtn.count()) === 0) { test.skip(true, '뷰어 진입 확인 버튼 없음'); return; }
-  await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn, .toolbar-btn[class*="like"], .viewer-toolbar a[class*="like"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('회차뷰어 진입된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn, .toolbar-btn[class*="like"], .viewer-toolbar a[class*="like"]');
-  if ((await likeBtn.count()) === 0) { test.skip(true, '뷰어 진입 확인 버튼 없음'); return; }
-  await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn, .toolbar-btn[class*="like"], .viewer-toolbar a[class*="like"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('해당 작품홈으로 이동된다.', async ({ page }) => {
@@ -291,9 +279,7 @@ Then('해당 작품홈으로 이동된다.', async ({ page }) => {
 });
 
 Then('작품홈 으로 진입 된다.', async ({ page }) => {
-  const item = page.locator('a.episode-item, .js-series-title, h2.title').filter({ visible: true });
-  if ((await item.count()) === 0) { test.skip(true, '작품홈 미진입 — 에피소드 목록 없음'); return; }
-  await expect(item.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^(Comic|Novel) 작품홈으로 진입된다\.$/, async ({ page }) => {
@@ -305,9 +291,7 @@ Then(/^(Comic|Novel) 작품홈 구독 버튼이 활성화되어 노출된다\.$/
 });
 
 Then(/^(뷰어로 이동된다\.|설정된 랜딩페이지로).+$/, async ({ page }) => {
-  const target = page.locator('a.toolbar-btn.js-episode-like-btn, a[href*="/series/"]').filter({ visible: true });
-  if ((await target.count()) === 0) { test.skip(true, '뷰어 또는 시리즈 페이지 미진입'); return; }
-  await expect(target.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a.toolbar-btn.js-episode-like-btn, a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then(/^\[Get\]버튼 > \[Read\]로 변경된다\.$/, async ({ page }) => {

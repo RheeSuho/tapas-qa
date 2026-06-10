@@ -7,7 +7,8 @@ Feature: Subscribed
     When Subscribed 클릭
     Then Subscribed 진입된다.
   Scenario: [TPS-177] 작품 클릭 + 상단 < 버튼 클릭
-    When 작품 클릭
+    When Subscribed 클릭
+    And 작품 클릭
     Then 작품뷰어회차로 진입된다.
     When 상단 [<] 버튼 클릭
     Then Subscribed 화면으로 복귀된다.
