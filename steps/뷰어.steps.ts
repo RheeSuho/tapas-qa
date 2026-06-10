@@ -197,9 +197,8 @@ When('[더보기] 버튼 재클릭 > [Subscribe] 버튼 클릭', async ({ page }
 
 When('[Unsubscribe] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  const btn = page.getByRole('link', { name: /unsubscribe/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /unsubscribe/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /unsubscribe/i }).first().click();
 });
 
 When('[Like] 버튼 클릭', async ({ page }) => {
@@ -246,6 +245,16 @@ When('[리스트] 버튼 재클릭', async ({ page }) => {
 
 When('[Comment] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
+  // 패널 이미 열려있으면 댓글 제출(post), 닫혀있으면 패널 토글(open)
+  const panelOpen = await page.locator('textarea.js-comment-box').isVisible().catch(() => false);
+  if (panelOpen) {
+    await page.evaluate(() => {
+      const btn = document.querySelector('a.js-comment-post-btn') as HTMLElement | null;
+      if (btn) btn.click();
+    });
+    await page.waitForTimeout(500);
+    return;
+  }
   await clickToolbarBtn(page, 'a.js-comment-btn');
 });
 
@@ -279,8 +288,8 @@ When('[전체화면] 버튼 클릭', async ({ page }) => {
   if (!clicked) {
     const fullBtn = page.getByRole('button', { name: /full.?screen|fullscreen/i });
     if ((await fullBtn.count()) > 0) { await fullBtn.first().click(); return; }
+    test.skip(true, '전체화면 버튼 없음 — 만화 뷰어에서만 지원');
   }
-  await expect(page.locator('body')).toBeVisible();
 });
 
 When('[전체화면] 버튼 재클릭', async ({ page }) => {
@@ -293,28 +302,24 @@ When('[전체화면] 버튼 재클릭', async ({ page }) => {
   if (!clicked) {
     const fullBtn = page.getByRole('button', { name: /full.?screen|fullscreen/i });
     if ((await fullBtn.count()) > 0) { await fullBtn.first().click(); return; }
+    test.skip(true, '전체화면 버튼 없음 — 만화 뷰어에서만 지원');
   }
-  await expect(page.locator('body')).toBeVisible();
 });
 
 When('[Support] 버튼 클릭', async ({ page }) => {
-  const btn = page.locator('a.toolbar-btn.js-support-btn').first();
-  if ((await btn.count()) > 0) {
-    await btn.click();
-    await expect(page.locator('div.popup-support')).toBeVisible({ timeout: 5000 });
-    return;
-  }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a.toolbar-btn.js-support-btn').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a.toolbar-btn.js-support-btn').first().click();
+  await expect(page.locator('div.popup-support')).toBeVisible({ timeout: 5000 });
 });
 
 When('[Unlock Episode] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /unlock/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /unlock/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /unlock/i }).first().click();
 });
 
 When('버튼 클릭', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[role="dialog"] button, [class*="popup"] button').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[role="dialog"] button, [class*="popup"] button').first().click();
 });
 
 // ──── 팝업 / 오버레이 ────
@@ -356,9 +361,8 @@ When('[See all] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
   const link = page.getByRole('link', { name: /see all/i });
   if ((await link.count()) > 0) { await link.first().click(); return; }
-  const btn = page.getByRole('button', { name: /see all/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /see all/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /see all/i }).first().click();
 });
 
 // ──── 소설 뷰어 옵션 ────
@@ -445,9 +449,8 @@ When('이벤트 배너 선택', async ({ page }) => {
 });
 
 When('우상단 [x] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /close|x/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /close|x/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /close|x/i }).first().click();
 });
 
 When('우하단 [List] 버튼 클릭', async ({ page }) => {
@@ -503,25 +506,21 @@ When('Comments 영역 하단 버튼 노출 확인', async ({ page }) => {
 
 When('Comments 영역 > 댓글 [Likes] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  const btn = page.getByRole('button', { name: /likes/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /likes/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /likes/i }).first().click();
 });
 
 When('Comments 영역 > 첫 번 째 댓글 [Likes] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  const btn = page.getByRole('button', { name: /likes/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /likes/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /likes/i }).first().click();
 });
 
 When('작가 이름 클릭', async ({ page }) => {
-  // 뷰어엔드 작가의 말 섹션 내 /creator/ 링크 우선
   const creatorLink = page.locator('a[href*="/creator/"]').first();
   if ((await creatorLink.count()) > 0) { await creatorLink.click(); return; }
-  const link = page.getByRole('link', { name: /author|creator|작가/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('link', { name: /author|creator|작가/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('link', { name: /author|creator|작가/i }).first().click();
 });
 
 When('첫 번째 작품 클릭', async ({ page }) => {
@@ -533,8 +532,8 @@ When('리스트의 첫번째 작품 클릭', async ({ page }) => {
   const link = page.locator('a.series-item.js-recommended-series').first();
   if ((await link.count()) > 0) { await link.click(); return; }
   const recLink = page.locator('div.viewer-section--recommend a[href*="/series/"]').first();
-  if ((await recLink.count()) > 0) { await recLink.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  if ((await recLink.count()) === 0) { test.skip(true, '추천 작품 없음'); return; }
+  await recLink.click();
 });
 
 When('추천 작품 선택', async ({ page }) => {
@@ -542,8 +541,8 @@ When('추천 작품 선택', async ({ page }) => {
   const link = page.locator('a.series-item.js-recommended-series').first();
   if ((await link.count()) > 0) { await link.click(); return; }
   const recLink = page.locator('div.viewer-section--recommend a[href*="/series/"]').first();
-  if ((await recLink.count()) > 0) { await recLink.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  if ((await recLink.count()) === 0) { test.skip(true, '추천 작품 없음'); return; }
+  await recLink.click();
 });
 
 When(/^회차 구매 옵션클릭$/, async ({ page }) => {

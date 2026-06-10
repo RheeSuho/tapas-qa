@@ -1,5 +1,5 @@
 import { createBdd } from 'playwright-bdd';
-import { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 const { When, Then } = createBdd();
 
@@ -61,66 +61,55 @@ When('빅배너 영역에서 8초 대기한다', async ({ page }) => {
 When('빅배너를 클릭한다', async ({ page }) => {
   const banner = page.locator('a[href*="/series/"], a[href*="/event/"]')
     .filter({ has: page.locator('img') }).first();
-  if ((await banner.count()) > 0) {
-    await banner.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
+  if ((await banner.count()) === 0) { test.skip(true, '빅배너 없음 — 동적 콘텐츠'); return; }
+  await banner.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('카드배너를 클릭한다', async ({ page }) => {
   const banner = page.locator('a[href*="/series/"], a[href*="/event/"]')
     .filter({ has: page.locator('img') }).nth(1);
-  if ((await banner.count()) > 0) {
-    await banner.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    const any = page.locator('a[href*="/series/"]').first();
-    if ((await any.count()) > 0) await any.click();
-  }
+  if ((await banner.count()) === 0) { test.skip(true, '카드배너 없음 — 동적 콘텐츠'); return; }
+  await banner.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('라인배너를 클릭한다', async ({ page }) => {
   const banners = page.locator('a[href*="/series/"], a[href*="/event/"]').filter({ has: page.locator('img') });
   const count = await banners.count();
+  if (count === 0) { test.skip(true, '라인배너 없음 — 동적 콘텐츠'); return; }
   const target = banners.nth(Math.min(count - 1, 2));
-  if ((await target.count()) > 0) {
-    await target.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
+  await target.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('프로모션 배너를 클릭한다', async ({ page }) => {
   const banner = page.locator('a[href*="/series/"], a[href*="/event/"]')
     .filter({ has: page.locator('img') }).first();
-  if ((await banner.count()) > 0) {
-    await banner.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
+  if ((await banner.count()) === 0) { test.skip(true, '프로모션 배너 없음 — 동적 콘텐츠'); return; }
+  await banner.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('배너 섹션 내 작품을 클릭한다', async ({ page }) => {
-  const link = page.locator('a[href*="/series/"]').first();
-  if ((await link.count()) > 0) {
-    await link.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a[href*="/series/"]').first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 // ──── 더보기 ────
 
 When('더보기 링크를 클릭한다', async ({ page }) => {
-  const seeAll = page.locator('a, button').filter({ hasText: /see all|more|더보기/i }).first();
-  if ((await seeAll.count()) > 0) {
-    await seeAll.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
+  await expect(page.locator('a, button').filter({ hasText: /see all|more|더보기/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a, button').filter({ hasText: /see all|more|더보기/i }).first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 // ──── 필터 ────
 
 When('Novels 필터를 클릭한다', async ({ page }) => {
-  const btn = page.locator('button, a').filter({ hasText: /^Novels$/i }).first();
-  if ((await btn.count()) > 0) await btn.click().catch(() => {});
+  await expect(page.locator('button, a').filter({ hasText: /^Novels$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button, a').filter({ hasText: /^Novels$/i }).first().click();
 });
 
 // ──── 스크롤 ────
@@ -135,12 +124,7 @@ When('페이지 최하단까지 스크롤한다', async ({ page }) => {
 // ──── Then 확인 ────
 
 async function assertSeriesList(page: any) {
-  const items = page.locator('a[href*="/series/"]').first();
-  if (await items.isVisible({ timeout: 5000 }).catch(() => false)) {
-    await expect(items).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 }
 
 Then('Spotlight 서브탭 화면이 노출된다', async ({ page }) => {

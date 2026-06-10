@@ -22,13 +22,11 @@ async function ensureOnCommentPage(page: any) {
 
 When(/^우상단 정렬 필터 > (.+) 값 클릭$/, async ({ page }, sortValue: string) => {
   await ensureOnCommentPage(page);
-  // 정렬 드롭다운 버튼 (Newest / Oldest)
   const sortBtn = page.locator('button, [role="button"]').filter({ hasText: /newest|oldest|sort/i }).first();
   if ((await sortBtn.count()) > 0) {
     await sortBtn.click();
     await page.waitForTimeout(400);
   }
-  // 드롭다운에서 해당 값 클릭 — display:none 회피를 위해 JS click 사용
   const clicked = await page.evaluate((val: string) => {
     const items = document.querySelectorAll('[data-sort], .js-comment-sort, [role="option"], li');
     for (const item of Array.from(items)) {
@@ -39,7 +37,9 @@ When(/^우상단 정렬 필터 > (.+) 값 클릭$/, async ({ page }, sortValue: 
     }
     return false;
   }, sortValue);
-  if (!clicked) await expect(page.locator('body')).toBeVisible();
+  if (!clicked) {
+    await expect(page.locator(`[role="option"], li`).filter({ hasText: new RegExp(sortValue, 'i') }).first()).toBeVisible({ timeout: 3000 });
+  }
   await page.waitForTimeout(400);
 });
 
@@ -47,7 +47,6 @@ When(/^우상단 정렬 필터 > (.+) 값 클릭$/, async ({ page }, sortValue: 
 
 When('댓글 입력창 선택', async ({ page }) => {
   await ensureOnCommentPage(page);
-  // display:none 회피 — JS click
   await page.evaluate(() => {
     const selectors = [
       'textarea[placeholder*="comment" i]',
@@ -82,25 +81,20 @@ When('텍스트 입력', async ({ page }) => {
     }
     return false;
   }, testText);
-  if (!filled) await expect(page.locator('body')).toBeVisible();
+  if (!filled) {
+    await expect(page.locator('textarea, input[type="text"]').first()).toBeVisible({ timeout: 5000 });
+  }
   await page.waitForTimeout(300);
 });
 
 When('[Comment] 버튼 클릭', async ({ page }) => {
   const btn = page.locator('button').filter({ hasText: /^comment$/i }).first();
-  if ((await btn.count()) > 0) {
-    await btn.click();
-    await page.waitForTimeout(800);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
+  await page.waitForTimeout(800);
 });
 
 When('댓글 입력창 선택 > 텍스트 입력 후 [Comment] 버튼 클릭', async ({ page }) => {
-  const input = page.locator(
-    'textarea[placeholder*="comment" i], input[placeholder*="comment" i], [class*="comment-input"]'
-  ).first();
-  // JS evaluate로 display:none 회피
   await page.evaluate(() => {
     const selectors = [
       'textarea[placeholder*="comment" i]',
@@ -142,42 +136,37 @@ When('등록한 내 댓글 더보기 버튼 클릭', async ({ page }) => {
     }
     return false;
   });
-  if (clicked) await page.waitForTimeout(400);
-  else await expect(page.locator('body')).toBeVisible();
+  if (clicked) {
+    await page.waitForTimeout(400);
+  } else {
+    await expect(page.locator('[class*="comment"] button').first()).toBeVisible({ timeout: 5000 });
+  }
 });
 
 When('등록한 내 댓글 더보기 > [Edit] 버튼 클릭', async ({ page }) => {
-  // 더보기 팝업이 열려 있다고 가정
   const editBtn = page.locator('[role="dialog"] button, [class*="popup"] button, [class*="menu"] li').filter({ hasText: /^edit$/i }).first();
   if ((await editBtn.count()) > 0) {
     await editBtn.click();
     await page.waitForTimeout(400);
-  } else {
-    // 더보기 먼저 클릭
-    const moreBtn = page.locator('[class*="comment"] button[aria-label*="more" i], [class*="comment"] [class*="more"]').first();
-    if ((await moreBtn.count()) > 0) {
-      await moreBtn.click();
-      await page.waitForTimeout(300);
-      const edit = page.locator('button, li').filter({ hasText: /^edit$/i }).first();
-      if ((await edit.count()) > 0) await edit.click();
-    } else {
-      await expect(page.locator('body')).toBeVisible();
-    }
+    return;
   }
+  const moreBtn = page.locator('[class*="comment"] button[aria-label*="more" i], [class*="comment"] [class*="more"]').first();
+  await expect(moreBtn).toBeVisible({ timeout: 5000 });
+  await moreBtn.click();
+  await page.waitForTimeout(300);
+  await expect(page.locator('button, li').filter({ hasText: /^edit$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button, li').filter({ hasText: /^edit$/i }).first().click();
 });
 
 When('텍스트 수정 후 [Save] 버튼 클릭', async ({ page }) => {
   const input = page.locator(
     'textarea[placeholder*="comment" i], input[placeholder*="comment" i], [class*="comment-input"]'
   ).first();
-  if ((await input.count()) > 0) {
-    await input.fill(`QA Edited ${Date.now()}`);
-    const saveBtn = page.locator('button').filter({ hasText: /^save$/i }).first();
-    if ((await saveBtn.count()) > 0) await saveBtn.click();
-    await page.waitForTimeout(800);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(input).toBeVisible({ timeout: 5000 });
+  await input.fill(`QA Edited ${Date.now()}`);
+  await expect(page.locator('button').filter({ hasText: /^save$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button').filter({ hasText: /^save$/i }).first().click();
+  await page.waitForTimeout(800);
 });
 
 When('등록한 내 댓글 더보기 > [Delete] 버튼 클릭', async ({ page }) => {
@@ -185,24 +174,21 @@ When('등록한 내 댓글 더보기 > [Delete] 버튼 클릭', async ({ page })
   if ((await deleteBtn.count()) > 0) {
     await deleteBtn.click();
     await page.waitForTimeout(600);
-    // 삭제 확인 팝업 처리
     const confirmBtn = page.locator('button').filter({ hasText: /confirm|yes|delete/i }).first();
     if ((await confirmBtn.count()) > 0) await confirmBtn.click();
     await page.waitForTimeout(600);
-  } else {
-    const moreBtn = page.locator('[class*="comment"] button[aria-label*="more" i], [class*="comment"] [class*="more"]').first();
-    if ((await moreBtn.count()) > 0) {
-      await moreBtn.click();
-      await page.waitForTimeout(300);
-      const del = page.locator('button, li').filter({ hasText: /^delete$/i }).first();
-      if ((await del.count()) > 0) {
-        await del.click();
-        await page.waitForTimeout(600);
-      }
-    } else {
-      await expect(page.locator('body')).toBeVisible();
-    }
+    return;
   }
+  const moreBtn = page.locator('[class*="comment"] button[aria-label*="more" i], [class*="comment"] [class*="more"]').first();
+  await expect(moreBtn).toBeVisible({ timeout: 5000 });
+  await moreBtn.click();
+  await page.waitForTimeout(300);
+  await expect(page.locator('button, li').filter({ hasText: /^delete$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button, li').filter({ hasText: /^delete$/i }).first().click();
+  await page.waitForTimeout(600);
+  const confirm = page.locator('button').filter({ hasText: /confirm|yes|delete/i }).first();
+  if ((await confirm.count()) > 0) await confirm.click();
+  await page.waitForTimeout(600);
 });
 
 // ──── 다른 유저 댓글 프로필 클릭 ────
@@ -218,7 +204,7 @@ When('다른 유저 댓글 > 프로필 이미지 클릭', async ({ page }) => {
       return;
     }
   }
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, '다른 유저 댓글 없음 — 동적 콘텐츠');
 });
 
 // ──── 댓글 좋아요 ────
@@ -237,20 +223,20 @@ When('댓글 [Likes] 버튼 클릭', async ({ page }) => {
     }
     return false;
   });
-  if (clicked) await page.waitForTimeout(500);
-  else await expect(page.locator('body')).toBeVisible();
+  if (clicked) {
+    await page.waitForTimeout(500);
+  } else {
+    test.skip(true, '댓글 없음 — 좋아요 버튼 없음');
+  }
 });
 
 When('댓글 [Likes] 버튼 재클릭', async ({ page }) => {
   const likeBtn = page.locator(
     '[class*="comment"] button[aria-label*="like" i], [class*="comment"] button[class*="like"]'
   ).first();
-  if ((await likeBtn.count()) > 0) {
-    await likeBtn.click();
-    await page.waitForTimeout(500);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(likeBtn).toBeVisible({ timeout: 5000 });
+  await likeBtn.click();
+  await page.waitForTimeout(500);
 });
 
 // ──── 답글 ────
@@ -258,141 +244,106 @@ When('댓글 [Likes] 버튼 재클릭', async ({ page }) => {
 When('댓글 [View n reply] 버튼 클릭', async ({ page }) => {
   await ensureOnCommentPage(page);
   const viewReplyBtn = page.locator('button').filter({ hasText: /view .* repl/i }).first();
-  if ((await viewReplyBtn.count()) > 0) {
-    await viewReplyBtn.click();
-    await page.waitForTimeout(500);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if ((await viewReplyBtn.count()) === 0) { test.skip(true, '답글 없음 — 동적 콘텐츠'); return; }
+  await viewReplyBtn.click();
+  await page.waitForTimeout(500);
 });
 
 When('[Hide n reply] 버튼 클릭', async ({ page }) => {
   const hideBtn = page.locator('button').filter({ hasText: /hide .* repl/i }).first();
-  if ((await hideBtn.count()) > 0) {
-    await hideBtn.click();
-    await page.waitForTimeout(500);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(hideBtn).toBeVisible({ timeout: 5000 });
+  await hideBtn.click();
+  await page.waitForTimeout(500);
 });
 
 When('댓글 [Reply] 버튼 클릭', async ({ page }) => {
   const replyBtn = page.locator('[class*="comment"] button').filter({ hasText: /^reply$/i }).first();
-  if ((await replyBtn.count()) > 0) {
-    await replyBtn.click();
-    await page.waitForTimeout(500);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(replyBtn).toBeVisible({ timeout: 5000 });
+  await replyBtn.click();
+  await page.waitForTimeout(500);
 });
 
 When('답글 텍스트 입력 후 [Reply] 버튼 클릭', async ({ page }) => {
   const input = page.locator(
     'textarea[placeholder*="reply" i], input[placeholder*="reply" i], textarea[placeholder*="comment" i]'
   ).first();
-  if ((await input.count()) > 0) {
-    await input.fill(`QA Reply ${Date.now()}`);
-    const submitBtn = page.locator('button').filter({ hasText: /^reply$/i }).last();
-    if ((await submitBtn.count()) > 0) await submitBtn.click();
-    await page.waitForTimeout(800);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(input).toBeVisible({ timeout: 5000 });
+  await input.fill(`QA Reply ${Date.now()}`);
+  await expect(page.locator('button').filter({ hasText: /^reply$/i }).last()).toBeVisible({ timeout: 5000 });
+  await page.locator('button').filter({ hasText: /^reply$/i }).last().click();
+  await page.waitForTimeout(800);
 });
 
 When('등록한 내 답글 더보기 > [Edit] 버튼 클릭', async ({ page }) => {
   const moreBtn = page.locator(
     '[class*="reply"] button[aria-label*="more" i], [class*="reply"] [class*="more"]'
   ).first();
-  if ((await moreBtn.count()) > 0) {
-    await moreBtn.click();
-    await page.waitForTimeout(300);
-    const edit = page.locator('button, li').filter({ hasText: /^edit$/i }).first();
-    if ((await edit.count()) > 0) await edit.click();
-    await page.waitForTimeout(400);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(moreBtn).toBeVisible({ timeout: 5000 });
+  await moreBtn.click();
+  await page.waitForTimeout(300);
+  await expect(page.locator('button, li').filter({ hasText: /^edit$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button, li').filter({ hasText: /^edit$/i }).first().click();
+  await page.waitForTimeout(400);
 });
 
 When('텍스트 수정 후 [Edit] 버튼 클릭', async ({ page }) => {
   const input = page.locator(
     'textarea[placeholder*="reply" i], input[placeholder*="reply" i], textarea[placeholder*="comment" i]'
   ).first();
-  if ((await input.count()) > 0) {
-    await input.fill(`QA Edited Reply ${Date.now()}`);
-    const editBtn = page.locator('button').filter({ hasText: /^(edit|save)$/i }).first();
-    if ((await editBtn.count()) > 0) await editBtn.click();
-    await page.waitForTimeout(800);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(input).toBeVisible({ timeout: 5000 });
+  await input.fill(`QA Edited Reply ${Date.now()}`);
+  await expect(page.locator('button').filter({ hasText: /^(edit|save)$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button').filter({ hasText: /^(edit|save)$/i }).first().click();
+  await page.waitForTimeout(800);
 });
 
 When('등록한 내 답글 더보기 > [Delete] 버튼 클릭', async ({ page }) => {
   const moreBtn = page.locator(
     '[class*="reply"] button[aria-label*="more" i], [class*="reply"] [class*="more"]'
   ).first();
-  if ((await moreBtn.count()) > 0) {
-    await moreBtn.click();
-    await page.waitForTimeout(300);
-    const del = page.locator('button, li').filter({ hasText: /^delete$/i }).first();
-    if ((await del.count()) > 0) {
-      await del.click();
-      await page.waitForTimeout(600);
-      const confirm = page.locator('button').filter({ hasText: /confirm|yes|delete/i }).first();
-      if ((await confirm.count()) > 0) await confirm.click();
-      await page.waitForTimeout(600);
-    }
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(moreBtn).toBeVisible({ timeout: 5000 });
+  await moreBtn.click();
+  await page.waitForTimeout(300);
+  await expect(page.locator('button, li').filter({ hasText: /^delete$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button, li').filter({ hasText: /^delete$/i }).first().click();
+  await page.waitForTimeout(600);
+  const confirm = page.locator('button').filter({ hasText: /confirm|yes|delete/i }).first();
+  if ((await confirm.count()) > 0) await confirm.click();
+  await page.waitForTimeout(600);
 });
 
 When('답글 [Likes] 버튼 클릭', async ({ page }) => {
   const likeBtn = page.locator(
     '[class*="reply"] button[aria-label*="like" i], [class*="reply"] button[class*="like"]'
   ).first();
-  if ((await likeBtn.count()) > 0) {
-    await likeBtn.click();
-    await page.waitForTimeout(500);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(likeBtn).toBeVisible({ timeout: 5000 });
+  await likeBtn.click();
+  await page.waitForTimeout(500);
 });
 
 When('답글 [Likes] 버튼 재클릭', async ({ page }) => {
   const likeBtn = page.locator(
     '[class*="reply"] button[aria-label*="like" i], [class*="reply"] button[class*="like"]'
   ).first();
-  if ((await likeBtn.count()) > 0) {
-    await likeBtn.click();
-    await page.waitForTimeout(500);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(likeBtn).toBeVisible({ timeout: 5000 });
+  await likeBtn.click();
+  await page.waitForTimeout(500);
 });
 
 // ──── 신고 ────
 
 When('[Report] 버튼 클릭', async ({ page }) => {
   const reportBtn = page.locator('button, [role="menuitem"]').filter({ hasText: /^report$/i }).first();
-  if ((await reportBtn.count()) > 0) {
-    await reportBtn.click();
-    await page.waitForTimeout(500);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(reportBtn).toBeVisible({ timeout: 5000 });
+  await reportBtn.click();
+  await page.waitForTimeout(500);
 });
 
 When('신고 항목 선택', async ({ page }) => {
   const option = page.locator('[role="dialog"] label, [role="dialog"] input[type="radio"], [class*="report"] li').first();
-  if ((await option.count()) > 0) {
-    await option.click();
-    await page.waitForTimeout(300);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(option).toBeVisible({ timeout: 5000 });
+  await option.click();
+  await page.waitForTimeout(300);
 });
 
 // ──── Then: 댓글 목록 ────

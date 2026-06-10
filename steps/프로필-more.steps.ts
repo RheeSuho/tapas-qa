@@ -61,9 +61,8 @@ When('Log out 클릭', async ({ page }) => {
 When('Publish 클릭', async ({ page }) => {
   const link = page.getByRole('link', { name: /publish/i });
   if ((await link.count()) > 0) { await link.first().click(); return; }
-  const btn = page.getByRole('button', { name: /publish/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /publish/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /publish/i }).first().click();
 });
 
 // ──── Ink Shop ────
@@ -127,41 +126,36 @@ When('입력 필드 클릭 > 리딤코드 입력', async ({ page }) => {
 
 When('Redeem 버튼 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: /redeem/i });
-  if ((await btn.count()) > 0) {
-    const isEnabled = await btn.first().isEnabled().catch(() => false);
-    if (isEnabled) { await btn.first().click(); return; }
-  }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(btn.first()).toBeVisible({ timeout: 5000 });
+  await btn.first().click();
 });
 
 When('[Contact CS] 텍스트 버튼 클릭', async ({ page }) => {
   const link = page.getByRole('link', { name: /contact/i });
   if ((await link.count()) > 0) { await link.first().click(); return; }
-  const text = page.getByText('Contact CS', { exact: false });
-  if ((await text.count()) > 0) { await text.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByText('Contact CS', { exact: false }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByText('Contact CS', { exact: false }).first().click();
 });
 
 When('[닫기] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /close|닫기/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /close|닫기/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /close|닫기/i }).first().click();
 });
 
 // ──── 프로필 이미지 ────
 
 When('프로필 이미지 클릭', async ({ page }) => {
   const el = page.locator('[class*="avatar"], [class*="profile-img"], [alt*="profile"]');
-  if ((await el.count()) > 0) { await el.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(el.first()).toBeVisible({ timeout: 5000 });
+  await el.first().click();
 });
 
 // ──── 탈퇴 ────
 
 When('하단 Delete account 클릭', async ({ page }) => {
-  // 탈퇴 기능 — 실 서비스 영향 대 -> 자동화 범위 외 (스킵)
-  // 실제 클릭하지 않고 확인만
-  await expect(page.locator('body')).toBeVisible();
+  const btn = page.getByRole('button', { name: /delete account/i }).or(page.getByRole('link', { name: /delete account/i }));
+  await expect(btn.first()).toBeVisible({ timeout: 5000 });
+  await btn.first().click();
 });
 
 When('Delete account 화면 > Delete account 클릭', async () => {

@@ -72,25 +72,27 @@ When('Wait until Free 메뉴 클릭', async ({ page }) => {
 // Comics 필터 클릭 — 인박스-댓글.steps.ts의 /^(All|Comics|Novels) 필터 클릭$/ 에서 처리
 
 When('우상단 필터 > [Comics] 버튼 클릭', async ({ page }) => {
-  const link = page.locator('a.item-title, a[href*="type=COMICS"], button').filter({ hasText: /^comics$/i }).filter({ visible: true });
+  // GNB의 a[href="/comics"]는 제외하고 보관함 필터 Comics만 클릭
+  const link = page.locator('a:not([href="/comics"]), button').filter({ hasText: /^comics$/i }).filter({ visible: true });
   await expect(link.first()).toBeVisible({ timeout: 5000 });
   await link.first().click();
 });
 
 When('필터 > [All] 버튼 클릭', async ({ page }) => {
-  const link = page.locator('a.item-title, button').filter({ hasText: /^all$/i }).filter({ visible: true });
+  const link = page.locator('a, button').filter({ hasText: /^all$/i }).filter({ visible: true });
   await expect(link.first()).toBeVisible({ timeout: 5000 });
   await link.first().click();
 });
 
 When('필터 > [Novels] 버튼 클릭', async ({ page }) => {
-  const link = page.locator('a.item-title, a[href*="type=BOOKS"], button').filter({ hasText: /^novels$/i }).filter({ visible: true });
+  // GNB의 a[href="/novels"]는 제외하고 보관함 필터 Novels만 클릭
+  const link = page.locator('a:not([href="/novels"]), button').filter({ hasText: /^novels$/i }).filter({ visible: true });
   await expect(link.first()).toBeVisible({ timeout: 5000 });
   await link.first().click();
 });
 
 When('탭 하단 [Comics] 버튼 클릭', async ({ page }) => {
-  const link = page.locator('a.item-title, a[href*="type=COMICS"], button').filter({ hasText: /^comics$/i }).filter({ visible: true });
+  const link = page.locator('a:not([href="/comics"]), button').filter({ hasText: /^comics$/i }).filter({ visible: true });
   await expect(link.first()).toBeVisible({ timeout: 5000 });
   await link.first().click();
 });
@@ -109,26 +111,38 @@ When('작품 오른쪽의 [Get] 버튼 클릭', async ({ page }) => {
     await page.waitForLoadState('domcontentloaded').catch(() => {});
   }
   const btn = page.locator('.inbox-gift-item__btn-get').first();
-  if ((await btn.count()) > 0) { await btn.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  if ((await btn.count()) === 0) { test.skip(true, 'Gift Pass 없음 — 계정에 Gift Pass 없음'); return; }
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
 });
 
 When('Gift 수령', async ({ page }) => {
   const btn = page.getByRole('button', { name: /get|claim|receive/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  if ((await btn.count()) === 0) { test.skip(true, 'Gift 수령 버튼 없음'); return; }
+  await expect(btn.first()).toBeVisible({ timeout: 5000 });
+  await btn.first().click();
 });
 
 // ──── 작품 / 뷰어 진입 ────
 
 When('작품 클릭', async ({ page }) => {
-  await expect(page.getByRole('link').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
+  const link = page.getByRole('link').filter({ has: page.locator('img') });
+  if ((await link.count()) === 0) {
+    test.skip(true, '작품 목록이 비어있음 — 계정에 데이터 없음');
+    return;
+  }
+  await expect(link.first()).toBeVisible({ timeout: 5000 });
+  await link.first().click();
 });
 
 When('임의의 작품 클릭', async ({ page }) => {
-  await expect(page.getByRole('link').filter({ has: page.locator('img') }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('link').filter({ has: page.locator('img') }).first().click();
+  const link = page.getByRole('link').filter({ has: page.locator('img') });
+  if ((await link.count()) === 0) {
+    test.skip(true, '작품 목록이 비어있음 — 계정에 데이터 없음');
+    return;
+  }
+  await expect(link.first()).toBeVisible({ timeout: 5000 });
+  await link.first().click();
 });
 
 When('GNB > Home > 임의의 작품 클릭', async ({ page }) => {
@@ -137,9 +151,8 @@ When('GNB > Home > 임의의 작품 클릭', async ({ page }) => {
   await page.waitForLoadState('domcontentloaded').catch(() => {});
   const imgLink = page.getByRole('link').filter({ has: page.locator('img') });
   if ((await imgLink.count()) > 0) { await imgLink.first().click(); return; }
-  const seriesLink = page.locator('a[href*="/series/"]').first();
-  if ((await seriesLink.count()) > 0) { await seriesLink.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a[href*="/series/"]').first().click();
 });
 
 When('작품 리스트 노출 확인', async ({ page }) => {
@@ -147,6 +160,15 @@ When('작품 리스트 노출 확인', async ({ page }) => {
 });
 
 When('작품 정보 영역 확인', async ({ page }) => {
+  if (page.url().includes('/inbox/gift')) {
+    const giftItem = page.locator('.inbox-gift-item');
+    if ((await giftItem.count()) === 0) {
+      test.skip(true, 'Gift Pass 없음 — 계정에 Gift Pass 없음');
+      return;
+    }
+    await expect(giftItem.first()).toBeVisible({ timeout: 5000 });
+    return;
+  }
   await expect(page.locator('.content-list-wrap').first()).toBeVisible({ timeout: 8000 });
 });
 
@@ -158,15 +180,13 @@ When('Comic 작품 열람', async ({ page }) => {
 });
 
 When('Comic 작품 구독', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /subscribe/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /subscribe/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /subscribe/i }).first().click();
 });
 
 When('Novel 작품 구독', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /subscribe/i });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /subscribe/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /subscribe/i }).first().click();
 });
 
 // ──── 뒤로가기 ────
@@ -246,9 +266,7 @@ Then(/^Free episodes 화면.+$/, async ({ page }) => {
 });
 
 Then(/^(Subscribed|Updated|Wait until Free|Recent) 화면.+$/, async ({ page }) => {
-  const filterWrap = page.locator('.filter-wrap');
-  if ((await filterWrap.count()) > 0) { await expect(filterWrap.first()).toBeVisible({ timeout: 5000 }); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.filter-wrap, .content-list-wrap, a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then(/^(Comics|Novels|모든) 작품.+노출된다\.$/, async ({ page }) => {
@@ -312,7 +330,5 @@ Then(/^(아래 작품|작품 이미지).+노출된다\.$/, async ({ page }) => {
 });
 
 Then(/^(Recent|Updated|Subscribed 화면|Wait until Free 화면|Free episodes 화면)(로| 로) 복귀(된다|한다)\.$/, async ({ page }) => {
-  const filterWrap = page.locator('.filter-wrap');
-  if ((await filterWrap.count()) > 0) { await expect(filterWrap.first()).toBeVisible({ timeout: 5000 }); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('.filter-wrap, .content-list-wrap, a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 });

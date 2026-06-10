@@ -12,7 +12,8 @@ Feature: Free episodes
     When 상단 [<] 버튼 클릭
     Then Free episodes 화면으로 복귀된다.
   Scenario: [TPS-172] PCW + 필터 > All 버튼 클릭
-    When [PCW]
+    When Free episodes 메뉴 클릭
+    And [PCW]
     And 탭 하단 [Comics] 버튼 클릭
     Then Comics 작품리스트만 노출된다.
     When [Novels] 버튼 클릭

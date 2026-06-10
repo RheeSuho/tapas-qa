@@ -55,22 +55,16 @@ When('Inbox > Messages 탭 클릭', async ({ page }) => {
 
 When('Activity 타입별 클릭', async ({ page }) => {
   const activityItem = page.locator('[class*="activity"] a, [class*="notification"] a, [class*="inbox"] a').first();
-  if ((await activityItem.count()) > 0) {
-    await activityItem.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if ((await activityItem.count()) === 0) { test.skip(true, '수신된 Activity 없음 — 동적 콘텐츠'); return; }
+  await activityItem.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('Activity 탭 우측 상단 [Mark all as read] 버튼 클릭', async ({ page }) => {
   const btn = page.locator('button').filter({ hasText: /mark all as read/i }).first();
-  if ((await btn.count()) > 0) {
-    await btn.click();
-    await page.waitForTimeout(600);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if ((await btn.count()) === 0) { test.skip(true, '읽지 않은 Activity 없음 — Mark all as read 버튼 미노출'); return; }
+  await btn.click();
+  await page.waitForTimeout(600);
 });
 
 // ──── Messages 탭 액션 ────
@@ -84,25 +78,19 @@ When('Messages 타입별 클릭', async ({ page }) => {
   if ((await msgItem.count()) > 0) {
     await msgItem.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    const anyLink = page.locator('[class*="inbox"] a, [class*="message"] li a').first();
-    if ((await anyLink.count()) > 0) {
-      await anyLink.click();
-      await page.waitForLoadState('domcontentloaded').catch(() => {});
-    } else {
-      await expect(page.locator('body')).toBeVisible();
-    }
+    return;
   }
+  const anyLink = page.locator('[class*="inbox"] a, [class*="message"] li a').first();
+  if ((await anyLink.count()) === 0) { test.skip(true, '수신된 Messages 없음 — 동적 콘텐츠'); return; }
+  await anyLink.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('Messages 탭 우측 상단 [Mark all as read] 버튼 클릭', async ({ page }) => {
   const btn = page.locator('button').filter({ hasText: /mark all as read/i }).first();
-  if ((await btn.count()) > 0) {
-    await btn.click();
-    await page.waitForTimeout(600);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if ((await btn.count()) === 0) { test.skip(true, '읽지 않은 Messages 없음 — Mark all as read 버튼 미노출'); return; }
+  await btn.click();
+  await page.waitForTimeout(600);
 });
 
 // ──── Gifts 탭 액션 ────
@@ -124,27 +112,21 @@ When('작품 정보 영역 확인', async ({ page }) => {
 
 When('작품 오른쪽의 [Get] 버튼 클릭', async ({ page }) => {
   const getBtn = page.locator('button').filter({ hasText: /^get$/i }).first();
-  if ((await getBtn.count()) > 0) {
-    await getBtn.click();
-    await page.waitForTimeout(800);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if ((await getBtn.count()) === 0) { test.skip(true, 'Gift Pass 없음 — 동적 콘텐츠'); return; }
+  await getBtn.click();
+  await page.waitForTimeout(800);
 });
 
 When('[Read] 버튼 클릭', async ({ page }) => {
   const readBtn = page.locator('button, a').filter({ hasText: /^read$/i }).first();
-  if ((await readBtn.count()) > 0) {
-    await readBtn.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if ((await readBtn.count()) === 0) { test.skip(true, '[Read] 버튼 없음 — Gift Pass 미수령 상태'); return; }
+  await readBtn.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 // ──── Activity 필터 탭 (수신된 내역 없는 경우 시나리오) ────
 
-When('Commets 필터 클릭', async ({ page }) => {
+When('Comments 필터 클릭', async ({ page }) => {
   const btn = page.locator('button, a').filter({ hasText: /^comments?$/i }).first();
   if ((await btn.count()) > 0) await btn.click();
   await page.waitForTimeout(300);
@@ -203,9 +185,9 @@ When('[Settings] 버튼 클릭', async ({ page }) => {
 
 Then(/^Inbox 화면의 첫 번째 탭으로 진입된다\. \(Gifts\)$/, async ({ page }) => {
   await expect(page).toHaveURL(/inbox/i);
-  const item = page.locator('li.item, [class*="inbox-item"], a[href*="/series/"]').filter({ visible: true });
-  if ((await item.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(item.first()).toBeVisible({ timeout: 5000 });
+  const item = page.locator('li.item, [class*="inbox-item"], a[href*="/series/"]').first();
+  if ((await item.count()) > 0) await expect(item).toBeVisible({ timeout: 5000 });
+  // Gift 없는 경우 URL 확인만으로 충분
 });
 
 Then(/^Inbox 화면의 두 번째 탭으로 진입된다\. \(Messagess\)$/, async ({ page }) => {

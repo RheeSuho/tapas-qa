@@ -201,24 +201,24 @@ When('[Comment] 버튼 재클릭', async ({ page }) => {
 
 When('[리스트] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  // PCW only — 모바일에서는 graceful skip
-  await expect(page.locator('body')).toBeVisible();
+  // PCW only — 모바일에서는 리스트 버튼 없음
+  test.skip(true, 'PCW only — MWeb에서는 [리스트] 버튼 없음');
 });
 
 When('[리스트] 버튼 재클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, 'PCW only — MWeb에서는 [리스트] 버튼 없음');
 });
 
 // ──── 전체화면 (PCW only) ────
 
 When('[전체화면] 버튼 클릭', async ({ page }) => {
-  // PCW only — 모바일에서는 전체화면 버튼 없음, graceful
-  await expect(page.locator('body')).toBeVisible();
+  // PCW only — 모바일에서는 전체화면 버튼 없음
+  test.skip(true, 'PCW only — MWeb에서는 전체화면 버튼 없음');
 });
 
 When('[전체화면] 버튼 재클릭', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, 'PCW only — MWeb에서는 전체화면 버튼 없음');
 });
 
 // ──── AA (Style) 버튼 ────
@@ -267,35 +267,30 @@ When('우상단 [x] 버튼 클릭', async ({ page }) => {
 When('폰트 크기 [+] 버튼 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: '+' }).first();
   if ((await btn.count()) > 0) { await btn.click(); return; }
-  const el = page.locator('[class*="font-up"], [class*="size-up"]').first();
-  if ((await el.count()) > 0) { await el.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="font-up"], [class*="size-up"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="font-up"], [class*="size-up"]').first().click();
 });
 
 When('폰트 크기 [-] 버튼 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: '-' }).first();
   if ((await btn.count()) > 0) { await btn.click(); return; }
-  const el = page.locator('[class*="font-down"], [class*="size-down"]').first();
-  if ((await el.count()) > 0) { await el.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="font-down"], [class*="size-down"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="font-down"], [class*="size-down"]').first().click();
 });
 
 When('행 간격 [+] 버튼 클릭', async ({ page }) => {
-  const el = page.locator('[class*="line-height"] button').last();
-  if ((await el.count()) > 0) { await el.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="line-height"] button').last()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="line-height"] button').last().click();
 });
 
 When('행 간격 [-] 버튼 클릭', async ({ page }) => {
-  const el = page.locator('[class*="line-height"] button').first();
-  if ((await el.count()) > 0) { await el.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="line-height"] button').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="line-height"] button').first().click();
 });
 
 When('뷰어 화면 모드 클릭', async ({ page }) => {
-  const el = page.locator('[class*="theme"], [class*="mode"], [class*="background"]').first();
-  if ((await el.count()) > 0) { await el.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="theme"], [class*="mode"], [class*="background"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="theme"], [class*="mode"], [class*="background"]').first().click();
 });
 
 // ──── 팝업 외 영역 클릭 ────
@@ -543,9 +538,8 @@ When('[Cancel] 클릭', async ({ page }) => {
 When(/^회차 구매 옵션클릭$/, async ({ page }) => {
   const el = page.locator('[class*="purchase"], [class*="unlock"]').first();
   if ((await el.count()) > 0) { await el.click(); return; }
-  const btn = page.getByRole('button', { name: /ink|unlock|buy/i }).first();
-  if ((await btn.count()) > 0) { await btn.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /ink|unlock|buy/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /ink|unlock|buy/i }).first().click();
 });
 
 When('회차 구매 팝업 > [X] 버튼 클릭', async ({ page }) => {
@@ -561,9 +555,8 @@ When('회차 구매 팝업 > [X] 버튼 클릭', async ({ page }) => {
 // NOTE: '잉크 구매 동작' — profile.steps.ts에서 처리
 
 When('보유 잉크 영역 클릭', async ({ page }) => {
-  const inkEl = page.locator('[class*="ink"], [class*="coin"]').filter({ hasText: /ink|\d+/i }).first();
-  if ((await inkEl.count()) > 0) { await inkEl.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="ink"], [class*="coin"]').filter({ hasText: /ink|\d+/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[class*="ink"], [class*="coin"]').filter({ hasText: /ink|\d+/i }).first().click();
 });
 
 When(/^다음 회차 \(기다무\) 클릭$/, async ({ page }) => {
@@ -579,7 +572,7 @@ When('이용권 사용 가능한 유료회차 클릭', async ({ page }) => {
   if ((await el.count()) > 0) { await el.click(); return; }
   const ep = page.locator('a[href*="/episode/"]');
   if ((await ep.count()) > 2) { await ep.nth(2).click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, '이용권 대상 회차 없음 — 동적 콘텐츠');
 });
 
 // NOTE: '유료 회차 클릭' — 작품홈.steps.ts에서 처리
@@ -601,9 +594,8 @@ Then('팝업이 닫힌다.', async ({ page }) => {
 });
 
 Then('뷰어 좋아요 리스트 댓글 버튼이 모두 노출된다.', async ({ page }) => {
-  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])').filter({ visible: true });
-  if ((await likeBtn.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
+  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])').first();
+  await expect(likeBtn).toBeVisible({ timeout: 5000 });
   const listBtn = page.locator('.js-list-btn').filter({ visible: true });
   if ((await listBtn.count()) > 0) await expect(listBtn.first()).toBeVisible({ timeout: 5000 });
   const commentBtn = page.locator('.js-comment-btn').filter({ visible: true });
@@ -669,19 +661,20 @@ Then('뷰어 우측에 Comments 리스트가 미노출된다.', async ({ page })
 });
 
 Then('뷰어 우측 작품홈 영역이 노출된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  // PCW only — MWeb에서는 우측 패널 없음
+  test.skip(true, 'PCW only — MWeb에서는 우측 작품홈 영역 없음');
 });
 
 Then('뷰어 우측 작품홈 영역이 미노출로 전환된다', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, 'PCW only — MWeb에서는 우측 작품홈 영역 없음');
 });
 
 Then('뷰어가 전체화면으로 전환된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, 'PCW only — MWeb에서는 전체화면 버튼 없음');
 });
 
 Then('전체화면 모드가 종료된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, 'PCW only — MWeb에서는 전체화면 버튼 없음');
 });
 
 Then('뷰어 원고 이미지와 리스트 버튼이 노출된다.', async ({ page }) => {
@@ -881,9 +874,8 @@ Then('회차 언락 안내 화면이 노출된다.', async ({ page }) => {
 });
 
 When('버튼 클릭', async ({ page }) => {
-  const btn = page.locator('a[href*="/comments"], a[href*="/comment"]').first();
-  if ((await btn.count()) > 0) await btn.click();
-  else await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a[href*="/comments"], a[href*="/comment"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a[href*="/comments"], a[href*="/comment"]').first().click();
   await page.waitForTimeout(800);
 });
 
@@ -932,8 +924,11 @@ When('추천 작품 선택', async ({ page }) => {
     }
     return false;
   });
-  if (clicked) await page.waitForLoadState('domcontentloaded').catch(() => {});
-  else await expect(page.locator('body')).toBeVisible();
+  if (clicked) {
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  } else {
+    test.skip(true, '추천 작품 없음 — 동적 콘텐츠');
+  }
 });
 
 Then('토스트가 노출되며 좋아요 버튼이 비활성화되어 노출된다.', async ({ page }) => {

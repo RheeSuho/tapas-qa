@@ -21,7 +21,8 @@ Feature: Subscribed
     When All 필터 클릭
     Then 안내문구가 노출된다.
   Scenario: [TPS-179] PCW + 필터 > All 버튼 클릭
-    When [PCW]
+    When Subscribed 클릭
+    And [PCW]
     And 탭 하단 [Comics] 버튼 클릭
     Then Comics 작품리스트만 노출된다.
     When [Novels] 버튼 클릭

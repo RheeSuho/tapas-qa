@@ -46,7 +46,7 @@ When('[Setting] 버튼 클릭', async ({ page }) => {
 });
 
 When('하위 영역 확인.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('[class*="setting"], [class*="section"], a, button').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── Ink ────
@@ -83,13 +83,9 @@ When('임의의 잉크 티어 클릭', async ({ page }) => {
 
 When('잉크 구매 동작', async ({ page }) => {
   // @qa 태그 시나리오 — QA 환경에서만 실행 (Stripe 테스트 카드)
-  const buyBtn = page.locator('button').filter({ hasText: /^(buy|purchase|confirm)$/i }).first();
-  if ((await buyBtn.count()) > 0) {
-    await buyBtn.click();
-    await page.waitForTimeout(1000);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('button').filter({ hasText: /^(buy|purchase|confirm)$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button').filter({ hasText: /^(buy|purchase|confirm)$/i }).first().click();
+  await page.waitForTimeout(1000);
 });
 
 // '보유 잉크 영역 클릭' — steps/mobile-common/뷰어.steps.ts에 정의됨 (중복 제거)
@@ -111,34 +107,22 @@ When('Redeem Code 클릭', async ({ page }) => {
 
 When('입력 필드 클릭 > 리딤코드 입력', async ({ page }) => {
   const input = page.locator('input[placeholder*="code" i], input[placeholder*="redeem" i], input[type="text"]').first();
-  if ((await input.count()) > 0) {
-    await input.click();
-    // 정상 코드 시나리오는 @skip이므로 임의 코드 입력
-    await input.fill('INVALID-TEST-CODE-QA');
-    await page.waitForTimeout(300);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(input).toBeVisible({ timeout: 5000 });
+  await input.click();
+  await input.fill('INVALID-TEST-CODE-QA');
+  await page.waitForTimeout(300);
 });
 
 When('Redeem 버튼 클릭', async ({ page }) => {
-  const redeemBtn = page.locator('button').filter({ hasText: /^redeem$/i }).first();
-  if ((await redeemBtn.count()) > 0) {
-    await redeemBtn.click();
-    await page.waitForTimeout(800);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('button').filter({ hasText: /^redeem$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('button').filter({ hasText: /^redeem$/i }).first().click();
+  await page.waitForTimeout(800);
 });
 
 When('[Contact CS] 텍스트 버튼 클릭', async ({ page }) => {
-  const contactBtn = page.locator('a, button').filter({ hasText: /contact cs/i }).first();
-  if ((await contactBtn.count()) > 0) {
-    await contactBtn.click().catch(() => {});
-    await page.waitForTimeout(800);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('a, button').filter({ hasText: /contact cs/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a, button').filter({ hasText: /contact cs/i }).first().click().catch(() => {});
+  await page.waitForTimeout(800);
 });
 
 // ──── Profile 영역 ────
@@ -148,27 +132,21 @@ When('Profile 영역 확인', async ({ page }) => {
 });
 
 When('Publish 클릭', async ({ page }) => {
+  await expect(page.locator('a, button').filter({ hasText: /^publish$/i }).first()).toBeVisible({ timeout: 5000 });
   const publishBtn = page.locator('a, button').filter({ hasText: /^publish$/i }).first();
-  if ((await publishBtn.count()) > 0) {
-    const [newPage] = await Promise.all([
-      page.context().waitForEvent('page', { timeout: 5000 }).catch(() => null),
-      publishBtn.click(),
-    ]);
-    if (newPage) await newPage.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  const [newPage] = await Promise.all([
+    page.context().waitForEvent('page', { timeout: 5000 }).catch(() => null),
+    publishBtn.click(),
+  ]);
+  if (newPage) await newPage.waitForLoadState('domcontentloaded').catch(() => {});
   await page.waitForTimeout(400);
 });
 
 When('프로필 이미지 클릭', async ({ page }) => {
   const profileImg = page.locator('img[alt*="profile" i], [class*="profile"] img, [class*="avatar"] img').first();
-  if ((await profileImg.count()) > 0) {
-    await profileImg.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(profileImg).toBeVisible({ timeout: 5000 });
+  await profileImg.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
   await page.waitForTimeout(400);
 });
 
@@ -236,11 +214,8 @@ Then(/^Buy Ink 버튼 \/ 보유 잉크 \+ 보너스 잉크 \/ 잉크 내역 \/ �
 
 Then(/^"https:\/\/www\.creators\.tapas\.io" 새 창 노출된다\.$/, async ({ page }) => {
   const hasCreators = await checkNewTab(page, /creators\.tapas\.io/i);
-  if (hasCreators) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if (!hasCreators) { test.skip(true, 'creators.tapas.io 새 탭 미열림 — 외부 도메인 검증 불가'); return; }
+  // 새 탭이 열렸으면 통과
 });
 
 Then('유저 홈으로 이동된다.', async ({ page }) => {

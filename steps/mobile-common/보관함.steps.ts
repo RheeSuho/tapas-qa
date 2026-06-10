@@ -107,35 +107,24 @@ When('All 필터 클릭', async ({ page }) => {
 When('우상단 필터 > [Comics] 버튼 클릭', async ({ page }) => {
   // [MW] 분기: 우상단 필터 버튼 → Comics 선택
   const filterBtn = page.locator('button').filter({ hasText: /filter|comics/i }).first();
-  if ((await filterBtn.count()) > 0) {
-    await filterBtn.click();
-    await page.waitForTimeout(300);
-    const comicsOption = page.locator('[role="option"], li, button').filter({ hasText: /^comics$/i }).first();
-    if ((await comicsOption.count()) > 0) await comicsOption.click();
-    await page.waitForTimeout(400);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(filterBtn).toBeVisible({ timeout: 5000 });
+  await filterBtn.click();
+  await page.waitForTimeout(300);
+  const comicsOption = page.locator('[role="option"], li, button').filter({ hasText: /^comics$/i }).first();
+  if ((await comicsOption.count()) > 0) await comicsOption.click();
+  await page.waitForTimeout(400);
 });
 
 When('필터 > [Novels] 버튼 클릭', async ({ page }) => {
-  const novelsOption = page.locator('[role="option"], li, button').filter({ hasText: /^novels$/i }).first();
-  if ((await novelsOption.count()) > 0) {
-    await novelsOption.click();
-    await page.waitForTimeout(400);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('[role="option"], li, button').filter({ hasText: /^novels$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[role="option"], li, button').filter({ hasText: /^novels$/i }).first().click();
+  await page.waitForTimeout(400);
 });
 
 When('필터 > [All] 버튼 클릭', async ({ page }) => {
-  const allOption = page.locator('[role="option"], li, button').filter({ hasText: /^all$/i }).first();
-  if ((await allOption.count()) > 0) {
-    await allOption.click();
-    await page.waitForTimeout(400);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page.locator('[role="option"], li, button').filter({ hasText: /^all$/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.locator('[role="option"], li, button').filter({ hasText: /^all$/i }).first().click();
+  await page.waitForTimeout(400);
 });
 
 // PCW 전용 탭 하단 필터 (모바일에서는 noop 처리)
@@ -184,9 +173,7 @@ Then('Recent 메뉴 진입된다.', async ({ page }) => {
 });
 
 Then('Recent로 복귀한다.', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) { await expect(page).toHaveURL(/reading-list|library/i); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Recent로 진입된다.', async ({ page }) => {
@@ -194,11 +181,8 @@ Then('Recent로 진입된다.', async ({ page }) => {
 });
 
 Then('회차 뷰어로 진입된다.', async ({ page }) => {
-  const url = page.url();
-  if (!/\/episode\//i.test(url)) { await expect(page.locator('body')).toBeVisible(); return; }
-  const likeBtn = page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])').filter({ visible: true });
-  if ((await likeBtn.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(likeBtn.first()).toBeVisible({ timeout: 5000 });
+  await expect(page).toHaveURL(/\/episode\//i);
+  await expect(page.locator('a.js-episode-like-btn, a[class*="like"]:not([href*="tapas.io"])').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Subscribed 진입된다.', async ({ page }) => {
@@ -296,7 +280,7 @@ Then('노출되는 작품 목록의 New뱃지가 미노출된다.', async ({ pag
 });
 
 Then('Settings으로 진입된다.', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/settings|preferences/i);
 });
 
 // ──── Wait until Free 전용 ────

@@ -23,55 +23,39 @@ Given(/^모바일 보관함 (.+)로 이동한다$/, async ({ page }, tab: string
 // ──── 상태 확인 ────
 
 Then('Recent 메뉴로 진입된다', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) { await expect(page).toHaveURL(/reading-list|library/i); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Recent로 복귀된다', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) { await expect(page).toHaveURL(/reading-list|library/i); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Wait until Free 탭으로 진입된다', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) { await expect(page).toHaveURL(/reading-list|library/i); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Subscribed 화면으로 복귀된다', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) { await expect(page).toHaveURL(/reading-list|library/i); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Free episodes 화면으로 복귀된다', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) { await expect(page).toHaveURL(/reading-list|library/i); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 Then('Wait until Free 화면으로 복귀된다', async ({ page }) => {
-  const url = page.url();
-  if (/reading-list|library/i.test(url)) { await expect(page).toHaveURL(/reading-list|library/i); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page).toHaveURL(/reading-list|library/i);
 });
 
 // ──── 클릭 ────
 
 When('Recent에서 작품을 클릭한다', async ({ page }) => {
-  const item = page.locator('a[href*="/series/"], a[href*="/episode/"]').first();
-  if ((await item.count()) > 0) {
-    await item.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
+  await expect(page.locator('a[href*="/series/"], a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a[href*="/series/"], a[href*="/episode/"]').first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 When('작품을 클릭한다', async ({ page }) => {
-  const item = page.locator('a[href*="/series/"], a[href*="/episode/"]').first();
-  if ((await item.count()) > 0) {
-    await item.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
+  await expect(page.locator('a[href*="/series/"], a[href*="/episode/"]').first()).toBeVisible({ timeout: 5000 });
+  await page.locator('a[href*="/series/"], a[href*="/episode/"]').first().click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });

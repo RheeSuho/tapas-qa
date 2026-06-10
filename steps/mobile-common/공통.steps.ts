@@ -213,9 +213,7 @@ When('GNB 보관함 아이콘 클릭 > Recent 클릭', async ({ page }) => {
 // ──── 로그인 폼 ────
 
 Then('이메일 로그인 폼이 노출된다', async ({ page }) => {
-  const input = page.getByPlaceholder(/email/i).filter({ visible: true });
-  if ((await input.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(input.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.getByPlaceholder(/email/i).first()).toBeVisible({ timeout: 5000 });
 });
 
 When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
@@ -286,9 +284,7 @@ When('미가입 이메일과 비밀번호를 입력하고 Login을 클릭한다'
 
 Then('로그인이 완료되고 홈 화면으로 이동된다', async ({ page }) => {
   await expect(page).not.toHaveURL(/signin/i);
-  const series = page.locator('a[href*="/series/"]').filter({ visible: true });
-  if ((await series.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(series.first()).toBeVisible({ timeout: 8000 });
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('오류 메시지가 노출되고 로그인 페이지가 유지된다', async ({ page }) => {
@@ -353,15 +349,11 @@ Then('검색 결과 화면이 노출된다', async ({ page }) => {
 });
 
 Then(/^Comics\/Novels\/People\/Tags 탭이 노출된다$/, async ({ page }) => {
-  const tab = page.locator('a, button, [role="tab"]').filter({ hasText: /comics|novels|people|tags/i }).filter({ visible: true });
-  if ((await tab.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(tab.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a, button, [role="tab"]').filter({ hasText: /comics|novels|people|tags/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('검색 필드가 노출된다', async ({ page }) => {
-  const input = page.locator('input[type="search"], input[placeholder*="search" i], [class*="search-input"]').filter({ visible: true });
-  if ((await input.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(input.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('input[type="search"], input[placeholder*="search" i], [class*="search-input"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Library 링크가 노출된다', async ({ page }) => {

@@ -1,12 +1,12 @@
 import { createBdd } from 'playwright-bdd';
-import { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 const { When, Then } = createBdd();
 
 When('잉크 수량 입력 후 서포트를 완료한다', async ({ page }) => {
   const input = page.locator('input.js-amount-input');
   if (!(await input.isVisible().catch(() => false))) {
-    await expect(page.locator('body')).toBeVisible(); return;
+    test.skip(true, '서포트 입력 필드 없음 — 서포트 팝업 미노출'); return;
   }
   await input.click();
   await input.pressSequentially('25', { delay: 50 });

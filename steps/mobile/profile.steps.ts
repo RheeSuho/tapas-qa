@@ -24,9 +24,7 @@ Then('수신된 Activity 목록이 노출된다', async ({ page }) => {
 // ──── Profile 메뉴 ────
 
 Then('하위 메뉴가 노출된다', async ({ page }) => {
-  const menu = page.locator('[class*="profile"], [class*="menu"], [class*="dropdown"]').filter({ visible: true });
-  if ((await menu.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(menu.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('[class*="profile"], [class*="menu"], [class*="dropdown"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 보유 잉크 ────
@@ -38,9 +36,7 @@ When('보유 잉크 영역을 클릭한다', async ({ page }) => {
 });
 
 Then('Ink 탭으로 이동된다', async ({ page }) => {
-  const ink = page.locator('a.item.js-tier-btn, [class*="ink"]').filter({ visible: true });
-  if ((await ink.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(ink.first()).toBeVisible({ timeout: 8000 });
+  await expect(page.locator('a.item.js-tier-btn, [class*="ink"]').first()).toBeVisible({ timeout: 8000 });
 });
 
 // ──── Publish (Mweb only) ────
@@ -60,16 +56,10 @@ When('Publish를 클릭한다', async ({ page }) => {
 });
 
 Then('creators.tapas.io 페이지로 이동된다', async ({ page }) => {
-  // 새 탭으로 열리는 경우 → 현재 페이지가 아닌 context의 pages 확인
   const pages = page.context().pages();
   const hasCreators = pages.some(p => p.url().includes('creators.tapas.io'));
-  if (hasCreators) {
-    // 새 탭이 열렸으면 통과
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    // 현재 탭에서 이동된 경우
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if (!hasCreators) { test.skip(true, 'creators.tapas.io 새 탭 미열림 — 외부 도메인 검증 불가'); return; }
+  // 새 탭이 열렸으면 통과
 });
 
 // ──── Settings ────
@@ -99,9 +89,7 @@ When('댓글 입력창을 선택한다', async ({ page }) => {
 });
 
 Then('가상 키보드가 노출되며 텍스트 입력 가능 상태다', async ({ page }) => {
-  const input = page.locator('textarea, input[placeholder*="comment"]').filter({ visible: true });
-  if ((await input.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(input.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('textarea, input[placeholder*="comment"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 When('댓글 텍스트를 입력하고 Comment 버튼을 클릭한다', async ({ page }) => {
@@ -131,16 +119,11 @@ When('다른 유저의 프로필 이미지를 클릭한다', async ({ page }) =>
       return;
     }
   }
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, '다른 유저 댓글 없음 — 동적 콘텐츠');
 });
 
 Then('유저홈으로 이동된다', async ({ page }) => {
-  const url = page.url();
-  if (/\/(creator|user|profile)\//i.test(url)) {
-    await expect(page).toHaveURL(/\/(creator|user|profile)\//i);
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(page).toHaveURL(/\/(creator|user|profile)\//i);
 });
 
 When('상단 뒤로가기 버튼을 클릭한다', async ({ page }) => {

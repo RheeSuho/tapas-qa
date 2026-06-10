@@ -20,7 +20,7 @@ export const TEST_DATA = {
     novelViewer: IS_QA ? '/series/DEATHLESSnovel/info' : '/series/the-necromancers-knight-novel',
     notice: IS_QA ? '/series/twin-or-lose/info' : '/series/i-was-the-real-head-of-the-house/info',
     subscribeTest: '/series/dark-paradise/info',
-    subscribeTestMweb: '/series/midnight-poppy-land/info',
+    subscribeTestMweb: '/series/midnight-poppy-land',
   },
   episode: {
     // Episode 1 (no prev), next = 2386509

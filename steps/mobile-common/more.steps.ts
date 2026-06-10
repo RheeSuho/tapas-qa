@@ -15,53 +15,33 @@ async function checkNewTab(page: any, urlPattern: RegExp): Promise<boolean> {
 // ──── More 메뉴 링크 클릭 ────
 
 When('Discord 클릭', async ({ page }) => {
-  // 외부 링크 클릭 시 mobile에서 page context 닫힘 → href 확인으로 대체
   const discordLink = page.locator('a').filter({ hasText: /^discord$/i }).first();
-  if ((await discordLink.count()) > 0) {
-    const href = await discordLink.getAttribute('href').catch(() => null);
-    if (href?.includes('discord.com') || href) {
-      await expect(page.locator('body')).toBeVisible();
-    }
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(discordLink).toBeVisible({ timeout: 5000 });
+  // 외부 링크 — 클릭 대신 href 검증으로 대체 (클릭 시 page context 닫힘)
+  const href = await discordLink.getAttribute('href').catch(() => null);
+  expect(href).toBeTruthy();
 });
 
 When('Forums 클릭', async ({ page }) => {
   const forumsLink = page.locator('a').filter({ hasText: /^forums$/i }).first();
-  if ((await forumsLink.count()) > 0) {
-    const href = await forumsLink.getAttribute('href').catch(() => null);
-    if (href?.includes('forums') || href) {
-      await expect(page.locator('body')).toBeVisible();
-    }
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(forumsLink).toBeVisible({ timeout: 5000 });
+  const href = await forumsLink.getAttribute('href').catch(() => null);
+  expect(href).toBeTruthy();
 });
 
 When('Help 클릭', async ({ page }) => {
   const helpLink = page.locator('a').filter({ hasText: /^help$/i }).first();
-  if ((await helpLink.count()) > 0) {
-    const href = await helpLink.getAttribute('href').catch(() => null);
-    if (href?.includes('help') || href) {
-      await expect(page.locator('body')).toBeVisible();
-    }
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(helpLink).toBeVisible({ timeout: 5000 });
+  const href = await helpLink.getAttribute('href').catch(() => null);
+  expect(href).toBeTruthy();
 });
 
 When('Contact 클릭', async ({ page }) => {
-  // mailto: 클릭 시 mobile에서 page context 닫힘 → href 확인으로 대체
+  // mailto: 링크 — 클릭 시 mobile에서 page context 닫힘 → href 확인으로 대체
   const contactLink = page.locator('a[href^="mailto:"], a').filter({ hasText: /^contact$/i }).first();
-  if ((await contactLink.count()) > 0) {
-    const href = await contactLink.getAttribute('href').catch(() => null);
-    if (href?.startsWith('mailto:') || href) {
-      await expect(page.locator('body')).toBeVisible();
-    }
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  await expect(contactLink).toBeVisible({ timeout: 5000 });
+  const href = await contactLink.getAttribute('href').catch(() => null);
+  expect(href).toBeTruthy();
 });
 
 When('Newsfeed 클릭', async ({ page }) => {
@@ -75,25 +55,25 @@ When('Newsfeed 클릭', async ({ page }) => {
     }
     return false;
   });
-  if (clicked) await page.waitForLoadState('domcontentloaded').catch(() => {});
-  else await expect(page.locator('body')).toBeVisible();
-});
-
-When('Merch Shop 클릭', async ({ page }) => {
-  const merchLink = page.locator('a, button').filter({ hasText: /merch.?shop/i }).first();
-  if ((await merchLink.count()) > 0) {
-    const [newPage] = await Promise.all([
-      page.context().waitForEvent('page', { timeout: 5000 }).catch(() => null),
-      merchLink.click(),
-    ]);
-    if (newPage) await newPage.waitForLoadState('domcontentloaded').catch(() => {});
+  if (clicked) {
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
   } else {
-    await expect(page.locator('body')).toBeVisible();
+    await expect(page.locator('a, button').filter({ hasText: /newsfeed/i }).first()).toBeVisible({ timeout: 5000 });
   }
 });
 
+When('Merch Shop 클릭', async ({ page }) => {
+  await expect(page.locator('a, button').filter({ hasText: /merch.?shop/i }).first()).toBeVisible({ timeout: 5000 });
+  const merchLink = page.locator('a, button').filter({ hasText: /merch.?shop/i }).first();
+  const [newPage] = await Promise.all([
+    page.context().waitForEvent('page', { timeout: 5000 }).catch(() => null),
+    merchLink.click(),
+  ]);
+  if (newPage) await newPage.waitForLoadState('domcontentloaded').catch(() => {});
+});
+
 When('More 영역 확인', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.locator('a').filter({ hasText: /help|discord|forums|newsfeed|contact|merch/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
 When('뉴스 리스트 클릭', async ({ page }) => {
@@ -105,57 +85,45 @@ When('뉴스 리스트 클릭', async ({ page }) => {
     }
     return false;
   });
-  if (clicked) await page.waitForLoadState('domcontentloaded').catch(() => {});
-  else await expect(page.locator('body')).toBeVisible();
+  if (clicked) {
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+  } else {
+    await expect(page.locator('[class*="news"] a, article a, a[href*="/news"]').first()).toBeVisible({ timeout: 5000 });
+  }
 });
 
 // ──── Then ────
 
 Then(/^"https:\/\/discord\.com\/invite\/tapas" 새 창 노출된다\.$/, async ({ page }) => {
   const hasDiscord = await checkNewTab(page, /discord\.com/i);
-  if (hasDiscord) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    // 새 탭이 열리지 않은 경우 — graceful
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if (!hasDiscord) { test.skip(true, 'Discord 새 탭 미열림 — 외부 도메인 검증 불가'); return; }
+  // 새 탭이 열렸으면 통과
 });
 
 Then(/^"https:\/\/forums\.tapas\.io\/" 새 창 노출 된다\.$/, async ({ page }) => {
   const hasForums = await checkNewTab(page, /forums\.tapas\.io/i);
-  if (hasForums) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if (!hasForums) { test.skip(true, 'Forums 새 탭 미열림 — 외부 도메인 검증 불가'); return; }
 });
 
 Then(/^"https:\/\/help\.tapas\.io\/hc\/en-us" 새 창 노출된다\.$/, async ({ page }) => {
   const hasHelp = await checkNewTab(page, /help\.tapas\.io/i);
-  if (hasHelp) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if (!hasHelp) { test.skip(true, 'Help 새 탭 미열림 — 외부 도메인 검증 불가'); return; }
 });
 
 Then('메일 앱이 열린다.', async ({ page }) => {
-  // mailto: 링크 클릭은 브라우저 내에서 검증 불가 — graceful pass
+  // mailto: 링크 — 브라우저 자동화에서 검증 불가 → graceful pass
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('메일 앱이 닫히며 리딤코드 화면 유지된다.', async ({ page }) => {
-  // 앱 전환은 브라우저 자동화에서 검증 불가 — graceful pass
+  // 앱 전환은 브라우저 자동화에서 검증 불가 → graceful pass
   await expect(page.locator('body')).toBeVisible();
 });
 
 Then('Merch shop 이동된다.', async ({ page }) => {
   const hasMerch = await checkNewTab(page, /merch|shop|tapas/i);
-  if (hasMerch) {
-    await expect(page.locator('body')).toBeVisible();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
-  }
+  if (!hasMerch) { test.skip(true, 'Merch shop 새 탭 미열림 — 외부 도메인 검증 불가'); return; }
+  // 새 탭이 열렸으면 통과
 });
 
 Then('뉴스 리스트가 노출된다.', async ({ page }) => {

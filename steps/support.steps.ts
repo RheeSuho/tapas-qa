@@ -5,9 +5,7 @@ const { When, Then } = createBdd();
 
 When('잉크 수량 입력 후 서포트를 완료한다', async ({ page }) => {
   const input = page.locator('input.js-amount-input');
-  if (!(await input.isVisible().catch(() => false))) {
-    await expect(page.locator('body')).toBeVisible(); return;
-  }
+  await expect(input).toBeVisible({ timeout: 5000 });
   await input.click();
   await input.pressSequentially('25', { delay: 50 });
   await page.waitForTimeout(500);

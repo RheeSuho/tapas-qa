@@ -18,7 +18,8 @@ Feature: Updated
     When [<-] 백버튼 클릭
     Then Updated 메뉴가 노출된다.
   Scenario: [TPS-182] PCW + 필터 > All 버튼 클릭
-    When [PCW]
+    When GNB > 라이브러리 클릭
+    And [PCW]
     And 탭 하단 [Comics] 버튼 클릭
     Then Comics 작품리스트만 노출된다.
     When [Novels] 버튼 클릭
@@ -34,7 +35,8 @@ Feature: Updated
     Then 모든 작품 리스트가 노출된다.
   Scenario: [TPS-183] Updated 작품 목록 없는 경우 > PCW + 필터 > All 버튼 클릭
     Given Updated 작품 목록 없는 경우
-    When [PCW]
+    When GNB > 라이브러리 클릭
+    And [PCW]
     And 탭 하단 [Comics] 버튼 클릭
     Then 안내문구가 노출된다.
     When [Novels] 버튼 클릭

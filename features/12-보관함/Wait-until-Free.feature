@@ -11,7 +11,8 @@ Feature: Wait until Free
     When 상단 [<] 버튼 클릭
     Then Wait until Free 화면으로 복귀된다.
   Scenario: [TPS-185] PCW + 필터 > All 버튼 클릭
-    When [PCW]
+    When Wait until Free 메뉴 클릭
+    And [PCW]
     And 탭 하단 [Comics] 버튼 클릭
     Then Comics 작품리스트만 노출된다.
     When [Novels] 버튼 클릭

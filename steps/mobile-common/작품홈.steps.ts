@@ -76,13 +76,18 @@ When('Episodes 탭 클릭', async ({ page }) => {
 });
 
 When('정렬 버튼 클릭', async ({ page }) => {
-  await expect(page.locator('button, a').filter({ hasText: /sort|정렬/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.locator('button, a').filter({ hasText: /sort|정렬/i }).first().click();
+  // Tapas 회차 정렬 버튼: class="sort js-sort-btn sort--asc"
+  const btn = page.locator('.js-sort-btn, a.sort, button.sort').first();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
+  await page.waitForTimeout(500);
 });
 
 When('정렬 버튼 재클릭', async ({ page }) => {
-  await expect(page.locator('button, a').filter({ hasText: /sort|정렬/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.locator('button, a').filter({ hasText: /sort|정렬/i }).first().click();
+  const btn = page.locator('.js-sort-btn, a.sort, button.sort').first();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
+  await page.waitForTimeout(500);
 });
 
 // ──── 회차 클릭 ────
@@ -129,7 +134,7 @@ When('유료 회차 클릭', async ({ page }) => {
     if (paidItem) { paidItem.click(); return true; }
     return false;
   });
-  if (!clicked) await expect(page.locator('body')).toBeVisible();
+  if (!clicked) { test.skip(true, '유료 회차 없음 — 동적 콘텐츠'); return; }
   await page.waitForTimeout(1000);
 });
 
@@ -151,14 +156,14 @@ When('기다무 회차 클릭', async ({ page }) => {
     if (wufItem) { wufItem.click(); return true; }
     return false;
   });
-  if (!clicked) await expect(page.locator('body')).toBeVisible();
+  if (!clicked) { test.skip(true, '기다무 회차 없음 — 동적 콘텐츠'); return; }
   await page.waitForTimeout(1000);
 });
 
 When(/^다음 회차 \(기다무\) 클릭$/, async ({ page }) => {
   const wuf = page.locator('a.episode-item[data-is-wuf="true"]').first();
-  if ((await wuf.count()) > 0) { await wuf.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  if ((await wuf.count()) === 0) { test.skip(true, '기다무 회차 없음 — 동적 콘텐츠'); return; }
+  await wuf.click();
 });
 
 When('회차 영역 스크롤 > 기다무 회차 클릭', async ({ page }) => {
@@ -169,20 +174,20 @@ When('회차 영역 스크롤 > 기다무 회차 클릭', async ({ page }) => {
     if (wuf) { wuf.scrollIntoView(); wuf.click(); return true; }
     return false;
   });
-  if (clicked) await page.waitForTimeout(1000);
-  else await expect(page.locator('body')).toBeVisible();
+  if (clicked) {
+    await page.waitForTimeout(1000);
+  } else {
+    test.skip(true, '기다무 회차 없음 — 동적 콘텐츠');
+  }
 });
 
 When('회차 영역 스크롤 > 유료 회차 클릭', async ({ page }) => {
   await ensureOnSeries(page);
   const paid = page.locator('a.episode-item[data-is-charging="true"]').first();
-  if ((await paid.count()) > 0) {
-    await paid.scrollIntoViewIfNeeded().catch(() => {});
-    await paid.click();
-    await page.waitForTimeout(1000);
-    return;
-  }
-  await expect(page.locator('body')).toBeVisible();
+  if ((await paid.count()) === 0) { test.skip(true, '유료 회차 없음 — 동적 콘텐츠'); return; }
+  await paid.scrollIntoViewIfNeeded().catch(() => {});
+  await paid.click();
+  await page.waitForTimeout(1000);
 });
 
 When('이용권 사용 가능한 유료회차 클릭', async ({ page }) => {
@@ -190,7 +195,7 @@ When('이용권 사용 가능한 유료회차 클릭', async ({ page }) => {
   if ((await el.count()) > 0) { await el.click(); return; }
   const ep = page.locator('a[href*="/episode/"]');
   if ((await ep.count()) > 2) { await ep.nth(2).click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, '이용권 대상 회차 없음 — 동적 콘텐츠');
 });
 
 When('작품홈 Episode 탭 > 무료 회차 클릭', async ({ page }) => {
@@ -204,21 +209,26 @@ When('작품홈 Episode 탭 > 무료 회차 클릭', async ({ page }) => {
 When('구독 버튼 클릭', async ({ page }) => {
   await page.goto(`${MWEB}${TEST_DATA.series.subscribeTestMweb}`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1000);
-  await expect(page.locator('a.js-subscribe-btn').first()).toBeVisible({ timeout: 5000 });
-  await page.locator('a.js-subscribe-btn').first().click();
+  // 모바일에서 a.js-subscribe-btn 은 CSS hidden 인스턴스가 있음 — JS 클릭
+  const clicked = await page.evaluate(() => {
+    const btn = document.querySelector('a.js-subscribe-btn') as HTMLElement | null;
+    if (btn) { btn.click(); return true; }
+    return false;
+  });
+  if (!clicked) throw new Error('a.js-subscribe-btn 을 찾을 수 없음');
   await page.waitForTimeout(800);
 });
 
 When('[Get] 버튼 클릭', async ({ page }) => {
   const btn = page.locator('button, a').filter({ hasText: /^get$/i }).first();
-  if ((await btn.count()) > 0) { await btn.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
 });
 
 When('[Get]버튼 클릭', async ({ page }) => {
   const btn = page.locator('button, a').filter({ hasText: /^get$/i }).first();
-  if ((await btn.count()) > 0) { await btn.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
 });
 
 // NOTE: '[Read] 버튼 클릭' — 인박스.steps.ts에서 처리
@@ -237,9 +247,8 @@ When('[Unsubscribe] 버튼 클릭', async ({ page }) => {
 });
 
 When('[Yes] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /yes/i }).first();
-  if ((await btn.count()) > 0) { await btn.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /yes/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /yes/i }).first().click();
 });
 
 // ──── 작가 ────
@@ -260,16 +269,16 @@ When('작가 클릭', async ({ page }) => {
 
 When('공지사항 띠배너 클릭', async ({ page }) => {
   const banner = page.locator('a[href*="/notice"], a[href*="/announcement"], [class*="notice-banner"], [class*="announcement"]').first();
-  if ((await banner.count()) > 0) { await banner.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  if ((await banner.count()) === 0) { test.skip(true, '공지사항 띠배너 없음 — 동적 콘텐츠'); return; }
+  await banner.click();
 });
 
 When('기다무 띠배너 > ? 버튼 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: '?' }).first();
   if ((await btn.count()) > 0) { await btn.click(); return; }
   const wufBtn = page.locator('[class*="wuf"] button, [class*="wuf"] a').first();
-  if ((await wufBtn.count()) > 0) { await wufBtn.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  if ((await wufBtn.count()) === 0) { test.skip(true, '기다무 띠배너 없음 — 동적 콘텐츠'); return; }
+  await wufBtn.click();
 });
 
 // ──── 뷰어 진입 (작품홈에서) ────
@@ -289,9 +298,8 @@ When('기다무 띠배너 > ? 버튼 클릭', async ({ page }) => {
 When('회차 구매 옵션 클릭', async ({ page }) => {
   const el = page.locator('[class*="purchase"], [class*="unlock"]').first();
   if ((await el.count()) > 0) { await el.click(); return; }
-  const btn = page.getByRole('button', { name: /ink|unlock|buy/i }).first();
-  if ((await btn.count()) > 0) { await btn.click(); return; }
-  await expect(page.locator('body')).toBeVisible();
+  await expect(page.getByRole('button', { name: /ink|unlock|buy/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /ink|unlock|buy/i }).first().click();
 });
 
 When('회차 구매 팝업 > [X] 버튼 클릭', async ({ page }) => {
@@ -308,26 +316,20 @@ When('회차 구매 팝업 > [X] 버튼 클릭', async ({ page }) => {
 
 Then('작품홈 페이지가 노출된다', async ({ page }) => {
   await page.waitForLoadState('domcontentloaded').catch(() => {});
-  const url = page.url();
-  if (!/\/series\//i.test(url)) { await expect(page.locator('body')).toBeVisible(); return; }
-  const ep = page.locator('a[href*="/episode/"]').filter({ visible: true });
-  if ((await ep.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(ep.first()).toBeVisible({ timeout: 5000 });
+  await expect(page).toHaveURL(/\/series\//i);
+  // 시리즈 페이지 구독 버튼 — 2개 중 마지막(visible) 사용, info/episodes 탭 무관
+  await expect(page.locator('a.js-subscribe-btn').last()).toBeVisible({ timeout: 5000 });
 });
 
 Then('작품홈으로 진입된다', async ({ page }) => {
   await page.waitForLoadState('domcontentloaded').catch(() => {});
-  const url = page.url();
-  if (!/\/series\//i.test(url)) { await expect(page.locator('body')).toBeVisible(); return; }
-  const ep = page.locator('a.episode-item, a[href*="/episode/"]').filter({ visible: true });
-  if ((await ep.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(ep.first()).toBeVisible({ timeout: 5000 });
+  await expect(page).toHaveURL(/\/series\//i);
+  await expect(page.locator('a.js-subscribe-btn').last()).toBeVisible({ timeout: 5000 });
 });
 
 Then('회차 리스트 영역이 노출된다', async ({ page }) => {
-  const ep = page.locator('a.episode-item, a[href*="/episode/"]').filter({ visible: true });
-  if ((await ep.count()) === 0) { await expect(page.locator('body')).toBeVisible(); return; }
-  await expect(ep.first()).toBeVisible({ timeout: 5000 });
+  // a.episode-item 사용 — js-continue-btn (hidden) 제외
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
 });
 
 // NOTE: 팝업 관련 Then (뷰어로 진입된다, 회차 구매 팝업, 기다무 사용 팝업, 기다무 확인 팝업,
@@ -381,5 +383,5 @@ When('첫 번째 작품을 클릭한다', async ({ page }) => {
 
 When('작품 썸네일을 클릭한다', async ({ page }) => {
   // MWeb은 카드 클릭 시 바로 시리즈 페이지 진입 — side-section 썸네일 버튼 없음
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, 'MWeb — 썸네일 버튼 없음');
 });

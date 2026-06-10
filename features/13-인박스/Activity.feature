@@ -19,7 +19,7 @@ Feature: Activity
     Given 수신된 내역 없는 경우
     When Inbox > Activity 탭 클릭
     Then No recent activity 문구가 노출된다.
-    When Commets 필터 클릭
+    When Comments 필터 클릭
     Then Comments 목록없을때 안내문구 노출된다.
     When Messages 필터 클릭
     Then Messages 목록없을때 안내문구 노출된다.

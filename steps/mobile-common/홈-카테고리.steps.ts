@@ -111,10 +111,10 @@ When(/^미로그인 \/ 미인증 아이디 로그인 상태$/, async ({ page }) 
   await page.goto(MWEB, { waitUntil: 'domcontentloaded' });
 });
 When('미성년에 해당되는 연/월/일 입력', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, '연령 인증 날짜 입력 — 자동화 범위 외');
 });
 When('성인에 해당되는 연/월/일 입력', async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+  test.skip(true, '연령 인증 날짜 입력 — 자동화 범위 외');
 });
 When('Submit 버튼 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: /submit/i }).first();
@@ -156,27 +156,18 @@ When('리스트의 첫번째 작품 클릭', async ({ page }) => {
   }
 });
 // '작품 리스트 확인' → 보관함.steps.ts에 등록되어 있음
-When(/^작품 정보 영역 (.+) 클릭$/, async ({ page }) => {
-  await expect(page.locator('body')).toBeVisible();
+When(/^작품 정보 영역 (.+) 클릭$/, async ({ page }, _value: string) => {
+  const genreLink = page.locator('a[href*="/menu/"], a[href*="/genre/"], [class*="genre"] a, [class*="tag"] a').first();
+  await expect(genreLink).toBeVisible({ timeout: 5000 });
+  await genreLink.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 
 // ──── 헬퍼 ────
 
 async function assertMenuPage(page: any, menuPattern: RegExp) {
-  const url = page.url();
-  if (menuPattern.test(url)) {
-    await expect(page).toHaveURL(menuPattern);
-    const items = page.locator('a[href*="/series/"]').first();
-    if (await items.isVisible({ timeout: 3000 }).catch(() => false)) await expect(items).toBeVisible();
-  } else {
-    // SPA navigated away → series list or body
-    const items = page.locator('a[href*="/series/"]').first();
-    if (await items.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await expect(items).toBeVisible();
-    } else {
-      await expect(page.locator('body')).toBeVisible();
-    }
-  }
+  await expect(page).toHaveURL(menuPattern);
+  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
 }
 
 // ──── Then 카테고리 ────
