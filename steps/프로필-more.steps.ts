@@ -138,13 +138,11 @@ When('[Contact CS] 텍스트 버튼 클릭', async ({ page }) => {
 });
 
 When('[닫기] 버튼 클릭', async ({ page }) => {
-  // mailto: 링크 클릭 후 OS 메일 앱 닫기 — PC에선 브라우저 버튼 없음, 있으면 클릭
+  // mailto: 링크 클릭 후 OS 메일 앱 닫기 — PC에선 OS 다이얼로그 없음, 버튼 있으면 클릭
   const btn = page.getByRole('button', { name: /close|닫기/i });
   if ((await btn.count()) > 0) {
     await expect(btn.first()).toBeVisible({ timeout: 5000 });
     await btn.first().click();
-  } else {
-    await expect(page.locator('body')).toBeVisible();
   }
 });
 
@@ -205,8 +203,9 @@ When('Merch Shop 클릭', async ({ page }) => {
 });
 
 When('뉴스 리스트 클릭', async ({ page }) => {
-  await expect(page.getByRole('link').filter({ hasText: /news/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('link').filter({ hasText: /news/i }).first().click();
+  const item = page.locator('ul.content-list-wrap li.list-item a').first();
+  await expect(item).toBeVisible({ timeout: 5000 });
+  await item.click();
 });
 
 // ──── 결과 검증 ────
@@ -331,15 +330,12 @@ Then(/^"https:\/\/.+" 새 창 노출 된다\.$/, async () => {
 });
 
 Then('뉴스 리스트가 노출된다.', async ({ page }) => {
-  const list = page.locator('[class*="news"], [class*="newsfeed"], article').filter({ visible: true });
-  if ((await list.count()) === 0) { test.skip(true, '뉴스 리스트 미노출'); return; }
-  await expect(list.first()).toBeVisible({ timeout: 5000 });
+  const list = page.locator('ul.content-list-wrap li.list-item');
+  await expect(list.first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('뉴스 상세화면으로 노출된다.', async ({ page }) => {
-  const detail = page.locator('[class*="news-detail"], article, main, h1');
-  if ((await detail.count()) === 0) { test.skip(true, '뉴스 상세화면 미노출'); return; }
-  await expect(detail.first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('h1.page-header')).toBeVisible({ timeout: 10000 });
 });
 
 Then('Merch shop 이동된다.', async ({ page }) => {

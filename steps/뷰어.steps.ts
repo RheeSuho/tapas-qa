@@ -491,13 +491,15 @@ When('뷰어 엔드 > 작가의 말 영역 확인', async ({ page }) => {
 // ──── 기타 ────
 
 When('광고 선택', async ({ page }) => {
-  await page.locator('[class*="ad"], [id*="ad"]').first().click()
-    .catch(() => page.locator('body').click());
+  const ad = page.locator('[class*="ad"], [id*="ad"]').first();
+  await expect(ad).toBeVisible({ timeout: 5000 });
+  await ad.click();
 });
 
 When('이벤트 배너 선택', async ({ page }) => {
-  await page.locator('[class*="event-banner"], [class*="banner"]').first().click()
-    .catch(() => page.locator('body').click());
+  const banner = page.locator('[class*="event-banner"], [class*="banner"]').first();
+  await expect(banner).toBeVisible({ timeout: 5000 });
+  await banner.click();
 });
 
 When('우상단 [x] 버튼 클릭', async ({ page }) => {
@@ -575,13 +577,10 @@ When('Comments 영역 > 댓글 [Likes] 버튼 클릭', async ({ page }) => {
   }
   await dismissWebToAppPopup(page);
   // 사이드바 댓글 패널 열기
-  const panelOpen = await page.locator('.comment-section__header, .js-sort-select').isVisible().catch(() => false);
+  const panelOpen = await page.locator('.comment-header, .comment__sort').isVisible().catch(() => false);
   if (!panelOpen) {
-    await page.evaluate(() => {
-      const btn = document.querySelector('a.js-comment-btn, a.js-wide-comment-btn, a.toolbar-btn[data-type="comment"]') as HTMLElement | null;
-      if (btn) btn.click();
-    });
-    await page.locator('.comment-section__header, .js-sort-select, textarea.js-comment-box').first()
+    await page.locator('a.js-comment-btn').first().click();
+    await page.locator('.comment-header, .comment__sort').first()
       .waitFor({ state: 'visible', timeout: 10000 });
   }
   const likeBtn = page.locator('a.js-comment-like-btn').filter({ visible: true }).first();
@@ -597,17 +596,14 @@ When('Comments 영역 > 첫 번 째 댓글 [Likes] 버튼 클릭', async ({ page
   }
   await dismissWebToAppPopup(page);
   // 사이드바 패널이 열려 있지 않으면 다시 열기
-  const panelOpen = await page.locator('.comment-section__header, .js-sort-select').isVisible().catch(() => false);
+  const panelOpen = await page.locator('.comment-header, .comment__sort').isVisible().catch(() => false);
   if (!panelOpen) {
-    await page.evaluate(() => {
-      const btn = document.querySelector('a.js-comment-btn, a.js-wide-comment-btn, a.toolbar-btn[data-type="comment"]') as HTMLElement | null;
-      if (btn) btn.click();
-    });
-    await page.locator('.comment-section__header, .js-sort-select, textarea.js-comment-box').first()
+    await page.locator('a.js-comment-btn').first().click();
+    await page.locator('.comment-header, .comment__sort').first()
       .waitFor({ state: 'visible', timeout: 10000 });
   }
   const likeBtn = page.locator('a.js-comment-like-btn').filter({ visible: true }).first();
-  await expect(likeBtn).toBeVisible({ timeout: 5000 });
+  await expect(likeBtn).toBeVisible({ timeout: 10000 });
   await likeBtn.click();
   await page.waitForTimeout(500);
 });
@@ -687,21 +683,12 @@ Then('회차로 진입되며 원고 이미지 및 우측에 회차 리스트 영
 });
 
 Then('뷰어 원고 이미지와 리스트 버튼이 노출된다.', async ({ page }) => {
-  const img = page.locator('img.content__img');
-  const imgCount = await img.count();
-  if (imgCount === 0) { test.skip(true, '원고 이미지 미노출 — 뷰어 진입 실패'); return; }
-  await expect(img.first()).toBeVisible({ timeout: 8000 });
+  await expect(page.locator('img.content__img').first()).toBeVisible({ timeout: 10000 });
   await assertToolbarBtn(page, 'a.toolbar-btn.js-list-btn');
 });
 
 Then('뷰어엔드 작가의 말 영역이 노출된다.', async ({ page }) => {
-  const authorSection = page.locator('.viewer-section--episode').first();
-  const isVisible = await authorSection.isVisible({ timeout: 3000 }).catch(() => false);
-  if (isVisible) { await expect(authorSection).toBeVisible(); return; }
-  const likeBtn = page.locator('a.toolbar-btn.js-episode-like-btn');
-  const btnVisible = await likeBtn.first().isVisible({ timeout: 2000 }).catch(() => false);
-  if (!btnVisible) { test.skip(true, '뷰어엔드 섹션 미노출'); return; }
-  await assertToolbarBtn(page, 'a.toolbar-btn.js-episode-like-btn');
+  await expect(page.locator('.viewer-section--episode').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('뷰어 좋아요 리스트 댓글 버튼이 모두 노출된다.', async ({ page }) => {
