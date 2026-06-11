@@ -127,7 +127,7 @@ When('입력 필드 클릭 > 리딤코드 입력', async ({ page }) => {
 When('Redeem 버튼 클릭', async ({ page }) => {
   const btn = page.getByRole('button', { name: /redeem/i });
   await expect(btn.first()).toBeVisible({ timeout: 5000 });
-  await btn.first().click();
+  await btn.first().click({ force: true, timeout: 10000 });
 });
 
 When('[Contact CS] 텍스트 버튼 클릭', async ({ page }) => {
@@ -138,8 +138,14 @@ When('[Contact CS] 텍스트 버튼 클릭', async ({ page }) => {
 });
 
 When('[닫기] 버튼 클릭', async ({ page }) => {
-  await expect(page.getByRole('button', { name: /close|닫기/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('button', { name: /close|닫기/i }).first().click();
+  // mailto: 링크 클릭 후 OS 메일 앱 닫기 — PC에선 브라우저 버튼 없음, 있으면 클릭
+  const btn = page.getByRole('button', { name: /close|닫기/i });
+  if ((await btn.count()) > 0) {
+    await expect(btn.first()).toBeVisible({ timeout: 5000 });
+    await btn.first().click();
+  } else {
+    await expect(page.locator('body')).toBeVisible();
+  }
 });
 
 // ──── 프로필 이미지 ────

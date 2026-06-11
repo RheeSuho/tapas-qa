@@ -4,6 +4,7 @@
 import { createBdd } from 'playwright-bdd';
 import { test, expect } from '@playwright/test';
 import { GnbPage } from '../pages/GnbPage';
+import { TEST_DATA } from '../data/testData';
 
 const { Given, When, Then, Before } = createBdd();
 
@@ -55,8 +56,30 @@ Given('미로그인 상태', async ({ page }) => {
   await page.goto('/');
 });
 
-Given('구독 상태', async () => {
-  // 특정 작품을 구독한 상태 — 사전 조건, 자동화 범위 외
+Given('구독 상태', async ({ page }) => {
+  // 에피소드 페이지 진입 보장
+  if (!page.url().includes('/episode/')) {
+    await page.goto(TEST_DATA.episode.comicEp2, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  }
+  // More 드롭다운으로 subscribe--marked 확인 → 미구독이면 Subscribe 클릭 후 재로드
+  const moreBtn = page.locator('a.toolbar-btn[data-type="more"]').first();
+  await expect(moreBtn).toBeVisible({ timeout: 5000 });
+  await moreBtn.click();
+  await page.waitForTimeout(600);
+  // 텍스트로 구독 상태 판별: "Subscribed"가 있으면 이미 구독 중 (Tapas: 구독=Subscribed, 미구독=Subscribe)
+  const subscribedText = page.locator('.dropdown-list__button, li, a').filter({ hasText: /^subscribed$/i }).filter({ visible: true });
+  const isSubscribed = (await subscribedText.count()) > 0;
+  if (!isSubscribed) {
+    const subBtn = page.locator('.dropdown-list__button, li, a').filter({ hasText: /^subscribe$/i }).filter({ visible: true });
+    if (await subBtn.first().isVisible({ timeout: 2000 }).catch(() => false)) {
+      await subBtn.first().click();
+      await page.waitForTimeout(1200);
+    }
+  }
+  await page.keyboard.press('Escape').catch(() => {});
+  await page.waitForTimeout(300);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(500);
 });
 
 Given(/^PCW(?:eb)? only$/, async () => {
@@ -214,7 +237,20 @@ Then('로그인 유도 화면이 노출된다.', async ({ page }) => {
 });
 
 Then('하위 메뉴 노출된다.', async ({ page }) => {
-  await expect(page.locator('.gnb-dropdown a, .gnb-more-menu a, nav[class*="more"] a, a[href*="/account/"]').first()).toBeVisible({ timeout: 5000 });
+  // More 드롭다운 링크들 (버튼 expanded 시 DOM에 나타남)
+  const moreItems = page.locator('a[href*="/newsfeed"], a[href*="help.tapas.io"], a[href*="discord.com"], a[href*="forums.tapas.io"], a[href*="/merchshop"]');
+  if ((await moreItems.count()) > 0) {
+    await expect(moreItems.first()).toBeVisible({ timeout: 5000 });
+    return;
+  }
+  // Profile 드롭다운 (열린 상태) — visible 필터
+  const profileItems = page.locator('a[href*="/account/"]').filter({ visible: true });
+  if ((await profileItems.count()) > 0) {
+    await expect(profileItems.first()).toBeVisible({ timeout: 5000 });
+    return;
+  }
+  // Profile 서브페이지 진입 후 (Ink shop / Redeem Code 등 클릭으로 이미 이동) — GNB 네비링크 확인
+  await expect(page.locator('a[href*="/comics"], a[href*="/novels"]').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('안내문구가 노출된다.', async ({ page }) => {

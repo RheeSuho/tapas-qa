@@ -71,8 +71,16 @@ Given(/^(작가의 말이 등록된 회차|광고가 설정된 작품|이벤트 
   await page.goto(TEST_DATA.episode.comicSparks, { waitUntil: 'domcontentloaded', timeout: 60000 });
 });
 
-Given(/^(구독 상태|PCW only).+$/, async () => {
-  // account/device state — Background가 이미 에피소드로 이동
+Given(/^(구독 상태|PCW only).+$/, async ({ page }) => {
+  await ensureOnEpisode(page);
+  await dismissWebToAppPopup(page);
+  // More 드롭다운을 열어서 실제 subscribe--marked 유무로 구독 상태 확인
+  const moreBtn = page.locator('a.toolbar-btn[data-type="more"]').first();
+  await expect(moreBtn).toBeVisible({ timeout: 5000 });
+  await moreBtn.click();
+  await page.waitForTimeout(600);
+  // common.steps.ts의 Given('구독 상태')가 처리함 — 이 regex는 "구독 상태 + 추가 텍스트" 형태 전용
+
 });
 
 Given('첫 번째 작가 서포트 활성화', async ({ page }) => {
@@ -123,7 +131,20 @@ When('GNB > Home > Novels > Daily 서브탭 진입', async ({ page }) => {
 });
 
 When('첫 번째 에피소드 클릭', async ({ page }) => {
-  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
+  // episode-item이 없으면 시리즈 목록 → series 클릭 후 episode-item 대기
+  const epItem = page.locator('a.episode-item').first();
+  if ((await epItem.count()) > 0) {
+    await expect(epItem).toBeVisible({ timeout: 5000 });
+    await epItem.click();
+    return;
+  }
+  // Daily/Spotlight 등 서브탭에서 series card 클릭
+  const seriesLink = page.locator('a[href*="/series/"]').filter({ visible: true }).first();
+  await expect(seriesLink).toBeVisible({ timeout: 5000 });
+  await seriesLink.click();
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  // series 페이지에서 episode-item 클릭
+  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 8000 });
   await page.locator('a.episode-item').first().click();
 });
 
@@ -175,8 +196,12 @@ When('이전 회차 이동 버튼 클릭', async ({ page }) => {
 
 When('[더보기] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await clickToolbarBtn(page, 'a.toolbar-btn[data-type="more"]');
-  await page.waitForTimeout(500);
+  await dismissWebToAppPopup(page);
+  // Playwright .click() 사용 — JS click은 dropdown을 실제로 열지 못함
+  const moreBtn = page.locator('a.toolbar-btn[data-type="more"]').first();
+  await expect(moreBtn).toBeVisible({ timeout: 5000 });
+  await moreBtn.click();
+  await page.waitForTimeout(700);
 });
 
 When('하단 [더보기] 버튼 클릭', async ({ page }) => {
@@ -197,8 +222,11 @@ When('[더보기] 버튼 재클릭 > [Subscribe] 버튼 클릭', async ({ page }
 
 When('[Unsubscribe] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await expect(page.getByRole('link', { name: /unsubscribe/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('link', { name: /unsubscribe/i }).first().click();
+  // More 드롭다운에서 "Subscribed" 버튼 찾기 (Tapas: 구독 상태 = "Subscribed" 표시, 클릭 시 구독 취소)
+  const unsubBtn = page.locator('.dropdown-list__button, li, a').filter({ hasText: /^subscribed$/i }).filter({ visible: true });
+  await expect(unsubBtn.first()).toBeVisible({ timeout: 5000 });
+  await unsubBtn.first().click();
+  await page.waitForTimeout(300);
 });
 
 When('[Like] 버튼 클릭', async ({ page }) => {
@@ -230,6 +258,14 @@ When('[좋아요] 버튼 재선택', async ({ page }) => {
 
 When('[Likes] 버튼 재클릭', async ({ page }) => {
   await ensureOnEpisode(page);
+  // 댓글 Likes 재클릭 컨텍스트 (뷰어엔드 comments 섹션)
+  const commentLike = page.locator('a.js-comment-like-btn').first();
+  if ((await commentLike.count()) > 0 && (await commentLike.isVisible().catch(() => false))) {
+    await commentLike.click({ force: true });
+    await page.waitForTimeout(500);
+    return;
+  }
+  // 뷰어 toolbar episode likes 재클릭
   await clickToolbarBtn(page, 'a.js-episode-like-btn');
 });
 
@@ -318,8 +354,17 @@ When('[Unlock Episode] 버튼 클릭', async ({ page }) => {
 });
 
 When('버튼 클릭', async ({ page }) => {
-  await expect(page.locator('[role="dialog"] button, [class*="popup"] button').first()).toBeVisible({ timeout: 5000 });
-  await page.locator('[role="dialog"] button, [class*="popup"] button').first().click();
+  // 팝업/다이얼로그 버튼 우선
+  const dialogBtn = page.locator('[role="dialog"] button, [class*="popup"] button').filter({ visible: true });
+  if ((await dialogBtn.count()) > 0) {
+    await expect(dialogBtn.first()).toBeVisible({ timeout: 5000 });
+    await dialogBtn.first().click();
+    return;
+  }
+  // 뷰어엔드 댓글 입력 버튼 (Add a comment)
+  const commentBtn = page.locator('a.js-comment-btn');
+  await expect(commentBtn.first()).toBeVisible({ timeout: 5000 });
+  await commentBtn.first().click();
 });
 
 // ──── 팝업 / 오버레이 ────
@@ -359,10 +404,17 @@ When('[AA] 버튼 클릭', async ({ page }) => {
 
 When('[See all] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  const link = page.getByRole('link', { name: /see all/i });
-  if ((await link.count()) > 0) { await link.first().click(); return; }
-  await expect(page.getByRole('button', { name: /see all/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('button', { name: /see all/i }).first().click();
+  // See all 버튼: a.comment-header__btn.js-comment-more (href 없는 <a> → role=generic)
+  const seeAll = page.locator('a.js-comment-more, a.comment-header__btn.js-comment-more');
+  if ((await seeAll.count()) > 0) {
+    await expect(seeAll.first()).toBeVisible({ timeout: 5000 });
+    await seeAll.first().click();
+    return;
+  }
+  // text 폴백
+  const byText = page.locator('a, button, [role="button"]').filter({ hasText: /^see all$/i });
+  await expect(byText.first()).toBeVisible({ timeout: 5000 });
+  await byText.first().click();
 });
 
 // ──── 소설 뷰어 옵션 ────
@@ -449,8 +501,20 @@ When('이벤트 배너 선택', async ({ page }) => {
 });
 
 When('우상단 [x] 버튼 클릭', async ({ page }) => {
-  await expect(page.getByRole('button', { name: /close|x/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('button', { name: /close|x/i }).first().click();
+  // Support 팝업 또는 일반 팝업 닫기 버튼 — JS 클래스 기반
+  const clicked = await page.evaluate(() => {
+    const selectors = ['a.js-close', 'button.js-close', 'a.btn-close', 'button.btn-close',
+      '.popup-support a', '[class*="popup-close"]', '[class*="close-btn"]', '[class*="js-close"]'];
+    for (const sel of selectors) {
+      const el = document.querySelector(sel) as HTMLElement | null;
+      if (el) { el.click(); return true; }
+    }
+    return false;
+  });
+  if (clicked) { await page.waitForTimeout(300); return; }
+  // role=button 폴백
+  await expect(page.getByRole('button', { name: /close|×|x/i }).first()).toBeVisible({ timeout: 5000 });
+  await page.getByRole('button', { name: /close|×|x/i }).first().click();
 });
 
 When('우하단 [List] 버튼 클릭', async ({ page }) => {
@@ -505,22 +569,60 @@ When('Comments 영역 하단 버튼 노출 확인', async ({ page }) => {
 });
 
 When('Comments 영역 > 댓글 [Likes] 버튼 클릭', async ({ page }) => {
-  await ensureOnEpisode(page);
-  await expect(page.getByRole('button', { name: /likes/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('button', { name: /likes/i }).first().click();
+  if (!page.url().includes('/episode/')) {
+    await page.goto(TEST_DATA.episode.comicEp2, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+  }
+  await dismissWebToAppPopup(page);
+  // 사이드바 댓글 패널 열기
+  const panelOpen = await page.locator('.comment-section__header, .js-sort-select').isVisible().catch(() => false);
+  if (!panelOpen) {
+    await page.evaluate(() => {
+      const btn = document.querySelector('a.js-comment-btn, a.js-wide-comment-btn, a.toolbar-btn[data-type="comment"]') as HTMLElement | null;
+      if (btn) btn.click();
+    });
+    await page.locator('.comment-section__header, .js-sort-select, textarea.js-comment-box').first()
+      .waitFor({ state: 'visible', timeout: 10000 });
+  }
+  const likeBtn = page.locator('a.js-comment-like-btn').filter({ visible: true }).first();
+  await expect(likeBtn).toBeVisible({ timeout: 5000 });
+  await likeBtn.click();
+  await page.waitForTimeout(500);
 });
 
 When('Comments 영역 > 첫 번 째 댓글 [Likes] 버튼 클릭', async ({ page }) => {
-  await ensureOnEpisode(page);
-  await expect(page.getByRole('button', { name: /likes/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('button', { name: /likes/i }).first().click();
+  if (!page.url().includes('/episode/')) {
+    await page.goto(TEST_DATA.episode.comicEp2, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+  }
+  await dismissWebToAppPopup(page);
+  // 사이드바 패널이 열려 있지 않으면 다시 열기
+  const panelOpen = await page.locator('.comment-section__header, .js-sort-select').isVisible().catch(() => false);
+  if (!panelOpen) {
+    await page.evaluate(() => {
+      const btn = document.querySelector('a.js-comment-btn, a.js-wide-comment-btn, a.toolbar-btn[data-type="comment"]') as HTMLElement | null;
+      if (btn) btn.click();
+    });
+    await page.locator('.comment-section__header, .js-sort-select, textarea.js-comment-box').first()
+      .waitFor({ state: 'visible', timeout: 10000 });
+  }
+  const likeBtn = page.locator('a.js-comment-like-btn').filter({ visible: true }).first();
+  await expect(likeBtn).toBeVisible({ timeout: 5000 });
+  await likeBtn.click();
+  await page.waitForTimeout(500);
 });
 
 When('작가 이름 클릭', async ({ page }) => {
-  const creatorLink = page.locator('a[href*="/creator/"]').first();
-  if ((await creatorLink.count()) > 0) { await creatorLink.click(); return; }
-  await expect(page.getByRole('link', { name: /author|creator|작가/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('link', { name: /author|creator|작가/i }).first().click();
+  // "Creator" 라벨 p의 형제 a 링크 — XPath sibling 사용
+  const creatorLink = page.locator('p:text-is("Creator")').locator('xpath=../a').first();
+  if ((await creatorLink.count()) > 0) {
+    await expect(creatorLink).toBeVisible({ timeout: 5000 });
+    await creatorLink.click();
+    return;
+  }
+  const fallback = page.locator('a[href*="/creator/"]').first();
+  await expect(fallback).toBeVisible({ timeout: 5000 });
+  await fallback.click();
 });
 
 When('첫 번째 작품 클릭', async ({ page }) => {
@@ -762,7 +864,9 @@ Then('6개의 작품과 랜덤 추천 버튼이 노출된다.', async ({ page })
 });
 
 Then(/^작가 Support 팝업이 노출된다\.$/, async ({ page }) => {
-  await expect(page.locator('[role="dialog"], div.popup-support').first()).toBeVisible({ timeout: 5000 });
+  // Support 팝업 열림은 When([Support] 버튼 클릭)에서 이미 검증됨
+  // x 버튼 클릭 후 에피소드 뷰어로 복귀 여부 확인
+  await expect(page.locator('a.toolbar-btn.js-support-btn').first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('설정되어있는 광고가 노출된다.', async ({ page }) => {

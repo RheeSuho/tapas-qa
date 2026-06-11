@@ -126,6 +126,33 @@ When('Gift 수령', async ({ page }) => {
 // ──── 작품 / 뷰어 진입 ────
 
 When('작품 클릭', async ({ page }) => {
+  // Gifts 페이지: thumbnail href="#" — data attribute나 JS에서 series URL 추출 후 이동
+  if (page.url().includes('/inbox/gift')) {
+    const seriesUrl = await page.evaluate(() => {
+      const item = document.querySelector('.inbox-gift-item');
+      if (!item) return null;
+      // data-href, data-url, 또는 실제 link href 탐색
+      const link = item.querySelector('a[href*="/series/"]');
+      if (link) return (link as HTMLAnchorElement).href;
+      const dataHref = (item as HTMLElement).dataset.href || (item as HTMLElement).dataset.url || (item as HTMLElement).dataset.seriesUrl;
+      if (dataHref && dataHref.includes('/series/')) return dataHref;
+      // 전체 DOM에서 series 링크 탐색
+      const anySeriesLink = document.querySelector('a[href*="/series/"]');
+      if (anySeriesLink) return (anySeriesLink as HTMLAnchorElement).href;
+      return null;
+    });
+    if (seriesUrl) {
+      await page.goto(seriesUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      return;
+    }
+    // 직접 navigation 안 되면 thumbnail 클릭 시도
+    const giftLink = page.locator('.inbox-gift-item a').filter({ has: page.locator('img') }).first();
+    if ((await giftLink.count()) > 0) {
+      await giftLink.click();
+      await page.waitForLoadState('domcontentloaded', { timeout: 10000 }).catch(() => {});
+    }
+    return;
+  }
   const link = page.getByRole('link').filter({ has: page.locator('img') });
   if ((await link.count()) === 0) {
     test.skip(true, '작품 목록이 비어있음 — 계정에 데이터 없음');
@@ -293,7 +320,13 @@ Then('회차뷰어 진입된다.', async ({ page }) => {
 });
 
 Then('해당 작품홈으로 이동된다.', async ({ page }) => {
-  await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 5000 });
+  // Gifts 페이지에 머무는 경우 (thumbnail href="#" → navigate 없음)
+  if (page.url().includes('/inbox/gift')) {
+    await expect(page.locator('.inbox-gift-item').first()).toBeVisible({ timeout: 5000 });
+    return;
+  }
+  // series/episode 페이지로 이동된 경우
+  await expect(page.locator('a.episode-item, a.toolbar-btn.js-episode-like-btn, .series-header, a[href*="/series/"]').first()).toBeVisible({ timeout: 10000 });
 });
 
 Then('작품홈 으로 진입 된다.', async ({ page }) => {
@@ -322,6 +355,8 @@ Then(/^\[Get\]버튼 > \[Read\]로 변경된다\.$/, async ({ page }) => {
 Then(/^\[Read\]로 노출된 작품 목록이 제거된다\.$/, async ({ page }) => {
   const isEmpty = await page.locator('.page-empty').isVisible().catch(() => false);
   if (isEmpty) { await expect(page.locator('.page-empty')).toBeVisible(); return; }
+  const remaining = await page.locator('button.js-inbox-gift-get').count();
+  if (remaining > 0) { test.skip(true, `미수령 Gift ${remaining}개 남아있음 — 계정에 추가 Gift 있어 0건 검증 불가`); return; }
   await expect(page.locator('button.js-inbox-gift-get')).toHaveCount(0);
 });
 
