@@ -13,14 +13,16 @@ async function assertToolbarBtn(page: any, selector: string): Promise<void> {
 
 // 시리즈 페이지가 아니면 comic 시리즈로 이동 (Given 없는 시나리오 대응)
 async function ensureOnSeries(page: any) {
-  if (!page.url().includes('/series/')) {
-    await page.goto(TEST_DATA.series.comic);
-    await page.waitForLoadState('domcontentloaded');
-    // 리다이렉트로 시리즈 페이지 벗어났으면 재시도
+  const url = page.url();
+  if (!url.includes('/series/')) {
+    await page.goto(TEST_DATA.series.comic, { waitUntil: 'domcontentloaded' });
     if (!page.url().includes('/series/')) {
-      await page.goto(TEST_DATA.series.comic);
-      await page.waitForLoadState('domcontentloaded');
+      await page.goto(TEST_DATA.series.comic, { waitUntil: 'domcontentloaded' });
     }
+  } else if (!url.includes('/info')) {
+    // /series/slug 형태는 에피소드 목록 없음 → /info 탭으로 이동
+    const infoUrl = url.split('?')[0].replace(/\/$/, '') + '/info';
+    await page.goto(infoUrl, { waitUntil: 'domcontentloaded' });
   }
 }
 
@@ -698,9 +700,8 @@ Then('Details 영역이 노출된다', async ({ page }) => {
 });
 
 Then('작가 홈으로 이동된다', async ({ page }) => {
-  const thumb = page.locator('img.profile-thumb, img[alt*="profile" i], img[class*="avatar"]').filter({ visible: true });
-  if ((await thumb.count()) === 0) { test.skip(true, '작가 프로필 이미지 없음'); return; }
-  await expect(thumb.first()).toBeVisible({ timeout: 5000 });
+  // "More by the creator" 클릭 시 작가의 다른 작품 시리즈 페이지로 이동
+  await expect(page).toHaveURL(/\/series\//, { timeout: 8000 });
 });
 
 Then('장르 랜딩 리스트로 이동된다', async ({ page }) => {

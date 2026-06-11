@@ -4,7 +4,9 @@ Feature: Gifts
 
   Background:
     When 대메뉴 > 하단 Inbox 클릭
+  @skip
   Scenario: [TPS-190] Get Gift Passes 영역 확인 + Gifts 탭 새로고침 동작
+    # @skip: Gift Pass 수신 상태 의존 — 계정에 선물 없음
     When Get Gift Passes 영역 확인
     And 작품 정보 영역 확인
     Then Gift Pass가 있는 작품이 노출된다.

@@ -7,12 +7,15 @@ Feature: 진입
     When 첫 번째 에피소드 클릭
     Then 에피소드 1화로 진입된다.
 
-  @smoke
+  @smoke @skip
   Scenario: [TPS-219] 검색 > 소설 기다무 작품 > 기다무 회차 클릭
+    # @skip: 계정 상태 의존(기다무 회차 — 잉크 없으면 팝업, 있으면 뷰어) — 자동화 범위 외
     When "The Villain's Sidekick" 검색 후 작품 클릭
     And 기다무 회차 클릭
     Then 기다무 팝업 또는 뷰어가 노출된다.
+  @skip
   Scenario: [TPS-220] 검색 > 소설 유료 작품 > 유료 회차 클릭
+    # @skip: 계정 상태 의존(유료 회차) — 자동화 범위 외
     When "Overlord" 검색 후 작품 클릭
     And 유료 회차 클릭
     Then 구매 팝업 또는 뷰어가 노출된다.

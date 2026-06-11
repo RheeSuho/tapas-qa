@@ -20,7 +20,9 @@ Feature: Episodes 탭
   Scenario: [TPS-091] 무료 회차 클릭 시 뷰어 진입
     When 무료 회차 클릭
     Then 뷰어로 진입된다
+  @skip
   Scenario: [TPS-092] 기다무 회차 클릭 시 팝업 노출
+    # @skip: 계정 상태 의존(기다무 티켓 보유) — 자동화 범위 외
     Given 기다무 티켓 보유 상태
     When 회차 영역 스크롤 > 기다무 회차 클릭
     Then 기다무 사용 확인 팝업이 노출된다
@@ -31,7 +33,9 @@ Feature: Episodes 탭
     When 다음 회차 (기다무) 클릭
     And 회차 구매 팝업 > [X] 버튼 클릭
     Then 작품홈 페이지가 노출된다
+  @skip
   Scenario: [TPS-094] 유료 회차 클릭 시 구매 팝업 노출
+    # @skip: 계정 상태 의존(잉크 보유) — 자동화 범위 외
     Given 잉크 보유 상태
     When 회차 영역 스크롤 > 유료 회차 클릭
     Then 회차 구매 팝업이 노출된다

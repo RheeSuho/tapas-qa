@@ -13,7 +13,9 @@ Feature: 공통
   Scenario: [TPS-102] 배너 영역 확인
     Given 기다무 작품인 경우
     Then 기다무 작품, 공지 사항 띠배너가 노출된다.
+  @skip
   Scenario: [TPS-103] 기다무 작품 띠배너 > ? 버튼 클릭
+    # @skip: 기다무 띠배너는 동적 콘텐츠 — 미운영 시 skip
     Given 기다무 작품인 경우
     When 기다무 띠배너 > ? 버튼 클릭
     Then 기다무 안내 팝업이 노출된다.

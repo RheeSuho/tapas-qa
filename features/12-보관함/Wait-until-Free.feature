@@ -26,7 +26,9 @@ Feature: Wait until Free
     Then Novels 작품리스트만 노출된다.
     When 필터 > [All] 버튼 클릭
     Then 모든 작품 리스트가 노출된다.
+  @skip
   Scenario: [TPS-186] Wait Until Free 작품 목록 없는 경우 > Comics 필터 클릭 + All 필터 클릭
+    # @skip: 계정에 WUF 항목 있음 — 빈 목록 상태 재현 불가
     Given Wait Until Free 작품 목록 없는 경우
     When Comics 필터 클릭
     Then 안내문구가 노출된다.

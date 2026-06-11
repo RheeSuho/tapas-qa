@@ -10,7 +10,9 @@ Feature: 진입
     When "I Was the Real Head of the House" 검색 후 작품 클릭
     And 기다무 회차 클릭
     Then 기다무 팝업 또는 뷰어가 노출된다.
+  @skip
   Scenario: [TPS-218] 검색 > 코믹 유료 작품 > 유료 회차 클릭
+    # @skip: 계정 상태 의존(유료 회차 — 잉크 없으면 팝업, 있으면 뷰어) — 자동화 범위 외
     When "The Eccentric Duchess" 검색 후 작품 클릭
     And 유료 회차 클릭
     Then 구매 팝업 또는 뷰어가 노출된다.

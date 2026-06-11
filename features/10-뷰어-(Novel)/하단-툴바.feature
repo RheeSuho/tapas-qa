@@ -20,7 +20,9 @@ Feature: 하단 툴바
     And [리스트] 버튼 재클릭
     Then 뷰어 우측 작품홈 영역이 미노출로 전환된다
     And 뷰어 우측 작품홈 영역이 노출된다.
+  @skip
   Scenario: [TPS-149] PCW only > 전체화면 버튼 클릭 + 전체화면 버튼 재클릭
+    # @skip: headless Chromium에서 Fullscreen API 미지원
     Given PCW only
     When [전체화면] 버튼 클릭
     And [전체화면] 버튼 재클릭

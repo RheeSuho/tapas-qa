@@ -122,16 +122,10 @@ When('GNB > Home > Novels > Daily 서브탭 진입', async ({ page }) => {
   await daily.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
   if ((await daily.count()) > 0) await daily.first().click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
-  const seriesLink = page.locator('a[href*="/series/"]').first();
-  await seriesLink.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
-  if ((await seriesLink.count()) > 0) {
-    await seriesLink.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
 });
 
 When('첫 번째 에피소드 클릭', async ({ page }) => {
-  // episode-item이 없으면 시리즈 목록 → series 클릭 후 episode-item 대기
+  // episode-item이 없으면 시리즈 목록 → series 클릭 후 /info 탭 이동
   const epItem = page.locator('a.episode-item').first();
   if ((await epItem.count()) > 0) {
     await expect(epItem).toBeVisible({ timeout: 5000 });
@@ -139,11 +133,12 @@ When('첫 번째 에피소드 클릭', async ({ page }) => {
     return;
   }
   // Daily/Spotlight 등 서브탭에서 series card 클릭
-  const seriesLink = page.locator('a[href*="/series/"]').filter({ visible: true }).first();
+  const seriesLink = page.locator('a[href*="/series/"]').first();
   await expect(seriesLink).toBeVisible({ timeout: 5000 });
-  await seriesLink.click();
-  await page.waitForLoadState('domcontentloaded').catch(() => {});
-  // series 페이지에서 episode-item 클릭
+  const href = (await seriesLink.getAttribute('href')) ?? '';
+  const infoUrl = href.replace(/\/info\/?$/, '').replace(/\/?$/, '/info');
+  await page.goto(infoUrl, { waitUntil: 'domcontentloaded' });
+  // series /info 페이지에서 첫 번째 episode-item 클릭
   await expect(page.locator('a.episode-item').first()).toBeVisible({ timeout: 8000 });
   await page.locator('a.episode-item').first().click();
 });
@@ -361,10 +356,10 @@ When('버튼 클릭', async ({ page }) => {
     await dialogBtn.first().click();
     return;
   }
-  // 뷰어엔드 댓글 입력 버튼 (Add a comment)
-  const commentBtn = page.locator('a.js-comment-btn');
-  await expect(commentBtn.first()).toBeVisible({ timeout: 5000 });
-  await commentBtn.first().click();
+  // 뷰어엔드 하단 Comments 영역 > Add a comment 링크 (a.add-comment-btn.js-add-comment)
+  const addCommentBtn = page.locator('a.add-comment-btn.js-add-comment');
+  await expect(addCommentBtn.first()).toBeVisible({ timeout: 8000 });
+  await addCommentBtn.first().click();
 });
 
 // ──── 팝업 / 오버레이 ────
@@ -397,8 +392,8 @@ When('[Share to Facebook] or [Share to Twiiter] 버튼 클릭', async ({ page })
 
 When('[AA] 버튼 클릭', async ({ page }) => {
   await ensureOnNovelEpisode(page);
-  const btn = page.locator('a.toolbar-btn[data-type="setting"], [class*="font-option"], [class*="reader-setting"]').filter({ visible: true });
-  if ((await btn.count()) === 0) { test.skip(true, '폰트 설정 버튼 없음 — 소설 뷰어 진입 실패'); return; }
+  const btn = page.locator('a.toolbar-btn[data-type="style"]');
+  await expect(btn.first()).toBeVisible({ timeout: 8000 });
   await btn.first().click();
 });
 
@@ -420,36 +415,38 @@ When('[See all] 버튼 클릭', async ({ page }) => {
 // ──── 소설 뷰어 옵션 ────
 
 When('폰트 크기 [+] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: '+' });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('[class*="font-up"], [class*="size-up"]').first()).toBeVisible({ timeout: 5000 });
-  await page.locator('[class*="font-up"], [class*="size-up"]').first().click();
+  // .js-edit-menu 내 첫 번째 js-plus = 폰트 크기 +
+  const btn = page.locator('.js-edit-menu a.js-plus').first();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
 });
 
 When('폰트 크기 [-] 버튼 클릭', async ({ page }) => {
-  const btn = page.getByRole('button', { name: '-' });
-  if ((await btn.count()) > 0) { await btn.first().click(); return; }
-  await expect(page.locator('[class*="font-down"], [class*="size-down"]').first()).toBeVisible({ timeout: 5000 });
-  await page.locator('[class*="font-down"], [class*="size-down"]').first().click();
+  // .js-edit-menu 내 첫 번째 js-minus = 폰트 크기 -
+  const btn = page.locator('.js-edit-menu a.js-minus').first();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
 });
 
 When('행 간격 [+] 버튼 클릭', async ({ page }) => {
-  const el = page.locator('[class*="line-height"] button');
-  if ((await el.count()) > 0) { await el.last().click(); return; }
-  await expect(page.getByRole('button', { name: /line|간격/i }).last()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('button', { name: /line|간격/i }).last().click();
+  // .js-edit-menu 내 두 번째 js-plus = 행 간격 +
+  const btn = page.locator('.js-edit-menu a.js-plus').last();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
 });
 
 When('행 간격 [-] 버튼 클릭', async ({ page }) => {
-  const el = page.locator('[class*="line-height"] button');
-  if ((await el.count()) > 0) { await el.first().click(); return; }
-  await expect(page.getByRole('button', { name: /line|간격/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.getByRole('button', { name: /line|간격/i }).first().click();
+  // .js-edit-menu 내 두 번째 js-minus = 행 간격 -
+  const btn = page.locator('.js-edit-menu a.js-minus').last();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
 });
 
 When('뷰어 화면 모드 클릭', async ({ page }) => {
-  await expect(page.locator('[class*="theme"], [class*="mode"], [class*="background"]').first()).toBeVisible({ timeout: 5000 });
-  await page.locator('[class*="theme"], [class*="mode"], [class*="background"]').first().click();
+  // .js-edit-menu 내 배경 테마 버튼 (a.js-bg) 클릭
+  const btn = page.locator('.js-edit-menu a.js-bg').last();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
 });
 
 // ──── 스크롤 / 드래그 ────
@@ -602,8 +599,10 @@ When('Comments 영역 > 첫 번 째 댓글 [Likes] 버튼 클릭', async ({ page
     await page.locator('.comment-header, .comment__sort').first()
       .waitFor({ state: 'visible', timeout: 10000 });
   }
-  const likeBtn = page.locator('a.js-comment-like-btn').filter({ visible: true }).first();
-  await expect(likeBtn).toBeVisible({ timeout: 10000 });
+  // 댓글 목록 API 응답 대기 — attached 상태(DOM 삽입)까지 기다린 후 visible 확인
+  const likeBtn = page.locator('a.js-comment-like-btn').first();
+  await likeBtn.waitFor({ state: 'attached', timeout: 20000 });
+  await expect(likeBtn).toBeVisible({ timeout: 5000 });
   await likeBtn.click();
   await page.waitForTimeout(500);
 });
@@ -894,10 +893,9 @@ Then('Comments 영역 타이틀과 [See all] 버튼이 노출되며 좋아요 �
 });
 
 Then('[Add a comment] 버튼이 노출된다.', async ({ page }) => {
-  const btn = page.getByRole('button', { name: /add a comment/i });
-  const count = await btn.count();
-  if (count === 0) { test.skip(true, 'Add a comment 버튼 미노출 — 댓글 패널 닫힘 또는 비활성'); return; }
-  await expect(btn.first()).toBeVisible({ timeout: 5000 });
+  // 뷰어엔드 하단 Add a comment 링크: a.add-comment-btn.js-add-comment
+  const btn = page.locator('a.add-comment-btn.js-add-comment');
+  await expect(btn.first()).toBeVisible({ timeout: 8000 });
 });
 
 Then('Popular 서브탭 노출된다.', async ({ page }) => {
@@ -1038,11 +1036,12 @@ Then('Style 팝업이 유지된다.', async ({ page }) => {
 });
 
 Then('소설 목록이 노출된다.', async ({ page }) => {
-  const epItem = page.locator('a.episode-item').filter({ visible: true });
+  const epItem = page.locator('a.episode-item');
+  await epItem.first().waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
   if ((await epItem.count()) > 0) { await expect(epItem.first()).toBeVisible({ timeout: 5000 }); return; }
-  const seriesLink = page.locator('a[href*="/series/"]').filter({ visible: true });
-  if ((await seriesLink.count()) > 0) { await expect(seriesLink.first()).toBeVisible({ timeout: 5000 }); return; }
-  test.skip(true, '소설 목록 미노출 — 뷰어 또는 시리즈 페이지 아님');
+  const seriesLink = page.locator('a[href*="/series/"]');
+  await seriesLink.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+  await expect(seriesLink.first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('소설 원고 하단 영역이 노출된다.', async ({ page }) => {

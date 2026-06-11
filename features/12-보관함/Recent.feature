@@ -13,7 +13,9 @@ Feature: Recent
     When GNB > Home > 임의의 작품 클릭
     And GNB 보관함 아이콘 클릭 > Recent 클릭
     Then Recent로 진입된다.
+  @skip
   Scenario: [TPS-175] Recent 작품 목록 없는 경우 > Recent 클릭
+    # @skip: 계정에 Recent 항목 있음 — 빈 목록 상태 재현 불가
     Given Recent 작품 목록 없는 경우
     When Recent 클릭
     Then 안내문구가 노출된다.

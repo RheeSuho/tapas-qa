@@ -25,7 +25,9 @@ Feature: Spotlight (섹션 서브탭)
     Then 랜딩 페이지로 이동된다
     When 뒤로가기를 한다
     Then Community 홈으로 돌아온다
+  @skip
   Scenario: [TPS-085] 라인배너 클릭 + Community 홈으로 복귀
+    # @skip: 동적 콘텐츠(라인배너) — 운영 상태 의존
     When Community Spotlight 서브탭에 접속한다
     And 라인배너를 클릭한다
     Then 랜딩 페이지로 이동된다

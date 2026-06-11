@@ -1,5 +1,7 @@
 Feature: Spotlight (섹션 서브탭)
+  @skip
   Scenario: [TPS-064] 미로그인/미인증 상태 > mature 클릭
+    # @skip: 미인증 계정 세션 — headless reCAPTCHA로 로그인 불가
     Given 미로그인 / 미인증 상태
     When 미로그인 / 미인증 아이디 로그인 상태
     And GNB > mature 클릭
@@ -40,7 +42,9 @@ Feature: Spotlight (섹션 서브탭)
     Then 랜딩 페이지로 이동된다
     When 뒤로가기를 한다
     Then Mature 홈으로 돌아온다
+  @skip
   Scenario: [TPS-071] 라인배너 클릭 + Mature 홈으로 복귀
+    # @skip: 동적 콘텐츠(라인배너) — 운영 상태 의존
     When Mature Spotlight 서브탭에 접속한다
     And 라인배너를 클릭한다
     Then 랜딩 페이지로 이동된다

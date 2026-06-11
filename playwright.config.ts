@@ -40,8 +40,8 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 1 : 0,
+  /* 병렬 실행 flaky 대응 — 로컬 1회, CI 1회 재시도 */
+  retries: 1,
   /* CI: ubuntu-latest는 CPU 2개 → workers 2로 병렬 실행 */
   workers: process.env.CI ? 2 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */

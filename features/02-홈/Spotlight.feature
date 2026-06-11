@@ -25,7 +25,9 @@ Feature: Spotlight
     Then 랜딩 페이지로 이동된다
     When 뒤로가기를 한다
     Then 홈 화면으로 돌아온다
+  @skip
   Scenario: [TPS-024] 라인배너 클릭 + 홈으로 복귀
+    # @skip: 라인배너는 동적 콘텐츠 — 미운영 시 skip
     When 타파스 홈에 접속한다
     And 라인배너를 클릭한다
     Then 랜딩 페이지로 이동된다
