@@ -24,7 +24,10 @@ Then('수신된 Activity 목록이 노출된다', async ({ page }) => {
 // ──── Profile 메뉴 ────
 
 Then('하위 메뉴가 노출된다', async ({ page }) => {
-  await expect(page.locator('[class*="profile"], [class*="menu"], [class*="dropdown"]').first()).toBeVisible({ timeout: 5000 });
+  await page.waitForTimeout(500);
+  // GNB Profile 드롭다운/패널 — class 다양함, Settings·Logout 등 메뉴 아이템 존재 여부로 판단
+  const menuItem = page.locator('a, button').filter({ hasText: /settings|logout|inkshop|ink shop|publish/i }).first();
+  await expect(menuItem).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 보유 잉크 ────
@@ -36,7 +39,8 @@ When('보유 잉크 영역을 클릭한다', async ({ page }) => {
 });
 
 Then('Ink 탭으로 이동된다', async ({ page }) => {
-  await expect(page.locator('a.item.js-tier-btn, [class*="ink"]').first()).toBeVisible({ timeout: 8000 });
+  // 실제 잉크샵 URL: /ink (not /ink-shop)
+  await expect(page).toHaveURL(/\/ink($|\/)/i, { timeout: 8000 });
 });
 
 // ──── Publish (Mweb only) ────
@@ -77,9 +81,14 @@ Then('Edit profile 탭으로 이동된다', async ({ page }) => {
 // ──── 댓글 화면 ────
 
 Given('모바일 댓글 화면에 진입한다', async ({ page }) => {
-  // 시리즈 comments 페이지로 직접 이동
-  const seriesPath = TEST_DATA.series.comic.replace('/info', '');
-  await page.goto(`${MWEB}${seriesPath}/comments`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  // /series/xxx/comments → 404. 에피소드 진입 후 댓글 패널 오픈
+  await page.goto(`${MWEB}${TEST_DATA.episode.comicEp2}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForTimeout(1000);
+  await page.evaluate(() => {
+    const btn = document.querySelector('a.js-comment-btn') as HTMLElement | null;
+    if (btn) btn.click();
+  });
+  await page.waitForTimeout(1000);
 });
 
 When('댓글 입력창을 선택한다', async ({ page }) => {

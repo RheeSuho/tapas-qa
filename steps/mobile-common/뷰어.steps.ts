@@ -582,10 +582,14 @@ When('Recommendation for you 영역 확인', async ({ page }) => {
 
 When('[See all] 버튼 클릭', async ({ page }) => {
   await ensureOnEpisode(page);
-  await page.evaluate(() => {
-    const el = document.querySelector('.js-comment-more, .comment-header__btn, a[class*="comment-more"]') as HTMLElement | null;
-    if (el) el.click();
-  });
+  // web-to-app 팝업이 클릭 차단 시 먼저 닫기
+  const closeWebToApp = page.locator('button[data-tiara-action-name="webtoapp_close"], .popup-web-to-app button').first();
+  if (await closeWebToApp.isVisible({ timeout: 500 }).catch(() => false)) {
+    await closeWebToApp.click().catch(() => {});
+    await page.waitForTimeout(300);
+  }
+  // viewer-end 정적 영역 — toolbar auto-hide 무관, 실제 Playwright 클릭
+  await page.locator('.js-comment-more, .comment-header__btn, a[class*="comment-more"]').first().click();
   await page.waitForTimeout(800);
 });
 

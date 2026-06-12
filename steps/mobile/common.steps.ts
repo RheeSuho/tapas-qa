@@ -121,6 +121,7 @@ When('뒤로가기를 한다', async ({ page }) => {
   if (page.url() === 'about:blank' || page.url() === '') {
     await page.goto(MWEB, { waitUntil: 'domcontentloaded' });
   }
+  // SPA 복원은 Then 스텝에서 처리 (뷰어로 이동된다 / 작품홈으로 이동된다)
 });
 
 // ──── 로그인 실패 ────

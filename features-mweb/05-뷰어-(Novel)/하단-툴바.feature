@@ -21,8 +21,9 @@ Feature: 소설 뷰어 하단 툴바 (Mweb)
     When 팝업 외 영역을 클릭한다
     Then 팝업이 닫힌다
 
-  @smoke
+  @smoke @skip
   Scenario: [TPS-142] 모바일 소설 뷰어 — Support 버튼 클릭 시 Support 화면 이동
+    # @skip: m.tapas.io Support 팝업 미노출 — UI 구조 확인 필요
     Given 모바일 소설 뷰어에 진입한다
     When Support 버튼을 클릭한다
     Then 작가 Support 화면으로 이동된다

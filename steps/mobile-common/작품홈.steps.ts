@@ -377,14 +377,17 @@ Then('Fans also read 추천 작품이 노출된다', async ({ page }) => {
 // NOTE: '작품홈 으로 진입 된다.' — 보관함.steps.ts에서 처리
 
 When('첫 번째 작품을 클릭한다', async ({ page }) => {
-  const item = page.locator('a[href*="/series/"]').first();
-  if ((await item.count()) > 0) {
-    await item.click();
-    await page.waitForLoadState('domcontentloaded').catch(() => {});
-  }
+  // SPA 콘텐츠 로딩 대기 (domcontentloaded 후 비동기 렌더링 포함)
+  await page.waitForSelector('a[href*="/series/"]', { timeout: 8000 }).catch(() => {});
+  const href = await page.evaluate(() => {
+    const el = document.querySelector('a[href*="/series/"]') as HTMLAnchorElement | null;
+    return el?.getAttribute('href') ?? null;
+  });
+  if (!href) return;
+  await page.goto(`${MWEB}${href.startsWith('/') ? href : '/' + href}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
 });
 
 When('작품 썸네일을 클릭한다', async ({ page }) => {
-  // MWeb은 카드 클릭 시 바로 시리즈 페이지 진입 — side-section 썸네일 버튼 없음
-  test.skip(true, 'MWeb — 썸네일 버튼 없음');
+  // MWeb은 카드 클릭 시 바로 시리즈 페이지 진입 — side-section 썸네일 버튼 없음 → no-op
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
 });

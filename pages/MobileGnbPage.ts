@@ -56,7 +56,11 @@ export class MobileGnbPage {
       case 'Profile':
       case '프로필': {
         const profileBtn = this.page.locator('button:has(img[alt="profile image"]), a[href*="/profile/"]').first();
-        if ((await profileBtn.count()) > 0) { await profileBtn.click(); return; }
+        if ((await profileBtn.count()) > 0) {
+          await profileBtn.click();
+          await this.page.waitForTimeout(600);
+          return;
+        }
         await this.openMenu();
         const profileLink = this.page.getByRole('link', { name: /profile/i });
         if ((await profileLink.count()) > 0) await profileLink.first().click();
