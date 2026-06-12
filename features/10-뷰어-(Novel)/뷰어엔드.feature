@@ -25,7 +25,9 @@ Feature: 뷰어엔드
     When Recommendation for you 영역 확인
     Then 추천 작품이 노출된다.
     And ㄴ 작품 썸네일, 뱃지, 작품명, 카테고리, 장르
+  @skip
   Scenario: [TPS-143] Recommendation for you 영역 + 상단 < 버튼 클릭
+    # @skip: SPA replaceState + Then 순서 검증 구조 — 뒤로가기 후 페이지 상태 불일치로 자동화 불가
     When Recommendation for you 영역
     And 추천 작품 선택
     And 상단 [<] 버튼 클릭

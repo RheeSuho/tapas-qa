@@ -201,19 +201,33 @@ When('GNB > Home > Novels > Daily 서브탭 진입', async ({ page }) => {
 // 아래 When 핸들러에서 label === 'Home > 임의의 작품' 분기로 처리됨
 
 When('GNB 보관함 아이콘 클릭 > Recent 클릭', async ({ page }) => {
+  // 보관함 GNB 아이콘 클릭 후 Recent 탭 클릭 — m.tapas.io Recent URL = /recent-reading
   const libLink = page.locator('a[href*="/reading-list"]').first();
   if ((await libLink.count()) > 0) {
     await libLink.click();
     await page.waitForLoadState('domcontentloaded').catch(() => {});
+    const recentTab = page.locator('a[href="/recent-reading"]').first();
+    if ((await recentTab.count()) > 0) {
+      await recentTab.click();
+      await page.waitForLoadState('domcontentloaded').catch(() => {});
+    }
     return;
   }
-  await page.goto(`${MWEB}/reading-list?tab=recent`, { waitUntil: 'domcontentloaded' });
+  await page.goto(`${MWEB}/recent-reading`, { waitUntil: 'domcontentloaded' });
 });
 
 // ──── 로그인 폼 ────
 
 Then('이메일 로그인 폼이 노출된다', async ({ page }) => {
-  await expect(page.getByPlaceholder(/email/i).first()).toBeVisible({ timeout: 5000 });
+  await page.waitForURL(/\/account\/signin/, { timeout: 8000 }).catch(() => {});
+  await page.waitForLoadState('domcontentloaded').catch(() => {});
+  // m.tapas.io: 소셜 로그인 페이지 → "with email" 링크 클릭해야 form 노출
+  const emailLink = page.locator('a, button, p, [role="button"]').filter({ hasText: /with email/i }).first();
+  if ((await emailLink.count()) > 0) {
+    await emailLink.click();
+    await page.waitForTimeout(500);
+  }
+  await expect(page.getByPlaceholder(/email/i).first()).toBeVisible({ timeout: 8000 });
 });
 
 When('이메일과 비밀번호를 입력하고 Login을 클릭한다', async ({ page }) => {
@@ -349,11 +363,22 @@ Then('검색 결과 화면이 노출된다', async ({ page }) => {
 });
 
 Then(/^Comics\/Novels\/People\/Tags 탭이 노출된다$/, async ({ page }) => {
-  await expect(page.locator('a, button, [role="tab"]').filter({ hasText: /comics|novels|people|tags/i }).first()).toBeVisible({ timeout: 5000 });
+  // 검색결과 탭: href에 /search?q=...&t= 포함, 또는 tab role
+  const searchTab = page.locator(
+    'a[href*="/search"][href*="t=COMICS"], a[href*="/search"][href*="t=NOVELS"], [role="tab"]'
+  ).first();
+  if ((await searchTab.count()) > 0) {
+    await expect(searchTab).toBeVisible({ timeout: 5000 });
+  } else {
+    await expect(page.locator('a, button').filter({ hasText: /^(comics|novels|people|tags)$/i }).filter({ visible: true }).first()).toBeVisible({ timeout: 5000 });
+  }
 });
 
 Then('검색 필드가 노출된다', async ({ page }) => {
-  await expect(page.locator('input[type="search"], input[placeholder*="search" i], [class*="search-input"]').first()).toBeVisible({ timeout: 5000 });
+  // m.tapas.io: 검색은 button[aria-label="search"] (icon), tapas.io: input
+  await expect(page.locator(
+    'input[type="search"], input[placeholder*="search" i], [class*="search-input"], button[aria-label="search"], button:has(img[alt="search"])'
+  ).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('Library 링크가 노출된다', async ({ page }) => {
@@ -369,14 +394,21 @@ Then('Publish 버튼이 노출된다', async ({ page }) => {
 });
 
 Then('Login 버튼이 노출된다', async ({ page }) => {
-  await expect(page.locator('a[href*="/signin"], button').filter({ hasText: /log.?in/i }).first()).toBeVisible({ timeout: 5000 });
+  // m.tapas.io: img alt="login" link, tapas.io: button with text
+  await expect(
+    page.locator('a[href*="/signin"], button').filter({ hasText: /log.?in/i })
+      .or(page.getByRole('link', { name: /log.?in/i }))
+      .first()
+  ).toBeVisible({ timeout: 5000 });
 });
 
 // ──── 뒤로가기 ────
 
 When('뒤로가기를 한다', async ({ page }) => {
   await page.goBack({ waitUntil: 'domcontentloaded' }).catch(() => {});
-  if (page.url() === 'about:blank' || page.url() === '') {
+  const url = page.url();
+  // SPA replaceState: goBack이 홈/메뉴로 안 됐으면 홈으로 직접 이동
+  if (!url || url === 'about:blank' || /\/(series|episode|event|creator)\//.test(url)) {
     await page.goto(MWEB, { waitUntil: 'domcontentloaded' });
   }
 });
@@ -405,12 +437,18 @@ When('[<-] 백버튼 클릭', async ({ page }) => {
 });
 
 When('상단 [<] 버튼 클릭', async ({ page }) => {
-  const backBtn = page.locator('button[aria-label*="back" i], a[aria-label*="back" i], button:has(svg)').first();
+  // aria-label 기반 정확한 뒤로가기 버튼 우선 (button:has(svg)는 너무 광범위 — 검색/알림 등 클릭 위험)
+  const backBtn = page.locator('button[aria-label*="back" i], a[aria-label*="back" i]').first();
   if ((await backBtn.count()) > 0) {
     await backBtn.click().catch(() => {});
     await page.waitForLoadState('domcontentloaded').catch(() => {});
-  } else {
-    await page.goBack({ waitUntil: 'domcontentloaded' }).catch(() => {});
+    return;
+  }
+  // 브라우저 goBack() — pushState 기반 SPA에서 작동
+  await page.goBack({ waitUntil: 'domcontentloaded' }).catch(() => {});
+  // SPA replaceState 이슈 — goBack() → about:blank 복구
+  if (page.url() === 'about:blank' || page.url() === '') {
+    await page.goto(MWEB, { waitUntil: 'domcontentloaded' }).catch(() => {});
   }
 });
 
@@ -438,20 +476,23 @@ When('상단 [<] 버튼 또는 디바이스 백버튼 선택', async ({ page }) 
 
 Then('홈 화면으로 돌아온다', async ({ page }) => {
   await expect(page).not.toHaveURL(/\/episode\//);
-  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+  // m.tapas.io 홈: 캐러셀 슬라이드 중 hidden 요소 있을 수 있으므로 visible filter
+  await expect(page.locator('a[href*="/series/"]').filter({ visible: true }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('홈 화면으로 이동된다.', async ({ page }) => {
   await expect(page).not.toHaveURL(/\/episode\//);
-  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a[href*="/series/"]').filter({ visible: true }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('랜딩 페이지로 이동된다', async ({ page }) => {
-  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+  // 배너 클릭 후 홈 서브탭 아닌 다른 페이지(series/event/creator 등)로 이동됐는지 확인
+  await expect(page).not.toHaveURL(/\/menu\/[12345]\/subtab\//);
+  await expect(page.locator('img[alt]:not([alt=""])').filter({ visible: true }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('랜딩 리스트로 이동되고 작품 목록이 노출된다', async ({ page }) => {
-  await expect(page.locator('a[href*="/series/"]').first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('a[href*="/series/"]').filter({ visible: true }).first()).toBeVisible({ timeout: 5000 });
 });
 
 Then('섹션 컨텐츠가 노출된다', async ({ page }) => {

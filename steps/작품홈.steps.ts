@@ -105,6 +105,17 @@ When('작품 이미지 선택', async ({ page }) => {
 
 // ──── 탭 / 영역 ────
 
+When('Details 탭 클릭', async ({ page }) => {
+  await ensureOnSeries(page);
+  const clicked = await page.evaluate(() => {
+    const tab = Array.from(document.querySelectorAll('a.section-nav'))
+      .find((el) => /details/i.test(el.textContent ?? '')) as HTMLElement | null;
+    if (tab) { tab.click(); return true; }
+    return false;
+  });
+  if (clicked) await page.waitForTimeout(500);
+});
+
 When('Episodes 탭 클릭', async ({ page }) => {
   await ensureOnSeries(page);
   // 이미 에피소드 리스트가 보이면 OK

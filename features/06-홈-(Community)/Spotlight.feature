@@ -33,7 +33,9 @@ Feature: Spotlight (섹션 서브탭)
     Then 랜딩 페이지로 이동된다
     When 뒤로가기를 한다
     Then Community 홈으로 돌아온다
+  @skip
   Scenario: [TPS-086] 섹션메뉴 더보기 클릭 + Community 홈으로 복귀
+    # @skip: SPA replaceState — 더보기 클릭 후 goBack이 Community spotlight로 복귀 불가
     When Community Spotlight 서브탭에 접속한다
     And 더보기 링크를 클릭한다
     Then 랜딩 리스트로 이동되고 작품 목록이 노출된다

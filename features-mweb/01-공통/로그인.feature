@@ -6,15 +6,17 @@ Feature: 로그인 (Mweb)
     When 모바일 Login 버튼을 클릭한다
     Then 이메일 로그인 폼이 노출된다
 
-  @smoke
+  @smoke @skip
   Scenario: [TPS-005] 이메일 계정으로 로그인 성공
+    # @skip: headless에서 reCAPTCHA로 로그인 제출 불가 (PCW와 동일 사유)
     Given 모바일 미로그인 상태다
     When 모바일 Login 버튼을 클릭한다
     And 이메일과 비밀번호를 입력하고 Login을 클릭한다
     Then 로그인이 완료되고 모바일 홈 화면으로 이동된다
 
-  @smoke
+  @smoke @skip
   Scenario: [TPS-008] 이메일 로그인 실패 — 오류 메시지 노출
+    # @skip: headless에서 reCAPTCHA로 제출 불가 → 오류 메시지 미노출
     Given 모바일 미로그인 상태다
     When 모바일 Login 버튼을 클릭한다
     And 잘못된 이메일과 비밀번호를 입력하고 Login을 클릭한다

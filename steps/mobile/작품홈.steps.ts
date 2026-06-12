@@ -174,7 +174,8 @@ When('작가 이름을 클릭한다', async ({ page }) => {
 });
 
 Then('작가홈으로 이동된다', async ({ page }) => {
-  await expect(page).toHaveURL(/\/(creator|user|profile)\//i);
+  // PC Web: /creator/{username}, MWeb: /{username} (slug only, no prefix)
+  await expect(page).toHaveURL(/\/(creator|user|profile)\/|m\.tapas\.io\/\w+\/?$/i);
 });
 
 Then('작품홈 Episodes 탭으로 이동된다', async ({ page }) => {

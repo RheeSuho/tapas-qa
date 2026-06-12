@@ -39,10 +39,15 @@ export class MobileGnbPage {
     switch (label) {
       case 'Login': {
         const gnbLogin = this.page.getByRole('link', { name: /^log ?in$/i });
-        if ((await gnbLogin.count()) > 0) { await gnbLogin.first().click(); return; }
+        if ((await gnbLogin.count()) > 0) {
+          await gnbLogin.first().click();
+          await this.page.waitForLoadState('domcontentloaded').catch(() => {});
+          return;
+        }
         const loginBtn = this.page.getByRole('button', { name: /^log ?in$/i }).first();
         if ((await loginBtn.count()) > 0 && await loginBtn.isEnabled()) {
           await loginBtn.click();
+          await this.page.waitForLoadState('domcontentloaded').catch(() => {});
         } else {
           await this.page.goto(`${MOBILE_BASE}/account/signin`, { waitUntil: 'domcontentloaded' });
         }

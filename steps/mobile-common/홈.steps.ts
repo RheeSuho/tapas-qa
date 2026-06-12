@@ -100,8 +100,17 @@ When('배너 섹션 내 작품을 클릭한다', async ({ page }) => {
 // ──── 더보기 ────
 
 When('더보기 링크를 클릭한다', async ({ page }) => {
-  await expect(page.locator('a, button').filter({ hasText: /see all|more|더보기/i }).first()).toBeVisible({ timeout: 5000 });
-  await page.locator('a, button').filter({ hasText: /see all|more|더보기/i }).first().click();
+  // 텍스트 기반 더보기 링크
+  const textLink = page.locator('a, button').filter({ hasText: /see all|more|더보기/i }).first();
+  if ((await textLink.count()) > 0) {
+    await textLink.click();
+    await page.waitForLoadState('domcontentloaded').catch(() => {});
+    return;
+  }
+  // m.tapas.io: 섹션 "더보기"는 img[alt="right arrow"] 링크 (landing-list)
+  const arrowLink = page.locator('a[href*="/landing-list/"]').filter({ has: page.locator('img[alt="right arrow"]') }).first();
+  await expect(arrowLink).toBeVisible({ timeout: 5000 });
+  await arrowLink.click();
   await page.waitForLoadState('domcontentloaded').catch(() => {});
 });
 

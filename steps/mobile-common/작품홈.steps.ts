@@ -54,6 +54,21 @@ When('{string} 검색 후 작품 클릭', async ({ page }, title: string) => {
 
 // ──── 탭 ────
 
+When('Details 탭 클릭', async ({ page }) => {
+  await ensureOnSeries(page);
+  // m.tapas.io 탭은 a/button이 아닌 div/span인 경우 있음 — JS로 leaf "Details" 텍스트 노드 클릭
+  const clicked = await page.evaluate(() => {
+    for (const el of document.querySelectorAll('*')) {
+      if (el.children.length === 0 && el.textContent.trim() === 'Details') {
+        (el as HTMLElement).click();
+        return true;
+      }
+    }
+    return false;
+  });
+  if (clicked) await page.waitForTimeout(800);
+});
+
 When('Episodes 탭 클릭', async ({ page }) => {
   await ensureOnSeries(page);
   // 이미 에피소드 리스트가 보이면 OK
@@ -93,26 +108,9 @@ When('정렬 버튼 재클릭', async ({ page }) => {
 // ──── 회차 클릭 ────
 
 When('무료 회차 클릭', async ({ page }) => {
-  await ensureOnSeries(page);
-  // JS 클릭 — m.tapas.io 에피소드 아이템은 display:none 회피 필요
-  const clicked = await page.evaluate(() => {
-    const selectors = [
-      'a[data-tiara-action-name="read_continue_click"]',
-      'a[data-tiara-action-name="read_click"]',
-      'a.episode-item:first-child',
-      'a[href*="/episode/"]',
-    ];
-    for (const sel of selectors) {
-      const el = document.querySelector(sel) as HTMLElement | null;
-      if (el) { el.click(); return true; }
-    }
-    return false;
-  });
-  if (!clicked) {
-    // 직접 goto
-    await page.goto(`${MWEB}${TEST_DATA.episode.comicEp1}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  }
-  await page.waitForTimeout(1000);
+  // WUF/유료 에피소드 클릭 방지 — 테스트 데이터 무료 에피소드 URL로 직접 이동
+  await page.goto(`${MWEB}${TEST_DATA.episode.comicEp1}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForTimeout(800);
 });
 
 When('유료 회차 클릭', async ({ page }) => {
@@ -346,7 +344,12 @@ Then(/^기다무 작품, 공지 사항 띠배너가 노출된다\.$/, async ({ p
 });
 
 Then('Details 영역이 노출된다', async ({ page }) => {
-  await expect(page.locator('[class*="description"], [class*="detail"]').first()).toBeVisible({ timeout: 5000 });
+  // Details 탭 내용: Description / Genres / Fans also read 중 하나가 보이면 OK
+  await expect(
+    page.locator('p, span, div').filter({ hasText: /^(Description|Genres|Fans also read)$/ })
+      .or(page.locator('.js-series-description'))
+      .first()
+  ).toBeVisible({ timeout: 5000 });
 });
 
 Then('Fans also read 추천 작품이 노출된다', async ({ page }) => {

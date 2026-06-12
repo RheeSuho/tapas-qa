@@ -2,6 +2,7 @@ Feature: details 탭
 
   Background:
     Given 작품홈 진입
+    When Details 탭 클릭
   Scenario: [TPS-095] Details 영역 확인
     Then Details 영역이 노출된다
   Scenario: [TPS-096] 작가 클릭 시 작가 홈 이동

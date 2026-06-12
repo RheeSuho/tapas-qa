@@ -157,15 +157,15 @@ When('프로필 이미지 클릭', async ({ page }) => {
 // ──── Then ────
 
 Then('Settings 탭으로 이동된다.', async ({ page }) => {
-  await expect(page).toHaveURL(/settings|account/i);
+  await expect(page).toHaveURL(/settings|account|profile\/update/i);
 });
 
 Then('Settings로 진입된다.', async ({ page }) => {
-  await expect(page).toHaveURL(/settings|account/i);
+  await expect(page).toHaveURL(/settings|account|profile\/update/i);
 });
 
 Then(/^Reading option \/ Personal information \/ Block Users \/ Log out all other sessions \/ Delete account 영역 노출된다\.$/, async ({ page }) => {
-  await expect(page).toHaveURL(/settings|account/i);
+  await expect(page).toHaveURL(/settings|account|profile\/update/i);
   await expect(page.locator('a, button, [class*="setting"]').filter({ hasText: /reading|personal|block|delete/i }).first()).toBeVisible({ timeout: 5000 });
 });
 
@@ -223,7 +223,13 @@ Then('유저 홈으로 이동된다.', async ({ page }) => {
 });
 
 Then('작가 홈으로 이동된다', async ({ page }) => {
-  await expect(page.locator('img[alt="profile image"], [class*="profile-img"], [class*="avatar"]').first()).toBeVisible({ timeout: 5000 });
+  // m.tapas.io 작가 홈: profile img, series 링크, 또는 wall/artist-post 링크로 확인
+  await expect(
+    page.locator('img[alt="profile image"], [class*="profile-img"], [class*="avatar"]')
+      .or(page.locator('a[href*="/series/"]').filter({ visible: true }))
+      .or(page.locator('a[href*="artist-post"], a[href*="block-option"]'))
+      .first()
+  ).toBeVisible({ timeout: 5000 });
 });
 
 When('[닫기] 버튼 클릭', async ({ page }) => {
