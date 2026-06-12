@@ -21,6 +21,7 @@
     "notify:slack": "node scripts/notify-slack.js",
     "test:setup": "playwright test --project=setup --headed",
     "test:setup:unverified": "playwright test tests/auth.unverified.setup.ts --headed",
+    "renew:auth": "bash scripts/renew-auth.sh",
     "report": "playwright show-report",
     "allure": "allure-commandline generate allure-results --clean -o allure-report && allure-commandline open allure-report",
     "health": "bddgen && playwright test --project=chromium; npm run report",
